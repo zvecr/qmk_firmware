@@ -127,7 +127,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 uint32_t layer_state_set_user(uint32_t state) {
   state = update_tri_layer_state(state, _LOWER, _META, _ADJUST);
-  #ifdef RGBLIGHT_ENABLE
+#ifdef RGBLIGHT_ENABLE
   rgblight_config_t rgblight_config;
   switch (biton32(state)) {
     case _LOWER:
@@ -154,7 +154,7 @@ uint32_t layer_state_set_user(uint32_t state) {
       rgblight_mode_noeeprom(rgblight_config.mode);
     }
   }
-  #endif
+#endif
 
   return state;
 }
