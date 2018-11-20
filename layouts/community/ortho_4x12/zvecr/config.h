@@ -11,7 +11,11 @@
 #define RGBLIGHT_ANIMATIONS
 #undef RGBLED_NUM
 #if defined(KEYBOARD_lets_split_rev2)
-  #define RGBLED_NUM 10
+  #if defined(USE_SERIAL)
+    #define RGBLED_NUM 5*2
+  #else
+    #define RGBLED_NUM 5
+  #endif
 #else
   #define RGBLED_NUM 1
   #ifndef RGB_DI_PIN
