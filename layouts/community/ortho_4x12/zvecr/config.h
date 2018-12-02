@@ -1,5 +1,10 @@
 #pragma once
 
+// # minimise size to enable as many features as possible
+#define NO_ACTION_MACRO
+#define NO_ACTION_FUNCTION
+#define DISABLE_LEADER
+
 // split handling
 #if defined(KEYBOARD_lets_split_rev2)
   #define USE_SERIAL
