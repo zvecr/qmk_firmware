@@ -5,6 +5,8 @@
 #define NO_ACTION_FUNCTION
 #define DISABLE_LEADER
 
+#define TAPPING_TERM 150
+
 // split handling
 #if defined(KEYBOARD_lets_split_rev2)
   #define USE_SERIAL
