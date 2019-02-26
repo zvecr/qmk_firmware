@@ -11,14 +11,12 @@ enum {
 
 // Layer utils
 #define LOWER MO(_LOWER)
-#define RAISE MO(_RAISE)
-#define META MO(_META)
 #define ADJUST MO(_ADJUST)
 
 // Bodge keycodes
 #define KC_CAD LALT(LCTL(KC_DEL))
 #define LOW_BSPC LT(_LOWER, KC_BSPC)
-#define RAI_MENU LT(_RAISE, KC_MENU)
+#define ADJ_MENU LT(_ADJUST, KC_APP)
 
 // Macro Declarations
 enum custom_keycodes {
@@ -43,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* ├───────────┬─────┴───┬─────┴───┬─────┴───┬─────┴───┬─────┴───┬─────┴───┬─────┴───┬─────┴───┬─────┴───┬─────┴───┬─────┴───┬─────┴─────────┴─┬─────────┼─────────┤ */
 	  KC_LSFT,    KC_NUBS,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,  LOW_BSPC,         KC_UP,    KC_END,
 /* ├───────────┼─────────┴─┬───────┴───┬─────┴─────────┴─────────┴─────────┴─────────┴─────────┴───────┬─┴───────┬─┴───────┬─┴───────┬─────────┼─────────┼─────────┤ */
-	  KC_LCTL,    KC_LGUI,    KC_LALT,    KC_SPC,                                                         KC_RALT,  RAI_MENU, KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT
+	  KC_LCTL,    KC_LGUI,    KC_LALT,    KC_SPC,                                                         KC_RALT,  ADJ_MENU, KC_RCTL,  KC_LEFT,  KC_DOWN,  KC_RGHT
 /* └───────────┴───────────┴───────────┴───────────────────────────────────────────────────────────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘ */
   ),
 
