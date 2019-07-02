@@ -10,7 +10,7 @@ Assuming you have an STLink and some technical aptitude.
 
 First you will need to download a copy of texane/stlink. stlink is
 the premier open source tooling for the stlink programmer, but they
-do not support the CS32 clone officially. The clone identifies
+[do not support the CS32 clone officially](https://github.com/texane/stlink/issues/756). The clone identifies
 itself with a different core id (0x2ba01477), so the stlink software
 refuses to flash it. Unfortunately they used the core id from a
 genuine STM32 F3 product! So while it is actually a STM32 F1
