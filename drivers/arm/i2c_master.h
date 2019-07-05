@@ -27,6 +27,11 @@
 #include "ch.h"
 #include <hal.h>
 
+
+#if defined(STM32F1XX) || defined(STM32F1xx) || defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32L0xx) || defined(STM32L1xx)
+    #define USE_I2CV1
+#endif
+
 #ifdef I2C1_BANK
     #define I2C1_SCL_BANK I2C1_BANK
     #define I2C1_SDA_BANK I2C1_BANK
