@@ -1,3 +1,4 @@
+#ifdef __AVR__
 /*
  * WARNING: be careful changing this code, it is very timing dependent
  *
@@ -544,3 +545,5 @@ int soft_serial_get_and_clean_status(int sstd_index) {
 //   2018-10-28 re-adjust compiler depend value of delay (#4269, 8517f8a66)
 //             (adjusted with avr-gcc 5.4.0, 7.3.0)
 //   2018-12-17 copy to TOP/quantum/split_common/ and remove backward compatibility code (#4669)
+
+#endif /* __AVR__ */
