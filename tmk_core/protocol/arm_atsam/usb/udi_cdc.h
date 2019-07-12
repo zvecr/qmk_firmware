@@ -49,24 +49,24 @@
 
 #ifdef CDC
 
-#include "conf_usb.h"
-#include "usb_protocol.h"
-#include "usb_protocol_cdc.h"
-#include "udd.h"
-#include "udc_desc.h"
-#include "udi.h"
+    #include "conf_usb.h"
+    #include "usb_protocol.h"
+    #include "usb_protocol_cdc.h"
+    #include "udd.h"
+    #include "udc_desc.h"
+    #include "udi.h"
 
-// Check the number of port
-#ifndef UDI_CDC_PORT_NB
-# define UDI_CDC_PORT_NB 1
-#endif
-#if (UDI_CDC_PORT_NB > 1)
-# error UDI_CDC_PORT_NB must be at most 1
-#endif
+    // Check the number of port
+    #ifndef UDI_CDC_PORT_NB
+        #define UDI_CDC_PORT_NB 1
+    #endif
+    #if (UDI_CDC_PORT_NB > 1)
+        #error UDI_CDC_PORT_NB must be at most 1
+    #endif
 
-#ifdef __cplusplus
+    #ifdef __cplusplus
 extern "C" {
-#endif
+    #endif
 
 /**
  * \addtogroup udi_cdc_group_udc
@@ -76,15 +76,15 @@ extern "C" {
 //! Global structure which contains standard UDI API for UDC
 extern UDC_DESC_STORAGE udi_api_t udi_api_cdc_comm;
 extern UDC_DESC_STORAGE udi_api_t udi_api_cdc_data;
-//@}
+    //@}
 
-//#define CDC_ACM_SIZE  64  see usb_protocol_cdc.h
-//#define CDC_RX_SIZE   64
+    //#define CDC_ACM_SIZE  64  see usb_protocol_cdc.h
+    //#define CDC_RX_SIZE   64
 
-//! CDC communication endpoints size for all speeds
-#define UDI_CDC_COMM_EP_SIZE        CDC_ACM_SIZE
-//! CDC data endpoints size for FS speed (8B, 16B, 32B, 64B)
-#define UDI_CDC_DATA_EPS_FS_SIZE    CDC_RX_SIZE
+    //! CDC communication endpoints size for all speeds
+    #define UDI_CDC_COMM_EP_SIZE CDC_ACM_SIZE
+    //! CDC data endpoints size for FS speed (8B, 16B, 32B, 64B)
+    #define UDI_CDC_DATA_EPS_FS_SIZE CDC_RX_SIZE
 
 //@}
 
@@ -333,26 +333,26 @@ int udi_cdc_multi_putc(uint8_t port, int value);
  * \return the number of data remaining
  */
 iram_size_t udi_cdc_multi_write_buf(uint8_t port, const void* buf, iram_size_t size);
-//@}
+    //@}
 
-#define CDC_PRINTBUF_SIZE  256
+    #define CDC_PRINTBUF_SIZE 256
 extern char printbuf[CDC_PRINTBUF_SIZE];
 
-#define CDC_INBUF_SIZE 256
+    #define CDC_INBUF_SIZE 256
 
 typedef struct {
     uint32_t count;
     uint32_t lastcount;
-    char buf[CDC_INBUF_SIZE];
+    char     buf[CDC_INBUF_SIZE];
 } inbuf_t;
 
-#else //CDC
+#else  // CDC
 
-// keep these to accommodate calls if remaining
-#define CDC_PRINTBUF_SIZE  1
+    // keep these to accommodate calls if remaining
+    #define CDC_PRINTBUF_SIZE 1
 extern char printbuf[CDC_PRINTBUF_SIZE];
 
-#define CDC_INBUF_SIZE 1
+    #define CDC_INBUF_SIZE 1
 
 typedef struct {
     uint32_t count;
@@ -362,15 +362,15 @@ typedef struct {
 
 extern inbuf_t inbuf;
 
-#endif //CDC
+#endif  // CDC
 
-uint32_t CDC_print(char *printbuf);
-int CDC_printf(const char *_Format, ...);
+uint32_t CDC_print(char* printbuf);
+int      CDC_printf(const char* _Format, ...);
 uint32_t CDC_input(void);
-void CDC_init(void);
+void     CDC_init(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _UDI_CDC_H_
+#endif  // _UDI_CDC_H_

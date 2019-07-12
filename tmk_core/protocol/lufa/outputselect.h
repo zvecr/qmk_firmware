@@ -34,7 +34,7 @@ enum outputs {
     #endif
 #endif
 
-void set_output(uint8_t output);
-void set_output_user(uint8_t output);
+void    set_output(uint8_t output);
+void    set_output_user(uint8_t output);
 uint8_t auto_detect_output(void);
 uint8_t where_to_send(void);

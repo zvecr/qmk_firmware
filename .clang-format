@@ -12,7 +12,7 @@ BinPackArguments: 'true'
 BinPackParameters: 'true'
 ColumnLimit: '1000'
 IndentCaseLabels: 'true'
-IndentPPDirectives: AfterHash
+IndentPPDirectives: BeforeHash
 IndentWidth: '4'
 MaxEmptyLinesToKeep: '1'
 PointerAlignment: Right

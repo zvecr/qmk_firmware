@@ -18,22 +18,4 @@
 
 #include "keymap_norman.h"
 
-const uint8_t ascii_to_keycode_lut[0x80] PROGMEM = {
-    0, 0, 0, 0, 0, 0, 0, 0,
-    KC_BSPC, KC_TAB, KC_ENT, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, KC_ESC, 0, 0, 0, 0,
-    KC_SPC, KC_1, KC_QUOT, KC_3, KC_4, KC_5, KC_7, KC_QUOT,
-    KC_9, KC_0, KC_8, KC_EQL, KC_COMM, KC_MINS, KC_DOT, KC_SLSH,
-    KC_0, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7,
-    KC_8, KC_9, NM_SCLN, NM_SCLN, KC_COMM, KC_EQL, KC_DOT, KC_SLSH,
-    KC_2, NM_A, NM_B, NM_C, NM_D, NM_E, NM_F, NM_G,
-    NM_H, NM_I, NM_J, NM_K, NM_L, NM_M, NM_N, NM_O,
-    NM_P, NM_Q, NM_R, NM_S, NM_T, NM_U, NM_V, NM_W,
-    NM_X, NM_Y, NM_Z, KC_LBRC, KC_BSLS, KC_RBRC, KC_6, KC_MINS,
-    KC_GRV, NM_A, NM_B, NM_C, NM_D, NM_E, NM_F, NM_G,
-    NM_H, NM_I, NM_J, NM_K, NM_L, NM_M, NM_N, NM_O,
-    NM_P, NM_Q, NM_R, NM_S, NM_T, NM_U, NM_V, NM_W,
-    NM_X, NM_Y, NM_Z, KC_LBRC, KC_BSLS, KC_RBRC, KC_GRV, KC_DEL
-};
-
+const uint8_t ascii_to_keycode_lut[0x80] PROGMEM = {0, 0, 0, 0, 0, 0, 0, 0, KC_BSPC, KC_TAB, KC_ENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KC_ESC, 0, 0, 0, 0, KC_SPC, KC_1, KC_QUOT, KC_3, KC_4, KC_5, KC_7, KC_QUOT, KC_9, KC_0, KC_8, KC_EQL, KC_COMM, KC_MINS, KC_DOT, KC_SLSH, KC_0, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, NM_SCLN, NM_SCLN, KC_COMM, KC_EQL, KC_DOT, KC_SLSH, KC_2, NM_A, NM_B, NM_C, NM_D, NM_E, NM_F, NM_G, NM_H, NM_I, NM_J, NM_K, NM_L, NM_M, NM_N, NM_O, NM_P, NM_Q, NM_R, NM_S, NM_T, NM_U, NM_V, NM_W, NM_X, NM_Y, NM_Z, KC_LBRC, KC_BSLS, KC_RBRC, KC_6, KC_MINS, KC_GRV, NM_A, NM_B, NM_C, NM_D, NM_E, NM_F, NM_G, NM_H, NM_I, NM_J, NM_K, NM_L, NM_M, NM_N, NM_O, NM_P, NM_Q, NM_R, NM_S, NM_T, NM_U, NM_V, NM_W, NM_X, NM_Y, NM_Z, KC_LBRC, KC_BSLS, KC_RBRC, KC_GRV, KC_DEL};

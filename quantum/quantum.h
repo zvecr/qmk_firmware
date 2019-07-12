@@ -64,7 +64,7 @@
 extern layer_state_t default_layer_state;
 
 #ifndef NO_ACTION_LAYER
-    extern layer_state_t layer_state;
+extern layer_state_t layer_state;
 #endif
 
 #if defined(MIDI_ENABLE) && defined(MIDI_ADVANCED)
@@ -147,38 +147,37 @@ extern layer_state_t default_layer_state;
 
 // Function substitutions to ease GPIO manipulation
 #if defined(__AVR__)
-    typedef uint8_t pin_t;
+typedef uint8_t pin_t;
 
-    #define PIN_ADDRESS(p, offset)  (_SFR_IO8(ADDRESS_BASE + ((p) >> PORT_SHIFTER) + (offset)))
-    #define setPinInput(pin)        (PIN_ADDRESS(pin, 1) &= ~_BV((pin) & 0xF))
-    #define setPinInputHigh(pin)    (PIN_ADDRESS(pin, 1) &= ~_BV((pin) & 0xF), \
-                                     PIN_ADDRESS(pin, 2) |=  _BV((pin) & 0xF))
-    #define setPinInputLow(pin)     _Static_assert(0, "AVR processors cannot implement an input as pull low")
-    #define setPinOutput(pin)       (PIN_ADDRESS(pin, 1) |=  _BV((pin) & 0xF))
+    #define PIN_ADDRESS(p, offset) (_SFR_IO8(ADDRESS_BASE + ((p) >> PORT_SHIFTER) + (offset)))
+    #define setPinInput(pin) (PIN_ADDRESS(pin, 1) &= ~_BV((pin)&0xF))
+    #define setPinInputHigh(pin) (PIN_ADDRESS(pin, 1) &= ~_BV((pin)&0xF), PIN_ADDRESS(pin, 2) |= _BV((pin)&0xF))
+    #define setPinInputLow(pin) _Static_assert(0, "AVR processors cannot implement an input as pull low")
+    #define setPinOutput(pin) (PIN_ADDRESS(pin, 1) |= _BV((pin)&0xF))
 
-    #define writePinHigh(pin)       (PIN_ADDRESS(pin, 2) |=  _BV((pin) & 0xF))
-    #define writePinLow(pin)        (PIN_ADDRESS(pin, 2) &= ~_BV((pin) & 0xF))
-    #define writePin(pin, level)    ((level) ? writePinHigh(pin) : writePinLow(pin))
+    #define writePinHigh(pin) (PIN_ADDRESS(pin, 2) |= _BV((pin)&0xF))
+    #define writePinLow(pin) (PIN_ADDRESS(pin, 2) &= ~_BV((pin)&0xF))
+    #define writePin(pin, level) ((level) ? writePinHigh(pin) : writePinLow(pin))
 
-    #define readPin(pin)            ((bool)(PIN_ADDRESS(pin, 0) & _BV((pin) & 0xF)))
+    #define readPin(pin) ((bool)(PIN_ADDRESS(pin, 0) & _BV((pin)&0xF)))
 #elif defined(PROTOCOL_CHIBIOS)
-    typedef ioline_t pin_t;
+typedef ioline_t pin_t;
 
-    #define setPinInput(pin)        palSetLineMode(pin, PAL_MODE_INPUT)
-    #define setPinInputHigh(pin)    palSetLineMode(pin, PAL_MODE_INPUT_PULLUP)
-    #define setPinInputLow(pin)     palSetLineMode(pin, PAL_MODE_INPUT_PULLDOWN)
-    #define setPinOutput(pin)       palSetLineMode(pin, PAL_MODE_OUTPUT_PUSHPULL)
+    #define setPinInput(pin) palSetLineMode(pin, PAL_MODE_INPUT)
+    #define setPinInputHigh(pin) palSetLineMode(pin, PAL_MODE_INPUT_PULLUP)
+    #define setPinInputLow(pin) palSetLineMode(pin, PAL_MODE_INPUT_PULLDOWN)
+    #define setPinOutput(pin) palSetLineMode(pin, PAL_MODE_OUTPUT_PUSHPULL)
 
-    #define writePinHigh(pin)       palSetLine(pin)
-    #define writePinLow(pin)        palClearLine(pin)
-    #define writePin(pin, level)    ((level) ? writePinHigh(pin) : writePinLow(pin))
+    #define writePinHigh(pin) palSetLine(pin)
+    #define writePinLow(pin) palClearLine(pin)
+    #define writePin(pin, level) ((level) ? writePinHigh(pin) : writePinLow(pin))
 
-    #define readPin(pin)            palReadLine(pin)
+    #define readPin(pin) palReadLine(pin)
 #endif
 
 // Send string macros
 #define STRINGIZE(z) #z
-#define ADD_SLASH_X(y) STRINGIZE(\x ## y)
+#define ADD_SLASH_X(y) STRINGIZE(\x##y)
 #define SYMBOL_STR(x) ADD_SLASH_X(x)
 
 #define SS_TAP_CODE 1
@@ -201,8 +200,8 @@ extern layer_state_t default_layer_state;
 
 #define SEND_STRING(string) send_string_P(PSTR(string))
 
-extern const bool ascii_to_shift_lut[0x80];
-extern const bool ascii_to_altgr_lut[0x80];
+extern const bool    ascii_to_shift_lut[0x80];
+extern const bool    ascii_to_altgr_lut[0x80];
 extern const uint8_t ascii_to_keycode_lut[0x80];
 
 void send_string(const char *str);
@@ -212,25 +211,25 @@ void send_string_with_delay_P(const char *str, uint8_t interval);
 void send_char(char ascii_code);
 
 // For tri-layer
-void update_tri_layer(uint8_t layer1, uint8_t layer2, uint8_t layer3);
+void     update_tri_layer(uint8_t layer1, uint8_t layer2, uint8_t layer3);
 uint32_t update_tri_layer_state(uint32_t state, uint8_t layer1, uint8_t layer2, uint8_t layer3);
 
 void set_single_persistent_default_layer(uint8_t default_layer);
 
 void tap_random_base64(void);
 
-#define IS_LAYER_ON(layer)  (layer_state & (1UL << (layer)))
+#define IS_LAYER_ON(layer) (layer_state & (1UL << (layer)))
 #define IS_LAYER_OFF(layer) (~layer_state & (1UL << (layer)))
 
-void matrix_init_kb(void);
-void matrix_scan_kb(void);
-void matrix_init_user(void);
-void matrix_scan_user(void);
+void     matrix_init_kb(void);
+void     matrix_scan_kb(void);
+void     matrix_init_user(void);
+void     matrix_scan_user(void);
 uint16_t get_record_keycode(keyrecord_t *record);
 uint16_t get_event_keycode(keyevent_t event);
-bool process_action_kb(keyrecord_t *record);
-bool process_record_kb(uint16_t keycode, keyrecord_t *record);
-bool process_record_user(uint16_t keycode, keyrecord_t *record);
+bool     process_action_kb(keyrecord_t *record);
+bool     process_record_kb(uint16_t keycode, keyrecord_t *record);
+bool     process_record_user(uint16_t keycode, keyrecord_t *record);
 
 #ifndef BOOTMAGIC_LITE_COLUMN
     #define BOOTMAGIC_LITE_COLUMN 0
@@ -274,10 +273,10 @@ void breathing_period_dec(void);
     #endif
 #endif
 
-void send_dword(uint32_t number);
-void send_word(uint16_t number);
-void send_byte(uint8_t number);
-void send_nibble(uint8_t number);
+void     send_dword(uint32_t number);
+void     send_word(uint16_t number);
+void     send_byte(uint8_t number);
+void     send_nibble(uint8_t number);
 uint16_t hex_to_keycode(uint8_t hex);
 
 void led_set_user(uint8_t usb_led);

@@ -19,7 +19,6 @@
 extern keymap_config_t keymap_config;
 
 uint16_t keycode_config(uint16_t keycode) {
-
     switch (keycode) {
         case KC_CAPSLOCK:
         case KC_LOCKING_CAPS:

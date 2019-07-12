@@ -33,9 +33,7 @@ void set_output(uint8_t output) {
  *
  * FIXME: Needs doc
  */
-__attribute__((weak))
-void set_output_user(uint8_t output) {
-}
+__attribute__((weak)) void set_output_user(uint8_t output) {}
 
 /** \brief Auto Detect Output
  *
@@ -53,7 +51,7 @@ uint8_t auto_detect_output(void) {
 #endif
 
 #ifdef BLUETOOTH_ENABLE
-    return OUTPUT_BLUETOOTH; // should check if BT is connected here
+    return OUTPUT_BLUETOOTH;  // should check if BT is connected here
 #endif
 
     return OUTPUT_NONE;
@@ -69,4 +67,3 @@ uint8_t where_to_send(void) {
     }
     return desired_output;
 }
-
