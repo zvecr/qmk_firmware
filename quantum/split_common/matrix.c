@@ -245,10 +245,14 @@ static bool read_rows_on_col(matrix_row_t current_matrix[], uint8_t current_col)
 
 #endif
 
+extern void matrix_setup2(void);
+
 void matrix_init(void) {
-  debug_enable = true;
-  debug_matrix = true;
-  debug_mouse  = true;
+  matrix_setup2();
+
+  // debug_enable = true;
+  // debug_matrix = true;
+  // debug_mouse  = true;
 
   // Set pinout for right half if pinout for that half is defined
   if (!isLeftHand) {
@@ -304,6 +308,8 @@ uint8_t _matrix_scan(void) {
 
 uint8_t matrix_scan(void) {
   uint8_t ret = _matrix_scan();
+
+  //dprintf("matrix_scan::is_master %d\n", is_keyboard_master());
 
   if (is_keyboard_master()) {
     static uint8_t error_count;

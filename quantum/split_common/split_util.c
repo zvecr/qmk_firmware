@@ -68,7 +68,7 @@ static void keyboard_slave_setup(void)
 }
 
 // this code runs before the usb and keyboard is initialized
-void matrix_setup(void)
+void matrix_setup2(void)
 {
   isLeftHand = is_keyboard_left();
 
