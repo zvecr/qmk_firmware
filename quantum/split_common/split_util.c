@@ -42,7 +42,7 @@ bool is_keyboard_master(void)
   static enum { UNKNOWN, MASTER, SLAVE } usbstate = UNKNOWN;
 
   // only check once, as this is called often
-  if (usbstate != UNKNOWN)
+  if (usbstate == UNKNOWN)
   {
 #if defined(LAZY_SPLIT)
     usbstate = SLAVE;
