@@ -32,24 +32,43 @@ bool is_keyboard_left(void) {
   return is_keyboard_master();
 }
 
+#ifndef LAZY_SPLIT_TIMEOUT
+  #define LAZY_SPLIT_TIMEOUT 2500
+#endif
+
+__attribute__((weak))
 bool is_keyboard_master(void)
 {
-#ifdef __AVR__
   static enum { UNKNOWN, MASTER, SLAVE } usbstate = UNKNOWN;
 
   // only check once, as this is called often
-  if (usbstate == UNKNOWN)
+  if (usbstate != UNKNOWN)
   {
+#if defined(LAZY_SPLIT)
+    usbstate = SLAVE;
+    for(uint8_t i = 0; i < (LAZY_SPLIT_TIMEOUT / 100); i++) {
+      // This will return true of a USB connection has been established
+  #if defined(__AVR__)
+      if (UDADDR & _BV(ADDEN)) {
+  #else
+      if (usbGetDriverStateI(&USBD1) == USB_ACTIVE) {
+  #endif  
+        usbstate = MASTER;
+        break;
+      }
+      wait_ms(100);
+    }
+#elif defined(__AVR__)
     USBCON |= (1 << OTGPADE);  // enables VBUS pad
     wait_us(5);
 
     usbstate = (USBSTA & (1 << VBUS)) ? MASTER : SLAVE;  // checks state of VBUS
+#else
+  usbstate = MASTER;
+#endif
   }
 
   return (usbstate == MASTER);
-#else
-  return true;
-#endif
 }
 
 static void keyboard_master_setup(void) {
@@ -66,8 +85,8 @@ static void keyboard_slave_setup(void)
   transport_slave_init();
 }
 
-// this code runs before the usb and keyboard is initialized
-void matrix_setup(void)
+// this code runs before the keyboard is fully initialized
+void keyboard_split_setup(void)
 {
   isLeftHand = is_keyboard_left();
 
