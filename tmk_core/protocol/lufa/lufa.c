@@ -1065,7 +1065,7 @@ int main(void)
 #endif
 
     print("Keyboard start.\n");
-    volatile uint8_t USB_LastDeviceState = 0;
+    volatile uint8_t USB_LastDeviceState = DEVICE_STATE_Suspended;
     while (1) {
         #if !defined(NO_USB_STARTUP_CHECK)
         if (USB_DeviceState == DEVICE_STATE_Suspended && USB_LastDeviceState != DEVICE_STATE_Suspended) {
