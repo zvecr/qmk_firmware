@@ -38,6 +38,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_ROW_PINS { F5, F6, C7, F7 }
 #define MATRIX_COL_PINS { F1, F4, E2, B6, D7, D6}
 
+/*
+ * Split Keyboard specific options, make sure you have 'SPLIT_KEYBOARD = yes' in your rules.mk, and define SOFT_SERIAL_PIN.
+ */
+#define SOFT_SERIAL_PIN D0 // or D1, D2, D3, E6
+#define LAZY_SPLIT // Use USB connected state to drive is_keyboard_master
+
 /* define if matrix has ghost */
 //#define MATRIX_HAS_GHOST
 
