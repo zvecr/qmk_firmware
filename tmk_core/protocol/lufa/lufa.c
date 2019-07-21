@@ -666,7 +666,7 @@ static void send_keyboard(report_keyboard_t *report)
 
     keyboard_report_sent = *report;
 }
- 
+
 /** \brief Send Mouse
  *
  * FIXME: Needs doc
@@ -1065,14 +1065,20 @@ int main(void)
 #endif
 
     print("Keyboard start.\n");
+    volatile uint8_t USB_LastDeviceState = 0;
     while (1) {
         #if !defined(NO_USB_STARTUP_CHECK)
-        while (USB_DeviceState == DEVICE_STATE_Suspended) {
+        if (USB_DeviceState == DEVICE_STATE_Suspended && USB_LastDeviceState != DEVICE_STATE_Suspended) {
+            USB_LastDeviceState = USB_DeviceState;
             print("[s]");
-            suspend_power_down();
-            if (USB_Device_RemoteWakeupEnabled && suspend_wakeup_condition()) {
-                    USB_Device_SendRemoteWakeup();
+
+            while (USB_Device_RemoteWakeupEnabled && suspend_wakeup_condition()) {
+                suspend_power_down();
+                USB_Device_SendRemoteWakeup();
             }
+        }
+        else {
+            USB_LastDeviceState = USB_DeviceState;
         }
         #endif
 
