@@ -27,6 +27,7 @@
   #undef RGBLED_NUM
   #define RGBLED_NUM 32
   #define RGBLED_SPLIT {16, 16}
+  #define RGBLIGHT_LIMIT_VAL 160
 #else
   #define RGBLED_NUM 1
   #ifndef RGB_DI_PIN
