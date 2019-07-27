@@ -1,6 +1,3 @@
-# minimise size to enable as many features as possible
-EXTRAFLAGS        += -flto
-
 BOOTMAGIC_ENABLE = lite
 RGBLIGHT_ENABLE = yes
 BACKLIGHT_ENABLE = no
@@ -9,10 +6,10 @@ COMMAND_ENABLE = no
 CONSOLE_ENABLE = no
 MOUSEKEY_ENABLE = no
 AUDIO_ENABLE = no
+LINK_TIME_OPTIMIZATION_ENABLE = yes
 
-# for some reason, bootmagic causes lets_split_eh right side to stop working
-ifeq ("$(KEYBOARD)","lets_split_eh")
-  BOOTMAGIC_ENABLE = no
+ifeq ("$(BOOTLOADER)","caterina")
+  BOOTLOADER = atmel-dfu
 endif
 
 # disable nkro for V-USB boards
