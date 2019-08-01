@@ -2,7 +2,7 @@
 #include <sendstring_uk.h>
 
 uint32_t layer_state_set_user(uint32_t state) {
-  //state = update_tri_layer_state(state, _LOWER, _META, _ADJUST);
+  state = update_tri_layer_state(state, _LOWER, _META, _ADJUST);
 #ifdef RGBLIGHT_ENABLE
   rgblight_config_t rgblight_config;
   switch (biton32(state)) {
