@@ -1,16 +1,11 @@
 #pragma once
 
-#define TAPPING_TERM 200
-#define TAPPING_TERM_HOLD 750
+// ortho_4x12 overrides
 
 // split handling
 #if defined(KEYBOARD_lets_split_rev2)
   #define MASTER_LEFT
 #endif
-
-// rgb underglow
-#define RGBLIGHT_SLEEP
-#define RGBLIGHT_ANIMATIONS
 
 #if defined(KEYBOARD_lets_split_rev2)
   #undef RGBLED_NUM
