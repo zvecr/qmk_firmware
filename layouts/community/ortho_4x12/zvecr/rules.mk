@@ -13,3 +13,7 @@ endif
 ifeq ("$(KEYBOARD)","jj40")
   NKRO_ENABLE = no
 endif
+
+ifeq ("$(KEYBOARD)","handwired/split_blackpill")
+  RGBLIGHT_ENABLE = no
+endif

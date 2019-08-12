@@ -7,6 +7,10 @@
   #define MASTER_LEFT
 #endif
 
+#if defined(KEYBOARD_handwired_split_blackpill)
+  #define USE_I2C
+#endif
+
 #if defined(KEYBOARD_lets_split_rev2)
   #undef RGBLED_NUM
   #define RGBLED_NUM 10
