@@ -64,18 +64,4 @@ HD44780_ENABLE = no         # Enable support for HD44780 based LCDs (+400)
 
 SPLIT_KEYBOARD = yes
 
-# VPATH += keyboards/handwired/bluepill_split/i2c-slave/os/hal/include
-# VPATH += keyboards/handwired/bluepill_split/i2c-slave/os/hal/ports/STM32/LLD/I2Cv1
-# VPATH += keyboards/handwired/bluepill_split/i2c-slave/os/hal/src
-
-# SRC += keyboards/handwired/bluepill_split/i2c-slave/os/hal/src/hal_i2c.c
-# SRC += keyboards/handwired/bluepill_split/i2c-slave/os/hal/ports/STM32/LLD/I2Cv1/hal_i2c_lld.c
-#SRC += keyboards/handwired/bluepill_split/i2c-slave
-
-
-
-# VPATH += keyboards/handwired/bluepill_split/i2c-slave
-# VPATH += keyboards/handwired/bluepill_split/i2c-slave/I2Cv1
-
-# SRC += keyboards/handwired/bluepill_split/i2c-slave/hal_i2cslave.c
-# SRC += keyboards/handwired/bluepill_split/i2c-slave/I2Cv1/hal_i2c_lld.c
+LAYOUTS = ortho_4x12

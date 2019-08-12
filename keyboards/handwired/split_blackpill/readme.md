@@ -1,3 +1,1 @@
-# bluepill onekey
-
-To trigger keypress, short together pins *B0* and *A7*.
+# split_blackpill
