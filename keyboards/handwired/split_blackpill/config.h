@@ -30,9 +30,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_COLS 6
 
 #define MATRIX_COL_PINS { B11, B10, B1, B0, A7, A6 }
-#define MATRIX_ROW_PINS { B12, B13, B14, B15 }
+#define MATRIX_ROW_PINS { B15, B14, B13, B12 }
 #define MATRIX_COL_PINS_RIGHT { B12, B13, B14, B15, A8, A9 }
-#define MATRIX_ROW_PINS_RIGHT { B11, B10, B1, B0 }
+#define MATRIX_ROW_PINS_RIGHT { B0, B1, B10, B11 }
 #define SPLIT_HAND_PIN B3
 #define UNUSED_PINS
 
