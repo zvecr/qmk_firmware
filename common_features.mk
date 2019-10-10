@@ -364,6 +364,11 @@ ifeq ($(strip $(SPLIT_KEYBOARD)), yes)
                            i2c_slave.c
     endif
     COMMON_VPATH += $(QUANTUM_PATH)/split_common
+
+    # 
+    ifeq ($(strip $(FORCE_SLAVE)), yes)
+        OPT_DEFS += -DFORCE_SLAVE
+    endif
 endif
 
 ifeq ($(strip $(OLED_DRIVER_ENABLE)), yes)

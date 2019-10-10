@@ -1,4 +1,4 @@
-# Split Keyboard 
+# Split Keyboard
 
 Many keyboards in the QMK Firmware repo are "split" keyboards. They use two controllers—one plugging into USB, and the second connected by a serial or an I<sup>2</sup>C connection over a TRRS or similar cable. 
 
@@ -189,6 +189,30 @@ This sets how many LEDs are directly connected to each controller.  The first nu
 
 ?> This setting implies that `RGBLIGHT_SPLIT` is enabled, and will forcibly enable it, if it's not.
 
+## Debugging
+
+### debug log lines from slave
+
+1. enable debug within keymap
+```c
+void keyboard_post_init_user(void) {
+  // Customise these values to desired behaviour
+  debug_enable=true;
+  debug_matrix=true;
+  //debug_keyboard=true;
+  //debug_mouse=true;
+}
+```
+1. build master
+```console
+make <keyboard>:<keymap> CONSOLE_ENABLE=no
+```
+1. build slave
+```console
+make <keyboard>:<keymap> FORCE_SLAVE=yes CONSOLE_ENABLE=yes
+```
+1. connect both keyboards to usb
+1. run `sudo hid_listen`
 
 ## Additional Resources
 

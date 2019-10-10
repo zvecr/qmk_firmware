@@ -31,7 +31,10 @@ __attribute__((weak)) bool is_keyboard_left(void) {
 }
 
 __attribute__((weak)) bool is_keyboard_master(void) {
-#ifdef __AVR__
+#if defined FORCE_SLAVE
+  #pragma message("forcing firmware to slave")
+  return false;
+#elif defined __AVR__
     static enum { UNKNOWN, MASTER, SLAVE } usbstate = UNKNOWN;
 
     // only check once, as this is called often
