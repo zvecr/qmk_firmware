@@ -208,7 +208,8 @@ bool transport_master(matrix_row_t matrix[]) {
         return false;
     }
 #    else
-    transport_rgblight_master();
+    // TODO: work out why this causes crash
+    // transport_rgblight_master();
     if (soft_serial_transaction(GET_SLAVE_MATRIX) != TRANSACTION_END) {
         return false;
     }
