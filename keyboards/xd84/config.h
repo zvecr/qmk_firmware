@@ -16,6 +16,14 @@
 
 #pragma once
 
+//#define USB_DEVICE_ONLY
+#define ORDERED_EP_CONFIG
+#define NO_DEVICE_SELF_POWER
+
+#define LAYER_STATE_8BIT
+//#define NO_ACTION_LAYER
+//#define NO_DEBUG
+
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
@@ -53,7 +61,7 @@
 
 #define RGB_DI_PIN C7
 #define RGBLED_NUM 7
-#define RGBLIGHT_ANIMATIONS
+//#define RGBLIGHT_ANIMATIONS
 // #ifdef RGB_DI_PIN
 //   #define RGBLIGHT_HUE_STEP 8
 //   #define RGBLIGHT_SAT_STEP 8
@@ -177,11 +185,11 @@
 //#define NO_PRINT
 
 /* disable action features */
-//#define NO_ACTION_LAYER
-//#define NO_ACTION_TAPPING
-//#define NO_ACTION_ONESHOT
-//#define NO_ACTION_MACRO
-//#define NO_ACTION_FUNCTION
+#define NO_ACTION_LAYER
+#define NO_ACTION_TAPPING
+#define NO_ACTION_ONESHOT
+#define NO_ACTION_MACRO
+#define NO_ACTION_FUNCTION
 
 /*
  * MIDI options

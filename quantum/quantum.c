@@ -164,11 +164,6 @@ void reset_keyboard(void) {
     bootloader_jump();
 }
 
-/* true if the last press of GRAVE_ESC was shifted (i.e. GUI or SHIFT were pressed), false otherwise.
- * Used to ensure that the correct keycode is released if the key is released.
- */
-static bool grave_esc_was_shifted = false;
-
 /* Convert record into usable keycode via the contained event. */
 uint16_t get_record_keycode(keyrecord_t *record) { return get_event_keycode(record->event); }
 
@@ -284,6 +279,7 @@ bool process_record_quantum(keyrecord_t *record) {
                 reset_keyboard();
             }
             return false;
+#ifndef NO_DEBUG
         case DEBUG:
             if (record->event.pressed) {
                 debug_enable ^= 1;
@@ -294,6 +290,7 @@ bool process_record_quantum(keyrecord_t *record) {
                 }
             }
             return false;
+#endif
         case EEPROM_RESET:
             if (record->event.pressed) {
                 eeconfig_init();
@@ -511,6 +508,7 @@ bool process_record_quantum(keyrecord_t *record) {
             return false;
 #endif
 #ifdef PROTOCOL_LUFA
+#    ifdef BLUETOOTH_ENABLE
         case OUT_AUTO:
             if (record->event.pressed) {
                 set_output(OUTPUT_AUTO);
@@ -521,7 +519,6 @@ bool process_record_quantum(keyrecord_t *record) {
                 set_output(OUTPUT_USB);
             }
             return false;
-#    ifdef BLUETOOTH_ENABLE
         case OUT_BT:
             if (record->event.pressed) {
                 set_output(OUTPUT_BLUETOOTH);
@@ -529,6 +526,7 @@ bool process_record_quantum(keyrecord_t *record) {
             return false;
 #    endif
 #endif
+#ifdef NO_MAGIC
         case MAGIC_SWAP_CONTROL_CAPSLOCK ... MAGIC_TOGGLE_ALT_GUI:
         case MAGIC_SWAP_LCTL_LGUI ... MAGIC_EE_HANDS_RIGHT:
             if (record->event.pressed) {
@@ -666,7 +664,8 @@ bool process_record_quantum(keyrecord_t *record) {
                 return false;
             }
             break;
-
+#endif
+#ifdef NO_GRAVE_ESC
         case GRAVE_ESC: {
             uint8_t shifted = get_mods() & ((MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT) | MOD_BIT(KC_LGUI) | MOD_BIT(KC_RGUI)));
 
@@ -700,6 +699,11 @@ bool process_record_quantum(keyrecord_t *record) {
             }
 #endif
 
+            /* true if the last press of GRAVE_ESC was shifted (i.e. GUI or SHIFT were pressed), false otherwise.
+            * Used to ensure that the correct keycode is released if the key is released.
+            */
+            static bool grave_esc_was_shifted = false;
+
             if (record->event.pressed) {
                 grave_esc_was_shifted = shifted;
                 add_key(shifted ? KC_GRAVE : KC_ESCAPE);
@@ -710,6 +714,7 @@ bool process_record_quantum(keyrecord_t *record) {
             send_keyboard_report();
             return false;
         }
+#endif
 
 #if defined(BACKLIGHT_ENABLE) && defined(BACKLIGHT_BREATHING)
         case BL_BRTG: {
@@ -959,7 +964,7 @@ void matrix_init_quantum() {
 #ifdef HAPTIC_ENABLE
     haptic_init();
 #endif
-#ifdef OUTPUT_AUTO_ENABLE
+#ifdef OUTPUT_AUTO_ENABLEZZ
     set_output(OUTPUT_AUTO);
 #endif
 #ifdef DIP_SWITCH_ENABLE
@@ -1052,7 +1057,7 @@ void send_nibble(uint8_t number) {
 }
 
 __attribute__((weak)) uint16_t hex_to_keycode(uint8_t hex) {
-    hex = hex & 0xF;
+    hex &= 0xF;
     if (hex == 0x0) {
         return KC_0;
     } else if (hex < 0xA) {

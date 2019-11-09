@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.vue": "vue",
+        "eeprom.h": "c",
+        "eeconfig.h": "c",
+        "quantum.h": "c"
+    }
+}

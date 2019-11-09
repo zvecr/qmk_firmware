@@ -31,17 +31,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 extern "C" {
 #endif
 
-uint8_t bitpop(uint8_t bits);
-uint8_t bitpop16(uint16_t bits);
-uint8_t bitpop32(uint32_t bits);
+// uint8_t bitpop(uint8_t bits);
+// uint8_t bitpop16(uint16_t bits);
+// uint8_t bitpop32(uint32_t bits);
 
-uint8_t biton(uint8_t bits);
-uint8_t biton16(uint16_t bits);
-uint8_t biton32(uint32_t bits);
+#define bitpop(bits) (uint8_t)__builtin_popcount(bits)
+#define bitpop16(bits) (uint8_t)__builtin_popcount(bits)
+#define bitpop32(bits) (uint8_t)__builtin_popcountl(bits)
 
-uint8_t  bitrev(uint8_t bits);
-uint16_t bitrev16(uint16_t bits);
-uint32_t bitrev32(uint32_t bits);
+// uint8_t biton(uint8_t bits);
+// uint8_t biton16(uint16_t bits);
+// uint8_t biton32(uint32_t bits);
+
+#define biton(bits) (bits ? (uint8_t)__builtin_clz(bits) : 0)
+#define biton16(bits) (bits ? (uint8_t)__builtin_clz(bits) : 0)
+#define biton32(bits) (bits ? (uint8_t)__builtin_clzl(bits) : 0)
+
+//uint8_t  bitrev(uint8_t bits);
+// uint16_t bitrev16(uint16_t bits);
+// uint32_t bitrev32(uint32_t bits);
+#define bitrev8(bits) (uint8_t)(__builtin_bswap16(bits) >> 8)
+#define bitrev16(bits) (uint16_t)__builtin_bswap16(bits)
+#define bitrev32(bits) (uint32_t)__builtin_bswap32(bits)
 
 #ifdef __cplusplus
 }

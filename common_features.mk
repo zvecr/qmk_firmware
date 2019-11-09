@@ -107,8 +107,8 @@ ifeq ($(strip $(RGBLIGHT_ENABLE)), yes)
     OPT_DEFS += -DRGBLIGHT_ENABLE
     SRC += $(QUANTUM_DIR)/color.c
     SRC += $(QUANTUM_DIR)/rgblight.c
-    CIE1931_CURVE = yes
-    LED_BREATHING_TABLE = yes
+    CIE1931_CURVE ?= yes
+    LED_BREATHING_TABLE ?= yes
     ifeq ($(strip $(RGBLIGHT_CUSTOM_DRIVER)), yes)
         OPT_DEFS += -DRGBLIGHT_CUSTOM_DRIVER
     else
