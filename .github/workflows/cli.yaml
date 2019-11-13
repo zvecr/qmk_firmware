@@ -9,7 +9,7 @@ name: CLI
   #  - 'bin/qmk'
   #  - 'requirements.txt'
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
