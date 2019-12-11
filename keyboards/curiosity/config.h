@@ -24,8 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PRODUCT_ID      0x5275
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    PheonixStarr
-#define PRODUCT         sapphyr_alice
-#define DESCRIPTION     sapphyr_alice
+#define PRODUCT         Curiosity
+#define DESCRIPTION     Curiosity
 
 /* key matrix size */
 #define MATRIX_ROWS 5
