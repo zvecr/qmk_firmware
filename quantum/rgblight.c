@@ -598,6 +598,13 @@ void rgblight_sethsv_slave(uint8_t hue, uint8_t sat, uint8_t val) { rgblight_set
 
 #ifndef RGBLIGHT_CUSTOM_DRIVER
 void rgblight_set(void) {
+    //TODO: bodge out rgb on slave side
+#ifndef RGBLIGHT_SPLIT
+    bool is_keyboard_master(void);
+    if(!is_keyboard_master())
+        return;
+#endif
+
     LED_TYPE *start_led;
     uint16_t  num_leds = clipping_num_leds;
 
@@ -627,7 +634,8 @@ void rgblight_set(void) {
         convert_rgb_to_rgbw(&start_led[i]);
     }
 #endif
-   ws2812_setleds(start_led, num_leds);
+
+    ws2812_setleds(start_led, num_leds); 
 }
 #endif
 
