@@ -9,10 +9,19 @@
 #include "ch.h"
 #include "hal.h"
 
+// TODO: resolve/remove build warnings
+#if defined(RGBLIGHT_ENABLE) && defined(RGBLED_SPLIT) && defined(PROTOCOL_CHIBIOS) && defined(WS2812_DRIVER_BITBANG)
+#    warning "RGBLED_SPLIT not supported with CTPC"
+#endif
+
 // default wait implementation cannot be called within interrupt
 //   this method seems to be more accurate than GPT timers
-#undef wait_us
-#define wait_us(x) chSysPolledDelayX(US2RTC(STM32_SYSCLK, x))
+#if PORT_SUPPORTS_RT == FALSE
+#    error "chSysPolledDelayX method not supported on this platform"
+#else
+#    undef wait_us
+#    define wait_us(x) chSysPolledDelayX(US2RTC(STM32_SYSCLK, x))
+#endif
 
 // helper to convert GPIOB to EXT_MODE_GPIOB
 #ifdef USE_GPIOV1
