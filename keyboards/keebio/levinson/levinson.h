@@ -6,6 +6,8 @@
     #include "rev1.h"
 #elif KEYBOARD_keebio_levinson_rev2
     #include "rev2.h"
+#elif KEYBOARD_keebio_levinson_rev2_proton_c
+    #include "rev2_proton_c.h"
 #elif KEYBOARD_keebio_levinson_rev3
     #include "rev3.h"
 #endif
