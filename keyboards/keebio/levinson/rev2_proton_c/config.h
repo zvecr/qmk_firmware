@@ -70,3 +70,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define BACKLIGHT_PAL_MODE 2
 
 #define NO_USB_STARTUP_CHECK
+#define SELECT_SOFT_SERIAL_SPEED 0
