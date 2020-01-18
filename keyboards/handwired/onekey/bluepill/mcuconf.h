@@ -206,4 +206,6 @@
 #define STM32_USB_USB1_HP_IRQ_PRIORITY      13
 #define STM32_USB_USB1_LP_IRQ_PRIORITY      14
 
+#define STM32_DMA_REQUIRED
+
 #endif /* _MCUCONF_H_ */

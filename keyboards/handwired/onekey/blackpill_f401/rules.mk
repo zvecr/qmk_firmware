@@ -38,3 +38,5 @@ DFU_SUFFIX_ARGS = -p df11 -v 0483
 #   change yes to no to disable
 #
 KEYBOARD_SHARED_EP       = yes
+
+WS2812_DRIVER = pwm
