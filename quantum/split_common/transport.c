@@ -184,11 +184,9 @@ void transport_slave_init(void) { soft_serial_target_init(transactions, TID_LIMI
 void transport_rgblight_master(void) {
     if (rgblight_get_change_flags()) {
         rgblight_get_syncinfo((rgblight_syncinfo_t *)&serial_rgblight.rgblight_sync);
-        wait_us(100);
         if (soft_serial_transaction(PUT_RGBLIGHT) == TRANSACTION_END) {
             rgblight_clear_change_flags();
         }
-        wait_us(100);
     }
 }
 

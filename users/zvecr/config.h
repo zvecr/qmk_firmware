@@ -6,3 +6,5 @@
 // rgb underglow
 #define RGBLIGHT_SLEEP
 #define RGBLIGHT_ANIMATIONS
+
+#define DEBUG_MATRIX_SCAN_RATE

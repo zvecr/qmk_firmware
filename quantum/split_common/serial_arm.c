@@ -190,7 +190,7 @@ void interrupt_handler(EXTDriver *extp, expchannel_t channel) {
     serial_input();
 
     // TODO: remove extra delay between transactions
-    serial_delay();
+    //serial_delay();
 
     extChannelEnableI(&EXTD1, PAL_PAD(SOFT_SERIAL_PIN));
     chSysUnlockFromISR();
@@ -212,12 +212,12 @@ int soft_serial_transaction(void) {
 #else
 int soft_serial_transaction(int sstd_index) {
 #endif
-
     if (sstd_index > Transaction_table_size) return TRANSACTION_TYPE_ERROR;
     SSTD_t *trans = &Transaction_table[sstd_index];
 
     // TODO: remove extra delay between transactions
-    serial_delay();
+    // serial_delay();
+    wait_ms(1);
 
     // this code is very time dependent, so we need to disable interrupts
     chSysLock();

@@ -17,7 +17,7 @@
   #undef RGBLED_NUM
   #define RGBLED_NUM 32
   #define RGBLED_SPLIT {16, 16}
-  #define RGBLIGHT_LIMIT_VAL 160
+  #define RGBLIGHT_LIMIT_VAL 100
 #endif
 
 #ifndef RGBLED_NUM
