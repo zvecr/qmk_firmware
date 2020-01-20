@@ -147,10 +147,12 @@ uint8_t volatile status_rgblight           = 0;
 
 volatile Serial_s2m_buffer_t serial_s2m_buffer = {};
 volatile Serial_m2s_buffer_t serial_m2s_buffer = {};
+uint8_t volatile slave_buffer_change_count     = 0;
 uint8_t volatile status0                       = 0;
 
 enum serial_transaction_id {
     GET_SLAVE_MATRIX = 0,
+    GET_SLAVE_STATUS,
 #    if defined(RGBLIGHT_ENABLE) && defined(RGBLIGHT_SPLIT)
     PUT_RGBLIGHT,
 #    endif
@@ -165,6 +167,15 @@ SSTD_t transactions[] = {
             sizeof(serial_s2m_buffer),
             (uint8_t *)&serial_s2m_buffer,
         },
+    [GET_SLAVE_STATUS] =
+        /* master buffer not changed, only receive slave_buffer_change_count */
+    {
+        (uint8_t *)&status0,
+        0,
+        NULL,
+        sizeof(slave_buffer_change_count),
+        (uint8_t *)&slave_buffer_change_count,
+    },
 #    if defined(RGBLIGHT_ENABLE) && defined(RGBLIGHT_SPLIT)
     [PUT_RGBLIGHT] =
         {
@@ -209,8 +220,10 @@ bool transport_master(matrix_row_t matrix[]) {
     }
 #    else
     transport_rgblight_master();
-    if (soft_serial_transaction(GET_SLAVE_MATRIX) != TRANSACTION_END) {
-        return false;
+    if (soft_serial_transaction(GET_SLAVE_STATUS) == TRANSACTION_END && slave_buffer_change_count > 0) {
+        if (soft_serial_transaction(GET_SLAVE_MATRIX) != TRANSACTION_END) {
+            return false;
+        }
     }
 #    endif
 
@@ -232,18 +245,25 @@ bool transport_master(matrix_row_t matrix[]) {
 }
 
 void transport_slave(matrix_row_t matrix[]) {
+    // handle puts
     transport_rgblight_slave();
-    // TODO: if MATRIX_COLS > 8 change to pack()
-    for (int i = 0; i < ROWS_PER_HAND; ++i) {
-        serial_s2m_buffer.smatrix[i] = matrix[i];
-    }
+
 #    ifdef BACKLIGHT_ENABLE
     backlight_set(serial_m2s_buffer.backlight_level);
 #    endif
 
+    // handle gets
+    Serial_s2m_buffer_t temp_buffer = {};
+
+    // TODO: if MATRIX_COLS > 8 change to pack()
+    memcpy((void *)temp_buffer.smatrix, (void *)matrix, sizeof(temp_buffer.smatrix));
+
 #    ifdef ENCODER_ENABLE
-    encoder_state_raw((uint8_t *)serial_s2m_buffer.encoder_state);
+    encoder_state_raw((uint8_t *)temp_buffer.encoder_state);
 #    endif
+
+    slave_buffer_change_count = memcmp((void *)&serial_s2m_buffer, &temp_buffer, sizeof(temp_buffer)) != 0;
+    memcpy((void *)&serial_s2m_buffer, &temp_buffer, sizeof(temp_buffer));
 }
 
 #endif
