@@ -31,7 +31,7 @@
 #endif
 
 #ifndef SELECT_SOFT_SERIAL_SPEED
-#    define SELECT_SOFT_SERIAL_SPEED 1
+#    define SELECT_SOFT_SERIAL_SPEED 0
 // TODO: correct speeds...
 //  0: about 189kbps (Experimental only)
 //  1: about 137kbps (default)
@@ -216,8 +216,8 @@ int soft_serial_transaction(int sstd_index) {
     SSTD_t *trans = &Transaction_table[sstd_index];
 
     // TODO: remove extra delay between transactions
-    // serial_delay();
-    wait_ms(1);
+    //serial_delay();
+    //wait_ms(1);
 
     // this code is very time dependent, so we need to disable interrupts
     chSysLock();
