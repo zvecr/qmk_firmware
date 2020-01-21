@@ -30,6 +30,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    define BREATHING_PERIOD 6
 #endif
 
+#ifndef BACKLIGHT_PULSE_PERIOD
+#    define BACKLIGHT_PULSE_PERIOD 20
+#endif
+
 typedef union {
     uint8_t raw;
     struct {
@@ -50,6 +54,7 @@ void    backlight_increase(void);
 void    backlight_decrease(void);
 void    backlight_level(uint8_t level);
 uint8_t get_backlight_level(void);
+void    backlight_pulse(void);
 
 // implementation specific
 void backlight_init_ports(void);

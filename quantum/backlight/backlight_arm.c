@@ -119,7 +119,7 @@ void breathing_enable(void) { pwmEnablePeriodicNotificationI(&BACKLIGHT_PWM_DRIV
 
 void breathing_disable(void) {
     // printf("breathing_disable()\n");
-    pwmEnablePeriodicNotificationI(&BACKLIGHT_PWM_DRIVER);
+    pwmDisablePeriodicNotificationI(&BACKLIGHT_PWM_DRIVER);
 
     // Restore backlight level
     backlight_set(get_backlight_level());
@@ -128,7 +128,8 @@ void breathing_disable(void) {
 void breathing_toggle(void) { is_breathing() ? breathing_disable() : breathing_enable(); }
 
 void breathing_pulse(void) {
-    // TODO:
+    // Just call the common stuff....
+    backlight_pulse();
 }
 
 // Use this before the cie_lightness function.

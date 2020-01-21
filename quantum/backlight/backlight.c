@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "backlight.h"
 #include "eeconfig.h"
 #include "debug.h"
+#include "wait.h"
 
 backlight_config_t backlight_config;
 
@@ -147,6 +148,19 @@ void backlight_level(uint8_t level) {
  * FIXME: needs doc
  */
 uint8_t get_backlight_level(void) { return backlight_config.level; }
+
+/** \brief Pulse backlight
+ *
+ * Inverts current backlight state briefly for user indication
+ */
+void backlight_pulse(void) {
+    uint8_t enabled = is_backlight_enabled();
+    uint8_t level = get_backlight_level();
+
+    backlight_set(enabled ? 0 : BACKLIGHT_LEVELS);
+    wait_ms(BACKLIGHT_PULSE_PERIOD);
+    backlight_set(enabled ? level : 0);
+}
 
 #ifdef BACKLIGHT_BREATHING
 /** \brief Backlight breathing toggle
