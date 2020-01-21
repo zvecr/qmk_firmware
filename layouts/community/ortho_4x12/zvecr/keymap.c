@@ -88,8 +88,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_ADJUST] =  LAYOUT_ortho_4x12( \
   KC_MPLY, KC_MNXT, KC_VOLD, KC_VOLU, KC_MUTE, _______, RGB_TOG, RGB_MOD, RGB_RMOD,RGB_M_G, KC_PSCR, _______, \
-  _______, _______, _______, _______, _______, _______, RGB_HUI, RGB_SAI, RGB_VAI, _______, _______, _______, \
-  KC_RSFT, _______, _______, _______, _______, _______, RGB_HUD, RGB_SAD, RGB_VAD, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, RGB_HUI, RGB_SAI, RGB_VAI, BL_STEP, _______, _______, \
+  KC_RSFT, _______, _______, _______, _______, _______, RGB_HUD, RGB_SAD, RGB_VAD, BL_BRTG, _______, _______, \
   KC_RCTRL, _______,KC_RALT, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
 )
 
