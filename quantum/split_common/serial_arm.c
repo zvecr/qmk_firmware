@@ -31,7 +31,7 @@
 #endif
 
 #ifndef SELECT_SOFT_SERIAL_SPEED
-#    define SELECT_SOFT_SERIAL_SPEED 0
+#    define SELECT_SOFT_SERIAL_SPEED 1
 // TODO: correct speeds...
 //  0: about 189kbps (Experimental only)
 //  1: about 137kbps (default)
