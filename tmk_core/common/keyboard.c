@@ -341,7 +341,7 @@ MATRIX_LOOP_END:
 
 #if defined(BACKLIGHT_ENABLE)
 #    if defined(BACKLIGHT_PIN) || defined(BACKLIGHT_PINS)
-    backlight_task();
+    backlight_common_task();
 #    endif
 #endif
 

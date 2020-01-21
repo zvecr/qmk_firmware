@@ -31,6 +31,8 @@
 #endif
 
 static void breathing_callback(PWMDriver *pwmp);
+static inline void breathing_max(void);
+static inline void breathing_min(void);
 
 static PWMConfig pwmCFG = {0xFFFF,             /* PWM clock frequency  */
                            256,                /* PWM period (in ticks) 1S (1/10kHz=0.1mS 0.1ms*10000 ticks=1S) */
@@ -88,11 +90,18 @@ void backlight_set(uint8_t level) {
     if (level == 0) {
         // Turn backlight off
         pwmDisableChannel(&BACKLIGHT_PWM_DRIVER, BACKLIGHT_PWM_CHANNEL - 1);
+#ifdef BACKLIGHT_BREATHING
+        breathing_min();
+#endif
     } else {
         // Turn backlight on
         uint32_t duty = (uint32_t)(cie_lightness(0xFFFF * (uint32_t)level / BACKLIGHT_LEVELS));
         // printf("duty: (%d)\n", duty);
         pwmEnableChannel(&BACKLIGHT_PWM_DRIVER, BACKLIGHT_PWM_CHANNEL - 1, PWM_FRACTION_TO_WIDTH(&BACKLIGHT_PWM_DRIVER, 0xFFFF, duty));
+
+#ifdef BACKLIGHT_BREATHING
+        breathing_max();
+#endif
     }
 }
 
@@ -100,24 +109,30 @@ void backlight_task(void) {}
 
 #ifdef BACKLIGHT_BREATHING
 
-#define BREATHING_STEPS 128
+#    define BREATHING_STEPS 128
 
 /* To generate breathing curve in python:
  * from math import sin, pi; [int(sin(x/128.0*pi)**4*255) for x in range(128)]
  */
 static const uint8_t breathing_table[BREATHING_STEPS] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 17, 20, 24, 28, 32, 36, 41, 46, 51, 57, 63, 70, 76, 83, 91, 98, 106, 113, 121, 129, 138, 146, 154, 162, 170, 178, 185, 193, 200, 207, 213, 220, 225, 231, 235, 240, 244, 247, 250, 252, 253, 254, 255, 254, 253, 252, 250, 247, 244, 240, 235, 231, 225, 220, 213, 207, 200, 193, 185, 178, 170, 162, 154, 146, 138, 129, 121, 113, 106, 98, 91, 83, 76, 70, 63, 57, 51, 46, 41, 36, 32, 28, 24, 20, 17, 15, 12, 10, 8, 6, 5, 4, 3, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+static bool     breathing         = false;
 static uint16_t breathing_counter = 0;
 
 static inline void breathing_min(void) { breathing_counter = 0; }
 
 static inline void breathing_max(void) { breathing_counter = get_breathing_period() * 256 / 2; }
 
-bool is_breathing(void) { return pwmIsChannelEnabledI(&BACKLIGHT_PWM_DRIVER, BACKLIGHT_PWM_CHANNEL - 1); }
+bool is_breathing(void) { return breathing; }
 
-void breathing_enable(void) { pwmEnablePeriodicNotificationI(&BACKLIGHT_PWM_DRIVER); }
+void breathing_enable(void) {
+    breathing = true;
+    pwmEnablePeriodicNotificationI(&BACKLIGHT_PWM_DRIVER);
+}
 
 void breathing_disable(void) {
+    breathing = false;
+
     // printf("breathing_disable()\n");
     pwmDisablePeriodicNotificationI(&BACKLIGHT_PWM_DRIVER);
 
@@ -151,7 +166,5 @@ static void breathing_callback(PWMDriver *pwmp) {
 }
 
 #else
-static void breathing_callback(PWMDriver *pwmp) {
-    (void)pwmp;
-}
+static void breathing_callback(PWMDriver *pwmp) { (void)pwmp; }
 #endif

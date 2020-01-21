@@ -18,7 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "backlight.h"
 #include "eeconfig.h"
 #include "debug.h"
-#include "wait.h"
+//#include "wait.h"
+#include "timer.h"
 
 backlight_config_t backlight_config;
 
@@ -149,17 +150,27 @@ void backlight_level(uint8_t level) {
  */
 uint8_t get_backlight_level(void) { return backlight_config.level; }
 
+static uint16_t pulse_timer = 0;
+
 /** \brief Pulse backlight
  *
  * Inverts current backlight state briefly for user indication
  */
 void backlight_pulse(void) {
-    uint8_t enabled = is_backlight_enabled();
-    uint8_t level = get_backlight_level();
+    backlight_set(is_backlight_enabled() ? 0 : BACKLIGHT_LEVELS);
 
-    backlight_set(enabled ? 0 : BACKLIGHT_LEVELS);
-    wait_ms(BACKLIGHT_PULSE_PERIOD);
-    backlight_set(enabled ? level : 0);
+    pulse_timer = timer_read();
+    //wait_ms(BACKLIGHT_PULSE_PERIOD);
+    //backlight_set(is_backlight_enabled() ? get_backlight_level() : 0);
+}
+
+void backlight_common_task(void) {
+    if (pulse_timer && timer_elapsed(pulse_timer) > BACKLIGHT_PULSE_PERIOD) {
+        pulse_timer = 0;
+        backlight_set(is_backlight_enabled() ? get_backlight_level() : 0);
+    }
+
+    backlight_task();
 }
 
 #ifdef BACKLIGHT_BREATHING
