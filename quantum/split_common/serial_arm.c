@@ -31,7 +31,7 @@
 #endif
 
 #ifndef SELECT_SOFT_SERIAL_SPEED
-#    define SELECT_SOFT_SERIAL_SPEED 1
+#    define SELECT_SOFT_SERIAL_SPEED 2
 // TODO: correct speeds...
 //  0: about 189kbps (Experimental only)
 //  1: about 137kbps (default)
@@ -47,13 +47,13 @@
 #elif SELECT_SOFT_SERIAL_SPEED == 1
 #    define SERIAL_DELAY 16
 #elif SELECT_SOFT_SERIAL_SPEED == 2
-#    define SERIAL_DELAY 24
+#    define SERIAL_DELAY 20
 #elif SELECT_SOFT_SERIAL_SPEED == 3
-#    define SERIAL_DELAY 32
+#    define SERIAL_DELAY 24
 #elif SELECT_SOFT_SERIAL_SPEED == 4
-#    define SERIAL_DELAY 48
+#    define SERIAL_DELAY 32
 #elif SELECT_SOFT_SERIAL_SPEED == 5
-#    define SERIAL_DELAY 64
+#    define SERIAL_DELAY 48
 #else
 #    error invalid SELECT_SOFT_SERIAL_SPEED value
 #endif
