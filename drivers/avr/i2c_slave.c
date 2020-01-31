@@ -24,14 +24,12 @@
 
 #include "i2c_slave.h"
 
-uint8_t* i2c_slave_reg = 0;
-//volatile uint8_t i2c_slave_reg[I2C_SLAVE_REG_COUNT];
+volatile uint8_t i2c_slave_reg[I2C_SLAVE_REG_COUNT];
 
 static volatile uint8_t buffer_address;
 static volatile bool    slave_has_register_set = false;
 
-void i2c_slave_init(uint8_t address, uint8_t* i2c_slave_buffer) {
-    i2c_slave_reg = i2c_slave_buffer;
+void i2c_slave_init(uint8_t address) {
     // load address into TWI address register
     TWAR = address;
     // set the TWCR to enable address matching and enable TWI, clear TWINT, enable TWI interrupt
