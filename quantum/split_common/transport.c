@@ -48,8 +48,6 @@ static transport_buffer_t transport_data = {0};
 #endif
 
 uint8_t volatile dummy = 0;
-uint8_t volatile status_backlight = 0;
-uint8_t volatile status_rgblight = 0;
 
 enum transaction_id {
     GET_SLAVE_MATRIX,
@@ -163,9 +161,9 @@ void transport_rgblight_master(void) {
 }
 
 void transport_rgblight_slave(void) {
-    if (transport_data.rgblight_sync.change_flags != 0) {
+    if (transport_data.rgblight_sync.status.change_flags != 0) {
         rgblight_update_sync((rgblight_syncinfo_t *)&transport_data.rgblight_sync, false);
-        transport_data.rgblight_sync.change_flags = 0;
+        transport_data.rgblight_sync.status.change_flags = 0;
     }
 }
 
