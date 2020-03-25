@@ -15,8 +15,6 @@
 #    define TYPING_SPEED_MAX_WPM 100
 #endif
 
-// TODO: remove?
-/* static */uint8_t typing_speed = 0;
 static bool enabled = false;
 
 bool velocikey_enabled(void) { return enabled; }
