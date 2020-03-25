@@ -196,12 +196,6 @@ bool process_record_quantum(keyrecord_t *record) {
     //   return false;
     // }
 
-#ifdef VELOCIKEY_ENABLE
-    if (velocikey_enabled() && record->event.pressed) {
-        velocikey_accelerate();
-    }
-#endif
-
 #ifdef WPM_ENABLE
     if (record->event.pressed) {
         update_wpm(keycode);

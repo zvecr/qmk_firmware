@@ -393,12 +393,6 @@ MATRIX_LOOP_END:
     midi_task();
 #endif
 
-#ifdef VELOCIKEY_ENABLE
-    if (velocikey_enabled()) {
-        velocikey_decelerate();
-    }
-#endif
-
     // update LED
     if (led_status != host_keyboard_leds()) {
         led_status = host_keyboard_leds();
