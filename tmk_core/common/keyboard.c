@@ -249,6 +249,9 @@ void keyboard_init(void) {
 #ifdef RGBLIGHT_ENABLE
     rgblight_init();
 #endif
+#ifdef VELOCIKEY_ENABLE
+    velocikey_init();
+#endif
 #ifdef STENO_ENABLE
     steno_init();
 #endif
