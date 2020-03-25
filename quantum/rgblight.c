@@ -830,35 +830,35 @@ void rgblight_task(void) {
 #    ifdef RGBLIGHT_EFFECT_BREATHING
         else if (rgblight_status.base_mode == RGBLIGHT_MODE_BREATHING) {
             // breathing mode
-            interval_time = get_interval_time(&RGBLED_BREATHING_INTERVALS[delta], 1, 100);
+            interval_time = get_interval_time(&RGBLED_BREATHING_INTERVALS[delta], RGBLED_BREATHING_INTERVALS[3], RGBLED_BREATHING_INTERVALS[0]);
             effect_func   = rgblight_effect_breathing;
         }
 #    endif
 #    ifdef RGBLIGHT_EFFECT_RAINBOW_MOOD
         else if (rgblight_status.base_mode == RGBLIGHT_MODE_RAINBOW_MOOD) {
             // rainbow mood mode
-            interval_time = get_interval_time(&RGBLED_RAINBOW_MOOD_INTERVALS[delta], 5, 100);
+            interval_time = get_interval_time(&RGBLED_RAINBOW_MOOD_INTERVALS[delta], RGBLED_RAINBOW_MOOD_INTERVALS[2], RGBLED_RAINBOW_MOOD_INTERVALS[0]);
             effect_func   = rgblight_effect_rainbow_mood;
         }
 #    endif
 #    ifdef RGBLIGHT_EFFECT_RAINBOW_SWIRL
         else if (rgblight_status.base_mode == RGBLIGHT_MODE_RAINBOW_SWIRL) {
             // rainbow swirl mode
-            interval_time = get_interval_time(&RGBLED_RAINBOW_SWIRL_INTERVALS[delta / 2], 1, 100);
+            interval_time = get_interval_time(&RGBLED_RAINBOW_SWIRL_INTERVALS[delta / 2], RGBLED_RAINBOW_SWIRL_INTERVALS[2], RGBLED_RAINBOW_SWIRL_INTERVALS[0]);
             effect_func   = rgblight_effect_rainbow_swirl;
         }
 #    endif
 #    ifdef RGBLIGHT_EFFECT_SNAKE
         else if (rgblight_status.base_mode == RGBLIGHT_MODE_SNAKE) {
             // snake mode
-            interval_time = get_interval_time(&RGBLED_SNAKE_INTERVALS[delta / 2], 1, 200);
+            interval_time = get_interval_time(&RGBLED_SNAKE_INTERVALS[delta / 2], RGBLED_SNAKE_INTERVALS[2], RGBLED_SNAKE_INTERVALS[0]);
             effect_func   = rgblight_effect_snake;
         }
 #    endif
 #    ifdef RGBLIGHT_EFFECT_KNIGHT
         else if (rgblight_status.base_mode == RGBLIGHT_MODE_KNIGHT) {
             // knight mode
-            interval_time = get_interval_time(&RGBLED_KNIGHT_INTERVALS[delta], 5, 100);
+            interval_time = get_interval_time(&RGBLED_KNIGHT_INTERVALS[delta], RGBLED_KNIGHT_INTERVALS[2], RGBLED_KNIGHT_INTERVALS[0]);
             effect_func   = rgblight_effect_knight;
         }
 #    endif
