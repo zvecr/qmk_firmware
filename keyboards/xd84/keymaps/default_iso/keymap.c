@@ -53,9 +53,10 @@ void keyboard_post_init_user(void) {
 }
 
 uint8_t get_current_velocikey(void){
-	extern uint8_t typing_speed;
+	// extern uint8_t typing_speed;
 
-	return typing_speed;
+	// return typing_speed;
+	return 0;
 }
 
 static uint32_t matrix_timer      = 0;
