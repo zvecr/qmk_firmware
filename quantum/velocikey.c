@@ -43,10 +43,7 @@ void velocikey_init(void) {
 }
 
 uint8_t velocikey_match_speed(uint8_t minValue, uint8_t maxValue) {
-    float scale = ((float)get_current_wpm() / TYPING_SPEED_MAX_WPM);
-    if (scale > 1) scale = 1;
-
-    uint8_t ret = MAX(minValue, maxValue - (maxValue - minValue) * scale);
+    uint8_t ret = MAX(minValue, maxValue - ((uint16_t)(maxValue - minValue) * get_current_wpm()) / TYPING_SPEED_MAX_WPM);
 
     return ret;
 }

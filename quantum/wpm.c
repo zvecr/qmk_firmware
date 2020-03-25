@@ -25,8 +25,10 @@
 #    define WPM_SMOOTHING 0.0487
 #endif
 
+#define WPM_FLOAT_SHIFT 10000
+
 // This smoothing is 40 keystrokes
-static const float wpm_smoothing = WPM_SMOOTHING;
+static const uint32_t wpm_smoothing = (float)WPM_SMOOTHING * WPM_FLOAT_SHIFT;
 
 // WPM Stuff
 static uint8_t  current_wpm = 0;
@@ -54,11 +56,13 @@ __attribute__((weak)) bool wpm_keycode_user(uint16_t keycode) {
     return false;
 }
 
+#define DO_WPM_SMOOTH(latest, current) ((wpm_smoothing * (latest - current)) / WPM_FLOAT_SHIFT + current)
+
 void update_wpm(uint16_t keycode) {
     if (wpm_keycode(keycode)) {
         if (wpm_timer > 0) {
             latest_wpm  = WPM_WINDOW / timer_elapsed(wpm_timer) / 5;
-            current_wpm = (latest_wpm - current_wpm) * wpm_smoothing + current_wpm;
+            current_wpm = DO_WPM_SMOOTH(latest_wpm, current_wpm);
         }
         wpm_timer = timer_read();
     }
@@ -66,7 +70,7 @@ void update_wpm(uint16_t keycode) {
 
 void decay_wpm(void) {
     if (timer_elapsed(wpm_timer) > 1000) {
-        current_wpm = (0 - current_wpm) * wpm_smoothing + current_wpm;
+        current_wpm = DO_WPM_SMOOTH(0, current_wpm);
         wpm_timer   = timer_read();
     }
 }
