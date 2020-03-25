@@ -1,4 +1,5 @@
 #include QMK_KEYBOARD_H
+#include "velocikey.h"
 
 #define L1_RGUI LM(1, MOD_RGUI)
 
@@ -36,3 +37,35 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* └───────────┴───────────┴───────────┴───────────────────────────────────────────────────────────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘ */
   )
 };
+
+void keyboard_post_init_user(void) {
+  // Customise these values to desired behaviour
+  debug_enable=true;
+  //debug_matrix=true;
+  //debug_keyboard=true;
+  //debug_mouse=true;
+
+  rgblight_enable_noeeprom(); // enables Rgb, without saving settings
+  rgblight_sethsv_noeeprom(180, 255, 255); // sets the color to teal/cyan without saving
+  rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING); // sets mode to Fast breathing without saving
+
+  velocikey_enable();
+}
+
+uint8_t get_current_velocikey(void){
+	extern uint8_t typing_speed;
+
+	return typing_speed;
+}
+
+static uint32_t matrix_timer      = 0;
+
+void matrix_scan_user(void) {
+
+    uint32_t timer_now = timer_read32();
+    if (TIMER_DIFF_32(timer_now, matrix_timer) > 1000) {
+        dprintf("matrix scan: %d:%d\n", get_current_wpm(), get_current_velocikey());
+
+        matrix_timer      = timer_now;
+    }
+}
