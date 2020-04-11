@@ -9,12 +9,13 @@ from milc import cli
 
 import qmk.path
 from qmk.decorators import automagic_keyboard, automagic_keymap
-from qmk.commands import compile_configurator_json, create_make_command, parse_configurator_json
+from qmk.commands import compile_configurator_json, create_make_command, docker_wrap_command, parse_configurator_json
 
 
 @cli.argument('filename', nargs='?', arg_only=True, type=FileType('r'), help='The configurator export to compile')
 @cli.argument('-kb', '--keyboard', help='The keyboard to build a firmware for. Ignored when a configurator export is supplied.')
 @cli.argument('-km', '--keymap', help='The keymap to build a firmware for. Ignored when a configurator export is supplied.')
+@cli.argument('-d', '--docker', arg_only=True, action='store_true', help='Compile within the qmk docker image.')
 @cli.argument('-n', '--dry-run', arg_only=True, action='store_true', help="Don't actually build, just show the make command to be run.")
 @cli.subcommand('Compile a QMK Firmware.')
 @automagic_keyboard
@@ -50,6 +51,10 @@ def compile(cli):
     # Compile the firmware, if we're able to
     if command:
         cli.log.info('Compiling keymap with {fg_cyan}%s', ' '.join(command))
+
+        if cli.config.compile.docker:
+            command = docker_wrap_command(command, privileged=False)
+
         if not cli.args.dry_run:
             cli.echo('\n')
             subprocess.run(command)
