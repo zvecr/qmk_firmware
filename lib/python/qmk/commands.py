@@ -40,10 +40,9 @@ add docs
 add this stuff...
 	if [ "$(uname)" = "Linux" ] || docker-machine active >/dev/null 2>&1; then
 		usb_args="--privileged -v /dev:/dev"
-
-    	--user $(id -u):$(id -g)
     """
     command = ['docker', 'run', '--rm', '-it',
+                '--user', '%s:%s' % (os.getuid(), os.getgid()),
                 '-w', '/qmk_firmware',
                 '-v', '%s:/qmk_firmware' % os.getcwd(),
                 'qmkfm/base_container'] + command

@@ -35,7 +35,7 @@ def print_bootloader_help():
 @cli.argument('-bl', '--bootloader', default='flash', help='The flash command, corresponding to qmk\'s make options of bootloaders.')
 @cli.argument('-km', '--keymap', help='The keymap to build a firmware for. Use this if you dont have a configurator file. Ignored when a configurator file is supplied.')
 @cli.argument('-kb', '--keyboard', help='The keyboard to build a firmware for. Use this if you dont have a configurator file. Ignored when a configurator file is supplied.')
-@cli.argument('-d', '--docker', arg_only=True, action='store_true', help='Compile within the qmk docker image.')
+@cli.argument('-d', '--docker', action='store_true', help='Compile within the qmk docker image.')
 @cli.argument('-n', '--dry-run', arg_only=True, action='store_true', help="Don't actually build, just show the make command to be run.")
 @cli.subcommand('QMK Flash.')
 @automagic_keyboard
@@ -80,7 +80,7 @@ def flash(cli):
     if command:
         cli.log.info('Compiling keymap with {fg_cyan}%s', ' '.join(command))
 
-        if cli.config.compile.docker:
+        if cli.args.docker or cli.config.compile.docker:
             command = docker_wrap_command(command, privileged=True)
 
         if not cli.args.dry_run:
