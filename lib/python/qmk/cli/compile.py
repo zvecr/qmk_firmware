@@ -50,10 +50,10 @@ def compile(cli):
 
     # Compile the firmware, if we're able to
     if command:
-        cli.log.info('Compiling keymap with {fg_cyan}%s', ' '.join(command))
-
         if cli.args.docker or cli.config.compile.docker:
             command = docker_wrap_command(command, privileged=False)
+
+        cli.log.info('Compiling keymap with {fg_cyan}%s', ' '.join(command))
 
         if not cli.args.dry_run:
             cli.echo('\n')

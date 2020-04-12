@@ -36,12 +36,18 @@ def create_make_command(keyboard, keymap, target=None):
 
 def docker_wrap_command(command, privileged=False):
     """TODO:
-add docs
-add this stuff...
-	if [ "$(uname)" = "Linux" ] || docker-machine active >/dev/null 2>&1; then
-		usb_args="--privileged -v /dev:/dev"
+        add docs
+        check docker installed?
+        add this stuff...?
+            if docker-machine active >/dev/null 2>&1; then
+                usb_args="--privileged -v /dev:/dev"
     """
-    command = ['docker', 'run', '--rm', '-it',
+    usb_args = []
+    platform_id = platform.platform().lower()
+    if 'linux' in platform_id:
+        usb_args=['--privileged', '-v', '/dev:/dev']
+
+    command = ['docker', 'run', '--rm', '-it', *usb_args,
                 '--user', '%s:%s' % (os.getuid(), os.getgid()),
                 '-w', '/qmk_firmware',
                 '-v', '%s:/qmk_firmware' % os.getcwd(),

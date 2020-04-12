@@ -78,10 +78,10 @@ def flash(cli):
 
     # Compile the firmware, if we're able to
     if command:
-        cli.log.info('Compiling keymap with {fg_cyan}%s', ' '.join(command))
-
-        if cli.args.docker or cli.config.compile.docker:
+        if cli.args.docker or cli.config.flash.docker:
             command = docker_wrap_command(command, privileged=True)
+
+        cli.log.info('Compiling keymap with {fg_cyan}%s', ' '.join(command))
 
         if not cli.args.dry_run:
             cli.echo('\n')
