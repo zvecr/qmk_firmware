@@ -37,28 +37,18 @@ else
 		exit 1
 	fi
 fi
+
+# Defaults
 if [ -z "$keyboard" ]; then
 	keyboard=all
 fi
-if [ -n "$target" ]; then
-	if [ "$(uname)" = "Linux" ] || docker-machine active >/dev/null 2>&1; then
-		usb_args="--privileged -v /dev:/dev"
-	else
-		errcho "Error: target requires docker-machine to work on your platform"
-		errcho "See http://gw.tnode.com/docker/docker-machine-with-usb-support-on-windows-macos"
-		errcho "Consider flashing with QMK Toolbox (https://github.com/qmk/qmk_toolbox) instead"
-		exit 3
-	fi
+if [ -z "$keymap" ]; then
+	keymap=all
 fi
-dir=$(pwd -W 2>/dev/null) || dir=$PWD  # Use Windows path if on Windows
 
-# Run container and build firmware
-docker run --rm -it $usb_args \
-	--user $(id -u):$(id -g) \
-	-w /qmk_firmware \
-	-v "$dir":/qmk_firmware \
-	-e ALT_GET_KEYBOARDS=true \
-	-e SKIP_GIT="$SKIP_GIT" \
-	-e MAKEFLAGS="$MAKEFLAGS" \
-	qmkfm/base_container \
-	make "$keyboard${keymap:+:$keymap}${target:+:$target}"
+# GOoooooooo
+if [ -z "$target" ]; then
+	bin/qmk compile -d -kb=$keyboard -km=$keymap
+else
+	bin/qmk flash -d -kb=$keyboard -km=$keymap -bl=$target
+fi
