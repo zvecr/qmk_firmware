@@ -6,6 +6,7 @@ Full uncut 2x4 nav cluster.
 Caps Lock and Win keys sent to the Function layer.
 TT(1) - Function layer tap-toggle at CapsLock position provides fast F-keys access in a heat of a battle. As well as easy access to a Numpad.
 
+```c
 /* QWERTY
  * .--------------------------------------------------------------------------------------------------------------------------------------.
  * | GESC   | 1      | 2      | 3      | 4      | 5      | 6      | 7      | 8      | 9      | 0      | -      | =      | Del    | BACKSP |
@@ -19,7 +20,9 @@ TT(1) - Function layer tap-toggle at CapsLock position provides fast F-keys acce
  * | LCTRL  | Prev   | Next   | LALT   |                                SPACE                         | End    | LEFT   | DOWN   | RIGHT  |
  * '--------------------------------------------------------------------------------------------------------------------------------------'
  */
+```
 
+```c
 /* FUNCTION
  * .--------------------------------------------------------------------------------------------------------------------------------------.
  * | XXXXXXX| F1     | F2     | F3     | F4     | F5     | F6     | F7     | F8     | F9     | F10    | F11    | F12    | _______| _______|
@@ -33,7 +36,7 @@ TT(1) - Function layer tap-toggle at CapsLock position provides fast F-keys acce
  * | CPSLCK | P0     | P.     | _______|                             SPACE                            | BL_TOGG| RGB TG | RGB RMD| RGB MD |
  * '--------------------------------------------------------------------------------------------------------------------------------------'
  */
-
+```
 
 ## LED control
 
