@@ -10,6 +10,7 @@ from . import cformat
 from . import compile
 from . import config
 from . import docs
+from . import docker
 from . import doctor
 from . import flash
 from . import hello
