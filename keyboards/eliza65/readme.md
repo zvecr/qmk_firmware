@@ -2,11 +2,11 @@
 
 ![Eliza65](imgur.com image replace me!)
 
-*A short description of the keyboard/project*
+A 65% ARM STM32F072 keyboard.
 
-* Keyboard Maintainer: [%YOUR_NAME%](https://github.com/yourusername)
-* Hardware Supported: *The PCBs, controllers supported*
-* Hardware Availability: *Links to where you can find this hardware*
+* Keyboard Maintainer: [zvecr](https://github.com/zvecr)
+* Hardware Supported: Eliza65 PCB
+* Hardware Availability: Private Group-Buy
 
 Make example for this keyboard (after setting up your build environment):
 
