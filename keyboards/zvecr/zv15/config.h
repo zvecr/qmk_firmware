@@ -18,7 +18,7 @@
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
-#define VENDOR_ID       0xFEED
+#define VENDOR_ID       0x5A56
 #define PRODUCT_ID      0x0015
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    zvecr
