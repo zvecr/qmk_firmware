@@ -133,6 +133,10 @@ enum desktop_usages {
 #        define KEYBOARD_REPORT_BITS (NKRO_EPSIZE - 1)
 #        undef NKRO_SHARED_EP
 #        undef MOUSE_SHARED_EP
+#    elif defined(PROTOCOL_RIOT)
+#        include "protocol/riot/usb_driver.h"
+#        define KEYBOARD_REPORT_BITS (NKRO_EPSIZE - 1)
+#        undef NKRO_SHARED_EP
 #    else
 #        error "NKRO not supported with this protocol"
 #    endif
