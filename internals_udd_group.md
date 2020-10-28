@@ -135,27 +135,27 @@ Load setup payload.
 
 Global variable to give and record information of the setup request management.
 
-This global variable allows to decode and response a setup request. It can be updated by [udc_process_setup()](.build/in/internals_undefined.md#group__udc__group__interne_1ga58c2916d7984e0e5b2143cadf4af6080) from UDC or *setup() from UDIs.
+This global variable allows to decode and response a setup request. It can be updated by [udc_process_setup()](.build/docs/internals_undefined.md#group__udc__group__interne_1ga58c2916d7984e0e5b2143cadf4af6080) from UDC or *setup() from UDIs.
 
 ## Summary
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public `[`usb_setup_req_t`](.build/in/internals_usb_protocol_group.md#structusb__setup__req__t)` `[`req`](#structudd__ctrl__request__t_1a8ca591128eb7000ed02f8cc730af6e69) | Data received in USB SETUP packet Note: The swap of "req.wValues" from uin16_t to le16_t is done by UDD.
-`public uint8_t * `[`payload`](#structudd__ctrl__request__t_1aa5cbdad2c57e9b3f949e1a4d96382b66) | [Point](.build/in/internals_undefined.md#struct_point) to buffer to send or fill with data following SETUP packet This buffer must be word align for DATA IN phase (use prefix COMPILER_WORD_ALIGNED for buffer)
+`public `[`usb_setup_req_t`](.build/docs/internals_usb_protocol_group.md#structusb__setup__req__t)` `[`req`](#structudd__ctrl__request__t_1a8ca591128eb7000ed02f8cc730af6e69) | Data received in USB SETUP packet Note: The swap of "req.wValues" from uin16_t to le16_t is done by UDD.
+`public uint8_t * `[`payload`](#structudd__ctrl__request__t_1aa5cbdad2c57e9b3f949e1a4d96382b66) | [Point](.build/docs/internals_undefined.md#struct_point) to buffer to send or fill with data following SETUP packet This buffer must be word align for DATA IN phase (use prefix COMPILER_WORD_ALIGNED for buffer)
 `public uint16_t `[`payload_size`](#structudd__ctrl__request__t_1a34d21baa46ca7f4b695307631457c75f) | Size of buffer to send or fill, and content the number of byte transfered.
 `public void(* `[`callback`](#structudd__ctrl__request__t_1a11f084a69a85b6e1da79695b6a3d07c3) | Callback called after reception of ZLP from setup request.
 `public bool(* `[`over_under_run`](#structudd__ctrl__request__t_1a3d31b0db5458678975632d6b5815ea8c) | Callback called when the buffer given (.payload) is full or empty. This one return false to abort data transfer, or true with a new buffer in .payload.
 
 ## Members
 
-#### `public `[`usb_setup_req_t`](.build/in/internals_usb_protocol_group.md#structusb__setup__req__t)` `[`req`](#structudd__ctrl__request__t_1a8ca591128eb7000ed02f8cc730af6e69) {#structudd__ctrl__request__t_1a8ca591128eb7000ed02f8cc730af6e69}
+#### `public `[`usb_setup_req_t`](.build/docs/internals_usb_protocol_group.md#structusb__setup__req__t)` `[`req`](#structudd__ctrl__request__t_1a8ca591128eb7000ed02f8cc730af6e69) {#structudd__ctrl__request__t_1a8ca591128eb7000ed02f8cc730af6e69}
 
 Data received in USB SETUP packet Note: The swap of "req.wValues" from uin16_t to le16_t is done by UDD.
 
 #### `public uint8_t * `[`payload`](#structudd__ctrl__request__t_1aa5cbdad2c57e9b3f949e1a4d96382b66) {#structudd__ctrl__request__t_1aa5cbdad2c57e9b3f949e1a4d96382b66}
 
-[Point](.build/in/internals_undefined.md#struct_point) to buffer to send or fill with data following SETUP packet This buffer must be word align for DATA IN phase (use prefix COMPILER_WORD_ALIGNED for buffer)
+[Point](.build/docs/internals_undefined.md#struct_point) to buffer to send or fill with data following SETUP packet This buffer must be word align for DATA IN phase (use prefix COMPILER_WORD_ALIGNED for buffer)
 
 #### `public uint16_t `[`payload_size`](#structudd__ctrl__request__t_1a34d21baa46ca7f4b695307631457c75f) {#structudd__ctrl__request__t_1a34d21baa46ca7f4b695307631457c75f}
 

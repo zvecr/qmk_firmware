@@ -6,9 +6,9 @@ Internal implementation
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public `[`usb_iface_desc_t](.build/in/internals_usb_protocol_group.md#structusb__iface__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_interface_desc`](#group__udc__group__interne_1gadb2a0f5ad1e834d4d7e7777f901d64d2)`(void)`            | Returns a pointer on the current interface descriptor.
-`public static `[`usb_conf_desc_t](.build/in/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_eof_conf`](#group__udc__group__interne_1ga3442594fd7435c3803460847014c8970)`(void)`            | Returns a value to check the end of USB Configuration descriptor.
-`public static `[`usb_conf_desc_t](.build/in/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_next_desc_in_iface`](#group__udc__group__interne_1ga5b377861e784ec69c3e841643169a981)`(`[`usb_conf_desc_t](.build/in/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * desc,uint8_t desc_id)`            | Search specific descriptor in global interface descriptor.
+`public `[`usb_iface_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__iface__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_interface_desc`](#group__udc__group__interne_1gadb2a0f5ad1e834d4d7e7777f901d64d2)`(void)`            | Returns a pointer on the current interface descriptor.
+`public static `[`usb_conf_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_eof_conf`](#group__udc__group__interne_1ga3442594fd7435c3803460847014c8970)`(void)`            | Returns a value to check the end of USB Configuration descriptor.
+`public static `[`usb_conf_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_next_desc_in_iface`](#group__udc__group__interne_1ga5b377861e784ec69c3e841643169a981)`(`[`usb_conf_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * desc,uint8_t desc_id)`            | Search specific descriptor in global interface descriptor.
 `public static bool `[`udc_update_iface_desc`](#group__udc__group__interne_1gab6a52be155f35da55d33d3474f06cc47)`(uint8_t iface_num,uint8_t setting_num)`            | Search an interface descriptor This routine updates the internal pointer udc_ptr_iface.
 `public static bool `[`udc_iface_disable`](#group__udc__group__interne_1ga4d8c4886411e5f90adaac8bff065c610)`(uint8_t iface_num)`            | Disables an usb device interface (UDI) This routine call the UDI corresponding to interface number.
 `public static bool `[`udc_iface_enable`](#group__udc__group__interne_1gab7d44215050fc758b44c86dc88a16264)`(uint8_t iface_num,uint8_t setting_num)`            | Enables an usb device interface (UDI) This routine calls the UDI corresponding to the interface and setting number.
@@ -38,21 +38,21 @@ Internal implementation
 
 ## Members
 
-#### `public `[`usb_iface_desc_t](.build/in/internals_usb_protocol_group.md#structusb__iface__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_interface_desc`](#group__udc__group__interne_1gadb2a0f5ad1e834d4d7e7777f901d64d2)`(void)` {#group__udc__group__interne_1gadb2a0f5ad1e834d4d7e7777f901d64d2}
+#### `public `[`usb_iface_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__iface__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_interface_desc`](#group__udc__group__interne_1gadb2a0f5ad1e834d4d7e7777f901d64d2)`(void)` {#group__udc__group__interne_1gadb2a0f5ad1e834d4d7e7777f901d64d2}
 
 Returns a pointer on the current interface descriptor.
 
 #### Returns
 pointer on the current interface descriptor.
 
-#### `public static `[`usb_conf_desc_t](.build/in/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_eof_conf`](#group__udc__group__interne_1ga3442594fd7435c3803460847014c8970)`(void)` {#group__udc__group__interne_1ga3442594fd7435c3803460847014c8970}
+#### `public static `[`usb_conf_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_eof_conf`](#group__udc__group__interne_1ga3442594fd7435c3803460847014c8970)`(void)` {#group__udc__group__interne_1ga3442594fd7435c3803460847014c8970}
 
 Returns a value to check the end of USB Configuration descriptor.
 
 #### Returns
 address after the last byte of USB Configuration descriptor
 
-#### `public static `[`usb_conf_desc_t](.build/in/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_next_desc_in_iface`](#group__udc__group__interne_1ga5b377861e784ec69c3e841643169a981)`(`[`usb_conf_desc_t](.build/in/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * desc,uint8_t desc_id)` {#group__udc__group__interne_1ga5b377861e784ec69c3e841643169a981}
+#### `public static `[`usb_conf_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_next_desc_in_iface`](#group__udc__group__interne_1ga5b377861e784ec69c3e841643169a981)`(`[`usb_conf_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__conf__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * desc,uint8_t desc_id)` {#group__udc__group__interne_1ga5b377861e784ec69c3e841643169a981}
 
 Search specific descriptor in global interface descriptor.
 
@@ -256,12 +256,12 @@ true if the request is supported, else the request is stalled by UDD
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public `[`usb_str_desc_t`](.build/in/internals_usb_protocol_group.md#structusb__str__desc__t)` `[`header`](#structudc__string__desc__t_1ae96103b577725a05178dac3136d1a859) | 
+`public `[`usb_str_desc_t`](.build/docs/internals_usb_protocol_group.md#structusb__str__desc__t)` `[`header`](#structudc__string__desc__t_1ae96103b577725a05178dac3136d1a859) | 
 `public le16_t `[`string`](#structudc__string__desc__t_1a9c4b5919e84bf0e87ea42a502f4dd74c) | 
 
 ## Members
 
-#### `public `[`usb_str_desc_t`](.build/in/internals_usb_protocol_group.md#structusb__str__desc__t)` `[`header`](#structudc__string__desc__t_1ae96103b577725a05178dac3136d1a859) {#structudc__string__desc__t_1ae96103b577725a05178dac3136d1a859}
+#### `public `[`usb_str_desc_t`](.build/docs/internals_usb_protocol_group.md#structusb__str__desc__t)` `[`header`](#structudc__string__desc__t_1ae96103b577725a05178dac3136d1a859) {#structudc__string__desc__t_1ae96103b577725a05178dac3136d1a859}
 
 #### `public le16_t `[`string`](#structudc__string__desc__t_1a9c4b5919e84bf0e87ea42a502f4dd74c) {#structudc__string__desc__t_1a9c4b5919e84bf0e87ea42a502f4dd74c}
 

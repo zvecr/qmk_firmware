@@ -14,7 +14,7 @@ UDI API.
 
 The callbacks within this structure are called only by USB Device Controller (UDC)
 
-The [udc_get_interface_desc()](.build/in/internals_undefined.md#group__udc__group__interne_1gadb2a0f5ad1e834d4d7e7777f901d64d2) can be use by UDI to know the interface descriptor selected by UDC.
+The [udc_get_interface_desc()](.build/docs/internals_undefined.md#group__udc__group__interne_1gadb2a0f5ad1e834d4d7e7777f901d64d2) can be use by UDI to know the interface descriptor selected by UDC.
 
 ## Summary
 

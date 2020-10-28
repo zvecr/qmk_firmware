@@ -2,13 +2,13 @@
 
 The UDC provides a high-level abstraction of the usb device. You can use these functions to control the main device state (start/attach/wakeup).
 
-USB Device Custom configurationThe following USB Device configuration must be included in the [conf_usb.h](.build/in/internals_undefined.md#conf__usb_8h) file of the application.
+USB Device Custom configurationThe following USB Device configuration must be included in the [conf_usb.h](.build/docs/internals_undefined.md#conf__usb_8h) file of the application.
 
 USB_DEVICE_VENDOR_ID (Word)
  Vendor ID provided by USB org (ATMEL 0x03EB).
 
 USB_DEVICE_PRODUCT_ID (Word)
- Product ID (Referenced in [usb_atmel.h](.build/in/internals_undefined.md#usb__atmel_8h)).
+ Product ID (Referenced in [usb_atmel.h](.build/docs/internals_undefined.md#usb__atmel_8h)).
 
 USB_DEVICE_MAJOR_VERSION (Byte)
  Major version of the device
@@ -62,7 +62,7 @@ USB_DEVICE_MAX_EP (Byte)
 `public inline static void `[`udc_attach`](#group__udc__group_1ga2e71c4c6090543bc3bab06e710e2ee6b)`(void)`            | Attach device to the bus when possible.
 `public inline static void `[`udc_detach`](#group__udc__group_1ga702d387f5ebfc2e0ab41667eb7644dda)`(void)`            | Detaches the device from the bus.
 `public inline void `[`udc_remotewakeup`](#group__udc__group_1ga52c0439e5f6e471a9570471f00476260)`(void)`            | The USB driver sends a resume signal called *"Upstream Resume"* This is authorized only when the remote wakeup feature is enabled by host.
-`public `[`usb_iface_desc_t](.build/in/internals_usb_protocol_group.md#structusb__iface__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_interface_desc`](#group__udc__group_1gadb2a0f5ad1e834d4d7e7777f901d64d2)`(void)`            | Returns a pointer on the current interface descriptor.
+`public `[`usb_iface_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__iface__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_interface_desc`](#group__udc__group_1gadb2a0f5ad1e834d4d7e7777f901d64d2)`(void)`            | Returns a pointer on the current interface descriptor.
 
 ## Members
 
@@ -75,12 +75,12 @@ true, if the VBUS monitoring is possible.
 
 VBus monitoring used casesThe VBus monitoring is used only for USB SELF Power application.
 
-* By default the USB device is automatically attached when Vbus is high or when USB is start for devices without internal Vbus monitoring. [conf_usb.h](.build/in/internals_undefined.md#conf__usb_8h) file does not contains define USB_DEVICE_ATTACH_AUTO_DISABLE. 
+* By default the USB device is automatically attached when Vbus is high or when USB is start for devices without internal Vbus monitoring. [conf_usb.h](.build/docs/internals_undefined.md#conf__usb_8h) file does not contains define USB_DEVICE_ATTACH_AUTO_DISABLE. 
 ```cpp
 //#define USB_DEVICE_ATTACH_AUTO_DISABLE 
 ```
 
-* Add custom VBUS monitoring. [conf_usb.h](.build/in/internals_undefined.md#conf__usb_8h) file contains define USB_DEVICE_ATTACH_AUTO_DISABLE: 
+* Add custom VBUS monitoring. [conf_usb.h](.build/docs/internals_undefined.md#conf__usb_8h) file contains define USB_DEVICE_ATTACH_AUTO_DISABLE: 
 ```cpp
 #define USB_DEVICE_ATTACH_AUTO_DISABLE 
 ```
@@ -97,7 +97,7 @@ Event_VBUS_present() // VBUS interrupt or GPIO interrupt or other
 }
 ```
 
-* Case of battery charging. [conf_usb.h](.build/in/internals_undefined.md#conf__usb_8h) file contains define USB_DEVICE_ATTACH_AUTO_DISABLE: 
+* Case of battery charging. [conf_usb.h](.build/docs/internals_undefined.md#conf__usb_8h) file contains define USB_DEVICE_ATTACH_AUTO_DISABLE: 
 ```cpp
 #define USB_DEVICE_ATTACH_AUTO_DISABLE 
 ```
@@ -139,7 +139,7 @@ The driver must remove pull-up on USB line D- or D+.
 
 The USB driver sends a resume signal called *"Upstream Resume"* This is authorized only when the remote wakeup feature is enabled by host.
 
-#### `public `[`usb_iface_desc_t](.build/in/internals_usb_protocol_group.md#structusb__iface__desc__t)[UDC_DESC_STORAGE`](.build/in/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_interface_desc`](#group__udc__group_1gadb2a0f5ad1e834d4d7e7777f901d64d2)`(void)` {#group__udc__group_1gadb2a0f5ad1e834d4d7e7777f901d64d2}
+#### `public `[`usb_iface_desc_t](.build/docs/internals_usb_protocol_group.md#structusb__iface__desc__t)[UDC_DESC_STORAGE`](.build/docs/internals_undefined.md#group__udc__desc__group_1gae086959cec07a2e71ab069e25a51764f)` * `[`udc_get_interface_desc`](#group__udc__group_1gadb2a0f5ad1e834d4d7e7777f901d64d2)`(void)` {#group__udc__group_1gadb2a0f5ad1e834d4d7e7777f901d64d2}
 
 Returns a pointer on the current interface descriptor.
 

@@ -559,14 +559,14 @@ The BOS descriptor and capabilities descriptors for LPM.
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public `[`usb_dev_bos_desc_t`](.build/in/internals_usb_protocol_group.md#structusb__dev__bos__desc__t)` `[`bos`](#structusb__dev__lpm__desc__t_1aa1445afe8acf8bc5d942305edeb6dfd1) | 
-`public `[`usb_dev_capa_ext_desc_t`](.build/in/internals_usb_protocol_group.md#structusb__dev__capa__ext__desc__t)` `[`capa_ext`](#structusb__dev__lpm__desc__t_1a260a9ee22980a1306d3dcff998fd48c7) | 
+`public `[`usb_dev_bos_desc_t`](.build/docs/internals_usb_protocol_group.md#structusb__dev__bos__desc__t)` `[`bos`](#structusb__dev__lpm__desc__t_1aa1445afe8acf8bc5d942305edeb6dfd1) | 
+`public `[`usb_dev_capa_ext_desc_t`](.build/docs/internals_usb_protocol_group.md#structusb__dev__capa__ext__desc__t)` `[`capa_ext`](#structusb__dev__lpm__desc__t_1a260a9ee22980a1306d3dcff998fd48c7) | 
 
 ## Members
 
-#### `public `[`usb_dev_bos_desc_t`](.build/in/internals_usb_protocol_group.md#structusb__dev__bos__desc__t)` `[`bos`](#structusb__dev__lpm__desc__t_1aa1445afe8acf8bc5d942305edeb6dfd1) {#structusb__dev__lpm__desc__t_1aa1445afe8acf8bc5d942305edeb6dfd1}
+#### `public `[`usb_dev_bos_desc_t`](.build/docs/internals_usb_protocol_group.md#structusb__dev__bos__desc__t)` `[`bos`](#structusb__dev__lpm__desc__t_1aa1445afe8acf8bc5d942305edeb6dfd1) {#structusb__dev__lpm__desc__t_1aa1445afe8acf8bc5d942305edeb6dfd1}
 
-#### `public `[`usb_dev_capa_ext_desc_t`](.build/in/internals_usb_protocol_group.md#structusb__dev__capa__ext__desc__t)` `[`capa_ext`](#structusb__dev__lpm__desc__t_1a260a9ee22980a1306d3dcff998fd48c7) {#structusb__dev__lpm__desc__t_1a260a9ee22980a1306d3dcff998fd48c7}
+#### `public `[`usb_dev_capa_ext_desc_t`](.build/docs/internals_usb_protocol_group.md#structusb__dev__capa__ext__desc__t)` `[`capa_ext`](#structusb__dev__lpm__desc__t_1a260a9ee22980a1306d3dcff998fd48c7) {#structusb__dev__lpm__desc__t_1a260a9ee22980a1306d3dcff998fd48c7}
 
 # struct `usb_association_desc_t` {#structusb__association__desc__t}
 
@@ -795,12 +795,12 @@ A standard USB string descriptor structure.
 
  Members                        | Descriptions                                
 --------------------------------|---------------------------------------------
-`public `[`usb_str_desc_t`](.build/in/internals_usb_protocol_group.md#structusb__str__desc__t)` `[`desc`](#structusb__str__lgid__desc__t_1a6b9de937ba1cb40f4b82094a8644c528) | 
+`public `[`usb_str_desc_t`](.build/docs/internals_usb_protocol_group.md#structusb__str__desc__t)` `[`desc`](#structusb__str__lgid__desc__t_1a6b9de937ba1cb40f4b82094a8644c528) | 
 `public le16_t `[`string`](#structusb__str__lgid__desc__t_1a79364ecffd40a6c3218c408b4891c460) | 
 
 ## Members
 
-#### `public `[`usb_str_desc_t`](.build/in/internals_usb_protocol_group.md#structusb__str__desc__t)` `[`desc`](#structusb__str__lgid__desc__t_1a6b9de937ba1cb40f4b82094a8644c528) {#structusb__str__lgid__desc__t_1a6b9de937ba1cb40f4b82094a8644c528}
+#### `public `[`usb_str_desc_t`](.build/docs/internals_usb_protocol_group.md#structusb__str__desc__t)` `[`desc`](#structusb__str__lgid__desc__t_1a6b9de937ba1cb40f4b82094a8644c528) {#structusb__str__lgid__desc__t_1a6b9de937ba1cb40f4b82094a8644c528}
 
 #### `public le16_t `[`string`](#structusb__str__lgid__desc__t_1a79364ecffd40a6c3218c408b4891c460) {#structusb__str__lgid__desc__t_1a79364ecffd40a6c3218c408b4891c460}
 
