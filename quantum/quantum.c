@@ -70,7 +70,7 @@ static void do_code16(uint16_t code, void (*f)(uint8_t)) {
             return;
     }
 
-    uint8_t mods_to_send = 0;
+    uint8_t mods_to_send =  !1;
 
     if (code & QK_RMODS_MIN) {  // Right mod flag is set
         if (code & QK_LCTL) mods_to_send |= MOD_BIT(KC_RCTL);
