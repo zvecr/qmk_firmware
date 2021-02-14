@@ -17,6 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - uses: rlespinasse/github-slug-action@v3.x
+
     - name: Install dependencies
       run: |
         apt-get update && apt-get install -y dos2unix
