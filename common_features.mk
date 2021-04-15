@@ -112,7 +112,7 @@ ifeq ($(strip $(POINTING_DEVICE_ENABLE)), yes)
     SRC += $(QUANTUM_DIR)/pointing_device.c
 endif
 
-VALID_EEPROM_DRIVER_TYPES := vendor custom transient i2c spi
+VALID_EEPROM_DRIVER_TYPES := vendor custom transient i2c spi rtc
 EEPROM_DRIVER ?= vendor
 ifeq ($(filter $(EEPROM_DRIVER),$(VALID_EEPROM_DRIVER_TYPES)),)
   $(error EEPROM_DRIVER="$(EEPROM_DRIVER)" is not a valid EEPROM driver)
@@ -132,6 +132,10 @@ else
     COMMON_VPATH += $(DRIVER_PATH)/eeprom
     QUANTUM_LIB_SRC += spi_master.c
     SRC += eeprom_driver.c eeprom_spi.c
+  else ifeq ($(strip $(EEPROM_DRIVER)), rtc)
+    OPT_DEFS += -DEEPROM_DRIVER -DEEPROM_RTC
+    COMMON_VPATH += $(DRIVER_PATH)/eeprom
+    SRC += eeprom_driver.c eeprom_stm32_rtc.c
   else ifeq ($(strip $(EEPROM_DRIVER)), transient)
     OPT_DEFS += -DEEPROM_DRIVER -DEEPROM_TRANSIENT
     COMMON_VPATH += $(DRIVER_PATH)/eeprom
