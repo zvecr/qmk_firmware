@@ -1,0 +1,21 @@
+{
+	"name": "QMK",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+	"extensions": [
+		"EditorConfig.EditorConfig",
+		"ms-vscode.cpptools",
+		"xaver.clang-format"
+	],
+	"runArgs": [
+		"--privileged"
+	],
+	"mounts": [
+		"source=/dev,target=/dev,type=bind,consistency=consistent"
+	],
+	"remoteUser": "qmk"
+}
