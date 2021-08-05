@@ -4,6 +4,7 @@ SRC += config_led.c
 #For platform and packs
 ARM_ATSAM = SAMD51J18A
 MCU = cortex-m4
+EEPROM_DRIVER = transient
 
 # Build Options
 #   comment out to disable the options.
