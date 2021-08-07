@@ -24,12 +24,14 @@
 #    define IS_TAPPING_RECORD(r) (IS_TAPPING() && KEYEQ(tapping_key.event.key, (r->event.key)) && tapping_key.keycode == r->keycode)
 #endif
 
-__attribute__((weak)) uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) { return TAPPING_TERM; }
+uint16_t tapping_term = TAPPING_TERM;
+
+__attribute__((weak)) uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) { return tapping_term; }
 
 #    ifdef TAPPING_TERM_PER_KEY
 #        define WITHIN_TAPPING_TERM(e) (TIMER_DIFF_16(e.time, tapping_key.event.time) < get_tapping_term(get_record_keycode(&tapping_key, false), &tapping_key))
 #    else
-#        define WITHIN_TAPPING_TERM(e) (TIMER_DIFF_16(e.time, tapping_key.event.time) < TAPPING_TERM)
+#        define WITHIN_TAPPING_TERM(e) (TIMER_DIFF_16(e.time, tapping_key.event.time) < tapping_term)
 #    endif
 
 #    ifdef TAPPING_FORCE_HOLD_PER_KEY
@@ -128,12 +130,12 @@ bool process_tapping(keyrecord_t *keyp) {
                  * This can register the key before settlement of tapping,
                  * useful for long TAPPING_TERM but may prevent fast typing.
                  */
-#    if defined(TAPPING_TERM_PER_KEY) || (TAPPING_TERM >= 500) || defined(PERMISSIVE_HOLD) || defined(PERMISSIVE_HOLD_PER_KEY)
+#    if defined(TAPPING_TERM_PER_KEY) || (tapping_term >= 500) || defined(PERMISSIVE_HOLD) || defined(PERMISSIVE_HOLD_PER_KEY)
                 else if (((
 #        ifdef TAPPING_TERM_PER_KEY
                               get_tapping_term(get_record_keycode(&tapping_key, false), keyp)
 #        else
-                              TAPPING_TERM
+                              tapping_term
 #        endif
                               >= 500)
 

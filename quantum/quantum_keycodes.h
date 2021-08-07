@@ -524,6 +524,11 @@ enum quantum_keycodes {
     // Additional magic key
     MAGIC_TOGGLE_GUI,
 
+    // Tapping term setup
+    TK_PRNT,
+    TK_UP,
+    TK_DOWN,
+
     // Start of custom keycode range for keyboards and keymaps - always leave at the end
     SAFE_RANGE
 };
