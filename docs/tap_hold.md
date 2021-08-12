@@ -50,15 +50,56 @@ Not to be confused with `TAPPING_TERM_PER_KEY`, `TAP_TERM_KEYS_ENABLE` is a feat
 
 Set the tapping term as usual with `#define TAPPING_TERM <value>` in `config.h` and add `TAP_TERM_KEYS_ENABLE = yes` in `rules.mk`. Then, place the above three keys somewhere in your keymap and flash the new firmware onto your board.
 
-Now, you can try using your dual-role keys, such as layer-taps and mod-taps, and use `TK_DOWN` and `TK_UP` to adjust the tapping term immediately. If you find that you frequently trigger the modifier of your mod-tap(s) by accident for example, that's a sign that your tapping term may be too low so, tap `TK_UP` a few times to increase the tapping term until that no longer happens. On the flip side, if you get superfluous characters when you actually intended to momentarily activate a layer, tap `TK_DOWN` to lower the tapping term. Do note that these keys affect the *global* tapping term, you cannot change the tapping term of a specific key on the fly.
+Now, you can try using your dual-role keys, such as layer-taps and mod-taps, and use `TK_DOWN` and `TK_UP` to adjust the tapping term immediately. If you find that you frequently trigger the modifier of your mod-tap(s) by accident for example, that's a sign that your tapping term may be too low so tap `TK_UP` a few times to increase the tapping term until that no longer happens. On the flip side, if you get superfluous characters when you actually intended to momentarily activate a layer, tap `TK_DOWN` to lower the tapping term. Do note that these keys affect the *global* tapping term, you cannot change the tapping term of a specific key on the fly.
 
 Once you're satisfied with the current tapping term value, open `config.h` and replace whatever value you first wrote for the tapping term by the output of the `TK_PRNT` key.
 
 It's important to update `TAPPING_TERM` with the new value because the adjustments made using `TK_UP` and `TK_DOWN` are not persistent.
 
-The value by which the tapping term increases or decreases when you tap `TK_UP` and `TK_DOWN` can be configured in `config.h` with `#define TAP_TERM_INCREMENT <new value>`.
+The value by which the tapping term increases or decreases when you tap `TK_UP` and `TK_DOWN` can be configured in `config.h` with `#define TAP_TERM_INCREMENT <new value>`. Note that the tapping term is *not* modified when holding down the tap term keys so if you need to, for example, decrease the current tapping term by 50ms, you cannot just press down and hold `TK_DOWN`; you will have to tap it 10 times in a row with the default increment of 5ms.
 
-In order for this feature to be effective if you use per-key tapping terms, you need to make a few changes to the syntax of the `get_tapping_term` function. All you need to do is replace every occurrence of `TAPPING_TERM` in the `get_tapping_term` function by lowercase `tapping_term`.
+If you need more flexibility, nothing prevents you from defining your own tapping term keys.
+
+```c
+enum custom_tap_term_keys = {
+    TK_UP_50 = SAFE_RANGE,
+    TK_DOWN_50,
+    TK_UP_X2,
+    TK_DOWN_X2,
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+
+    case TK_UP_50:
+        if (record->event.pressed) {
+            tapping_term += 50;
+        }
+        break;
+
+    case TK_DOWN_50:
+        if (record->event.pressed) {
+            tapping_term -= 50;
+        }
+        break;
+
+    case TK_UP_X2:
+        if (record->event.pressed) {
+            tapping_term *= 2;
+        }
+        break;
+
+    case TK_DOWN_X2:
+        if (record->event.pressed) {
+            tapping_term /= 2;
+        }
+        break;
+    }
+    return true;
+};
+```
+
+In order for this feature to be effective if you use per-key tapping terms, you need to make a few changes to the syntax of the `get_tapping_term` function. All you need to do is replace every occurrence of `TAPPING_TERM` in the `get_tapping_term` function by lowercase `tapping_term`. If you don't do that, you will still see the value typed by `TK_PRNT` go up and down as you configure the tapping term on the fly but you won't feel those changes as they don't get applied. If you can go as low as 10ms and still easily trigger the tap function of a dual-role key, that's a sign that you forgot to make the necessary changes to your `get_tapping_term` function.
 
 The reason being that `TAPPING_TERM` is a macro that expands to a constant integer and thus cannot be changed at runtime whereas `tapping_term` is a variable whose value can be changed at runtime. If you want, you can temporarily enable `TAP_TERM_KEYS_ENABLE` to find a suitable tapping term value and then disable that feature and revert back to using the classic syntax for per-key tapping term settings.
 
