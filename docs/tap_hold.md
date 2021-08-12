@@ -44,7 +44,7 @@ Not to be confused with `TAPPING_TERM_PER_KEY`, `TAP_TERM_KEYS_ENABLE` is a feat
 
 | Key         | Description                                                                                             |
 |-------------|---------------------------------------------------------------------------------------------------------|
-| `TK_PRINT`  | "Tapping Term Keys Print": Types the current tapping term, in milliseconds                              |
+| `TK_PRNT`   | "Tapping Term Keys Print": Types the current tapping term, in milliseconds                              |
 | `TK_UP`     | "Tapping Term Keys Up": Increases the current tapping term by `TAP_TERM_INCREMENT`ms (5ms by default)   |
 | `TK_DOWN`   | "Tapping Term Keys Down": Decreases the current tapping term by `TAP_TERM_INCREMENT`ms (5ms by default) |
 
