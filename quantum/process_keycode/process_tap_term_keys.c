@@ -15,30 +15,39 @@
  */
 
 #include <stdio.h>
+#include "quantum.h"
 #include "process_tap_term_keys.h"
 
-void tapping_term_report(void) {
+#ifndef TAP_TERM_INCREMENT
+#    define TAP_TERM_INCREMENT 5
+#endif
+
+extern uint16_t g_tapping_term;
+
+static void tapping_term_report(void) {
     char display[8];
 
-    snprintf(display, 8, "%d", tapping_term);
+    snprintf(display, 8, "%d", g_tapping_term);
 
     send_string((const char *)display);
 }
+
+uint16_t get_global_tapping_term(void) { return g_tapping_term; }
 
 bool process_tap_term_keys(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
         switch (keycode) {
             case TK_PRNT:
                 tapping_term_report();
-                return true;
+                return false;
 
             case TK_UP:
-                tapping_term += TAP_TERM_INCREMENT;
-                return true;
+                g_tapping_term += TAP_TERM_INCREMENT;
+                return false;
 
             case TK_DOWN:
-                tapping_term -= TAP_TERM_INCREMENT;
-                return true;
+                g_tapping_term -= TAP_TERM_INCREMENT;
+                return false;
         }
     }
     return true;

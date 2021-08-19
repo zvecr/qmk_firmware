@@ -151,6 +151,10 @@ extern layer_state_t layer_state;
 #    include "process_grave_esc.h"
 #endif
 
+#ifdef TAP_TERM_KEYS_ENABLE
+#    include "process_tap_term_keys.h"
+#endif
+
 #if defined(RGBLIGHT_ENABLE) || defined(RGB_MATRIX_ENABLE)
 #    include "process_rgb.h"
 #endif
@@ -190,9 +194,6 @@ extern layer_state_t layer_state;
 
 #ifdef WPM_ENABLE
 #    include "wpm.h"
-#endif
-#ifdef TAP_TERM_KEYS_ENABLE
-#    include "process_tap_term_keys.h"
 #endif
 
 #ifdef USBPD_ENABLE

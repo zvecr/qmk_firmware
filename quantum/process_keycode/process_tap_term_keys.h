@@ -16,11 +16,9 @@
 
 #pragma once
 
-#include "quantum.h"
-#include "action_tapping.h"
+#include <stdbool.h>
+#include "action.h"
 
-#ifndef TAP_TERM_INCREMENT
-#    define TAP_TERM_INCREMENT 5
-#endif
+uint16_t get_global_tapping_term(void);
 
 bool process_tap_term_keys(uint16_t keycode, keyrecord_t *record);
