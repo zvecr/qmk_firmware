@@ -31,10 +31,10 @@ static uint16_t debouncing_time;
 void            debounce(matrix_row_t raw[], matrix_row_t cooked[], uint8_t num_rows, bool changed) {
     if (changed) {
         debouncing      = true;
-        debouncing_time = timer_read();
+        debouncing_time = timer_read32();
     }
 
-    if (debouncing && timer_elapsed(debouncing_time) > DEBOUNCE) {
+    if (debouncing && timer_elapsed32(debouncing_time) > DEBOUNCE) {
         for (int i = 0; i < num_rows; i++) {
             cooked[i] = raw[i];
         }

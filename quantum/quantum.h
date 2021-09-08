@@ -177,6 +177,58 @@ typedef ioline_t pin_t;
 #    define writePin(pin, level) ((level) ? writePinHigh(pin) : writePinLow(pin))
 
 #    define readPin(pin) palReadLine(pin)
+#elif defined(PROTOCOL_ARM_ATSAM)
+#include "samd51j18a.h"
+
+typedef uint8_t pin_t;
+
+#define SAMD_PORT(pin) ((pin & 0x20) >> 5)
+#define SAMD_PIN(pin) (pin & 0x1f)
+#define SAMD_PIN_MASK(pin) (1 << (pin & 0x1f))
+
+#define setPinInput(pin)                                                                 \
+    do {                                                                                 \
+        PORT->Group[SAMD_PORT(pin)].PINCFG[SAMD_PIN(pin)].bit.INEN = 1;                  \
+        PORT->Group[SAMD_PORT(pin)].DIRCLR.reg                     = SAMD_PIN_MASK(pin); \
+    } while (0)
+
+#define setPinInputHigh(pin)                                                               \
+    do {                                                                                   \
+        PORT->Group[SAMD_PORT(pin)].DIRCLR.reg                       = SAMD_PIN_MASK(pin); \
+        PORT->Group[SAMD_PORT(pin)].OUTSET.reg                       = SAMD_PIN_MASK(pin); \
+        PORT->Group[SAMD_PORT(pin)].PINCFG[SAMD_PIN(pin)].bit.INEN   = 1;                  \
+        PORT->Group[SAMD_PORT(pin)].PINCFG[SAMD_PIN(pin)].bit.PULLEN = 1;                  \
+    } while (0)
+
+#define setPinInputLow(pin)                                                                \
+    do {                                                                                   \
+        PORT->Group[SAMD_PORT(pin)].DIRCLR.reg                       = SAMD_PIN_MASK(pin); \
+        PORT->Group[SAMD_PORT(pin)].OUTCLR.reg                       = SAMD_PIN_MASK(pin); \
+        PORT->Group[SAMD_PORT(pin)].PINCFG[SAMD_PIN(pin)].bit.INEN   = 1;                  \
+        PORT->Group[SAMD_PORT(pin)].PINCFG[SAMD_PIN(pin)].bit.PULLEN = 1;                  \
+    } while (0)
+
+#define setPinOutput(pin)                                            \
+    do {                                                             \
+        PORT->Group[SAMD_PORT(pin)].DIRSET.reg = SAMD_PIN_MASK(pin); \
+        PORT->Group[SAMD_PORT(pin)].OUTCLR.reg = SAMD_PIN_MASK(pin); \
+    } while (0)
+
+#define writePinHigh(pin)                                            \
+    do {                                                             \
+        PORT->Group[SAMD_PORT(pin)].OUTSET.reg = SAMD_PIN_MASK(pin); \
+    } while (0)
+
+#define writePinLow(pin)                                             \
+    do {                                                             \
+        PORT->Group[SAMD_PORT(pin)].OUTCLR.reg = SAMD_PIN_MASK(pin); \
+    } while (0)
+
+#define writePin(pin, level) ((level) ? (writePinHigh(pin)) : (writePinLow(pin)))
+
+#define readPin(pin) ((PORT->Group[SAMD_PORT(pin)].IN.reg & SAMD_PIN_MASK(pin)) != 0)
+
+#define togglePin(pin) (PORT->Group[SAMD_PORT(pin)].OUTTGL.reg = SAMD_PIN_MASK(pin))
 #endif
 
 // Send string macros

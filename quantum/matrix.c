@@ -41,6 +41,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    define ROW_SHIFTER ((uint32_t)1)
 #endif
 
+#ifndef MATRIX_IO_DELAY
+#    define MATRIX_IO_DELAY 30
+#endif
+
 #ifdef MATRIX_MASKED
 extern const matrix_row_t matrix_mask[];
 #endif
@@ -55,6 +59,8 @@ static const pin_t col_pins[MATRIX_COLS] = MATRIX_COL_PINS;
 /* matrix state(1:on, 0:off) */
 static matrix_row_t raw_matrix[MATRIX_ROWS];  // raw values
 static matrix_row_t matrix[MATRIX_ROWS];      // debounced values
+
+__attribute__((weak)) void matrix_io_delay(void) { wait_us(MATRIX_IO_DELAY); }
 
 __attribute__((weak)) void matrix_init_quantum(void) { matrix_init_kb(); }
 
@@ -167,7 +173,7 @@ static bool read_cols_on_row(matrix_row_t current_matrix[], uint8_t current_row)
 
     // Select row and wait for row selecton to stabilize
     select_row(current_row);
-    wait_us(30);
+    matrix_io_delay();
 
     // For each col...
     for (uint8_t col_index = 0; col_index < MATRIX_COLS; col_index++) {
@@ -211,7 +217,7 @@ static bool read_rows_on_col(matrix_row_t current_matrix[], uint8_t current_col)
 
     // Select col and wait for col selecton to stabilize
     select_col(current_col);
-    wait_us(30);
+    matrix_io_delay();
 
     // For each row...
     for (uint8_t row_index = 0; row_index < MATRIX_ROWS; row_index++) {
