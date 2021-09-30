@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #ifndef MATRIX_IO_DELAY
-#    define MATRIX_IO_DELAY 30
+#    define MATRIX_IO_DELAY 40
 #endif
 
 #ifdef MATRIX_MASKED
