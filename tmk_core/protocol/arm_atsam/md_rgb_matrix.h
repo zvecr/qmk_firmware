@@ -138,14 +138,28 @@ typedef struct led_instruction_s {
 
 extern led_instruction_t led_instructions[];
 
-extern uint8_t led_animation_breathing;
-extern uint8_t led_animation_id;
-extern float   led_animation_speed;
-extern uint8_t led_lighting_mode;
-extern uint8_t led_enabled;
-extern uint8_t led_animation_breathe_cur;
-extern uint8_t led_animation_direction;
-extern uint8_t breathe_dir;
+typedef struct led_config_s {
+    uint8_t animation_orientation;
+    uint8_t animation_breathing;
+    uint8_t animation_id;
+    float   animation_speed;
+    uint8_t lighting_mode;
+    uint8_t enabled;
+    uint8_t animation_breathe_cur;
+    uint8_t animation_direction;
+    uint8_t animation_breathe_dir;
+} md_led_config_t;
+
+extern md_led_config_t md_led_config;
+
+#    define led_animation_breathing md_led_config.animation_breathing
+#    define led_animation_id md_led_config.animation_id
+#    define led_animation_speed md_led_config.animation_speed
+#    define led_lighting_mode md_led_config.lighting_mode
+#    define led_enabled md_led_config.enabled
+#    define led_animation_breathe_cur md_led_config.animation_breathe_cur
+#    define led_animation_direction md_led_config.animation_direction
+#    define breathe_dir md_led_config.animation_breathe_dir
 
 #    define LED_MODE_NORMAL 0  // Must be 0
 #    define LED_MODE_KEYS_ONLY 1

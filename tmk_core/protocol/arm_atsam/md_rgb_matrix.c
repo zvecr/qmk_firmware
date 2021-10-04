@@ -23,6 +23,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    include <math.h>
 
 #    ifdef USE_MASSDROP_CONFIGURATOR
+
+// TODO?: wire these up to keymap.c
+md_led_config_t md_led_config = {
+.animation_orientation = 0,
+.animation_direction   = 0,
+.animation_breathing   = 0,
+.animation_id          = 0,
+.animation_speed       = 4.0f,
+.lighting_mode         = LED_MODE_NORMAL,
+.enabled               = 1,
+.animation_breathe_cur = BREATHE_MIN_STEP,
+.animation_breathe_dir = 1
+};
+EECONFIG_DEBOUNCE_HELPER(md_led, ((uint8_t *)(EECONFIG_SIZE + 64)), md_led_config);
+
 __attribute__((weak)) led_instruction_t led_instructions[] = {{.end = 1}};
 static void                             md_rgb_matrix_config_override(int i);
 #    endif  // USE_MASSDROP_CONFIGURATOR
@@ -80,7 +95,7 @@ void gcr_compute(void) {
     uint8_t gcr_use = gcr_desired;
 
 #    ifdef USE_MASSDROP_CONFIGURATOR
-    if (led_animation_breathing) {
+    if (md_led_config.animation_breathing) {
         gcr_use = gcr_breathe;
     }
 #    endif
@@ -154,7 +169,7 @@ void gcr_compute(void) {
 #    ifdef USE_MASSDROP_CONFIGURATOR
             // If breathe mode is active, the top end can fluctuate if the host can not supply enough current
             // So set the breathe GCR to where it becomes stable
-            if (led_animation_breathing == 1) {
+            if (md_led_config.animation_breathing == 1) {
                 gcr_breathe = gcr_actual;
                 // PS: At this point, setting breathing to exhale makes a noticebly shorter cycle
                 //    and the same would happen maybe one or two more times. Therefore I'm favoring
@@ -253,14 +268,14 @@ static void flush(void) {
 #    ifdef USE_MASSDROP_CONFIGURATOR
     breathe_mult = 1;
 
-    if (led_animation_breathing) {
+    if (md_led_config.animation_breathing) {
         //+60us 119 LED
-        led_animation_breathe_cur += BREATHE_STEP * breathe_dir;
+        led_animation_breathe_cur += BREATHE_STEP * md_led_config.animation_breathe_dir;
 
         if (led_animation_breathe_cur >= BREATHE_MAX_STEP)
-            breathe_dir = -1;
+            md_led_config.animation_breathe_dir = -1;
         else if (led_animation_breathe_cur <= BREATHE_MIN_STEP)
-            breathe_dir = 1;
+            md_led_config.animation_breathe_dir = 1;
 
         // Brightness curve created for 256 steps, 0 - ~98%
         breathe_mult = 0.000015 * led_animation_breathe_cur * led_animation_breathe_cur;
@@ -331,17 +346,6 @@ const rgb_matrix_driver_t rgb_matrix_driver = {.init = init, .flush = flush, .se
 #    ifdef USE_MASSDROP_CONFIGURATOR
 // Ported from Massdrop QMK GitHub Repo
 
-// TODO?: wire these up to keymap.c
-uint8_t led_animation_orientation = 0;
-uint8_t led_animation_direction   = 0;
-uint8_t led_animation_breathing   = 0;
-uint8_t led_animation_id          = 0;
-float   led_animation_speed       = 4.0f;
-uint8_t led_lighting_mode         = LED_MODE_NORMAL;
-uint8_t led_enabled               = 1;
-uint8_t led_animation_breathe_cur = BREATHE_MIN_STEP;
-uint8_t breathe_dir               = 1;
-
 static void led_run_pattern(led_setup_t* f, float* ro, float* go, float* bo, float pos) {
     float po;
 
@@ -403,7 +407,7 @@ static void md_rgb_matrix_config_override(int i) {
     float go = 0;
     float bo = 0;
 
-    float po = (led_animation_orientation) ? (float)g_led_config.point[i].y / 64.f * 100 : (float)g_led_config.point[i].x / 224.f * 100;
+    float po = (md_led_config.animation_orientation) ? (float)g_led_config.point[i].y / 64.f * 100 : (float)g_led_config.point[i].x / 224.f * 100;
 
     uint8_t highest_active_layer = biton32(layer_state);
 
@@ -438,7 +442,7 @@ static void md_rgb_matrix_config_override(int i) {
             } else if (led_cur_instruction->flags & LED_FLAG_USE_PATTERN) {
                 led_run_pattern(led_setups[led_cur_instruction->pattern_id], &ro, &go, &bo, po);
             } else if (led_cur_instruction->flags & LED_FLAG_USE_ROTATE_PATTERN) {
-                led_run_pattern(led_setups[led_animation_id], &ro, &go, &bo, po);
+                led_run_pattern(led_setups[md_led_config.animation_id], &ro, &go, &bo, po);
             }
 
         next_iter:
@@ -458,7 +462,7 @@ static void md_rgb_matrix_config_override(int i) {
         else if (bo < 0)
             bo = 0;
 
-        if (led_animation_breathing) {
+        if (md_led_config.animation_breathing) {
             ro *= breathe_mult;
             go *= breathe_mult;
             bo *= breathe_mult;
