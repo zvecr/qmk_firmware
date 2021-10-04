@@ -23,7 +23,7 @@ enum alt_keycodes {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT(
-        KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,  \
+        L_T_MD,  L_BRD,    L_BRI,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,  \
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_HOME, \
         KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGUP, \
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,          KC_UP,   KC_PGDN, \
@@ -60,6 +60,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (LED_GCR_STEP > LED_GCR_MAX - gcr_desired) gcr_desired = LED_GCR_MAX;
                 else gcr_desired += LED_GCR_STEP;
                 if (led_animation_breathing) gcr_breathe = gcr_desired;
+                //md_led_changed();
             }
             return false;
         case L_BRD:
@@ -67,53 +68,62 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (LED_GCR_STEP > gcr_desired) gcr_desired = 0;
                 else gcr_desired -= LED_GCR_STEP;
                 if (led_animation_breathing) gcr_breathe = gcr_desired;
+                //md_led_changed();
             }
             return false;
         case L_PTN:
             if (record->event.pressed) {
                 if (led_animation_id == led_setups_count - 1) led_animation_id = 0;
                 else led_animation_id++;
+                md_led_changed();
             }
             return false;
         case L_PTP:
             if (record->event.pressed) {
                 if (led_animation_id == 0) led_animation_id = led_setups_count - 1;
                 else led_animation_id--;
+                md_led_changed();
             }
             return false;
         case L_PSI:
             if (record->event.pressed) {
                 led_animation_speed += ANIMATION_SPEED_STEP;
+                md_led_changed();
             }
             return false;
         case L_PSD:
             if (record->event.pressed) {
                 led_animation_speed -= ANIMATION_SPEED_STEP;
                 if (led_animation_speed < 0) led_animation_speed = 0;
+                md_led_changed();
             }
             return false;
         case L_T_MD:
             if (record->event.pressed) {
                 led_lighting_mode++;
                 if (led_lighting_mode > LED_MODE_MAX_INDEX) led_lighting_mode = LED_MODE_NORMAL;
+                md_led_changed();
             }
             return false;
         case L_T_ONF:
             if (record->event.pressed) {
                 led_enabled = !led_enabled;
                 I2C3733_Control_Set(led_enabled);
+                md_led_changed();
             }
             return false;
         case L_ON:
             if (record->event.pressed) {
                 led_enabled = 1;
                 I2C3733_Control_Set(led_enabled);
+                md_led_changed();
             }
             return false;
         case L_OFF:
             if (record->event.pressed) {
                 led_enabled = 0;
                 I2C3733_Control_Set(led_enabled);
+                md_led_changed();
             }
             return false;
         case L_T_BR:
@@ -124,11 +134,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     led_animation_breathe_cur = BREATHE_MIN_STEP;
                     breathe_dir = 1;
                 }
+                md_led_changed();
             }
             return false;
         case L_T_PTD:
             if (record->event.pressed) {
                 led_animation_direction = !led_animation_direction;
+                md_led_changed();
             }
             return false;
         case U_T_AGCR:

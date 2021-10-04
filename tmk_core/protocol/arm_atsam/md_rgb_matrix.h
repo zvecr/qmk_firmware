@@ -139,6 +139,7 @@ typedef struct led_instruction_s {
 extern led_instruction_t led_instructions[];
 
 typedef struct led_config_s {
+    uint8_t ver; // assumed to be zero on eeprom reset
     uint8_t animation_orientation;
     uint8_t animation_breathing;
     uint8_t animation_id;
@@ -151,6 +152,8 @@ typedef struct led_config_s {
 } md_led_config_t;
 
 extern md_led_config_t md_led_config;
+
+void md_led_changed(void);
 
 #    define led_animation_breathing md_led_config.animation_breathing
 #    define led_animation_id md_led_config.animation_id

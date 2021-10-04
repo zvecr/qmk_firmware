@@ -25,18 +25,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #    ifdef USE_MASSDROP_CONFIGURATOR
 
 // TODO?: wire these up to keymap.c
-md_led_config_t md_led_config = {
-.animation_orientation = 0,
-.animation_direction   = 0,
-.animation_breathing   = 0,
-.animation_id          = 0,
-.animation_speed       = 4.0f,
-.lighting_mode         = LED_MODE_NORMAL,
-.enabled               = 1,
-.animation_breathe_cur = BREATHE_MIN_STEP,
-.animation_breathe_dir = 1
-};
+md_led_config_t md_led_config = {0};
 EECONFIG_DEBOUNCE_HELPER(md_led, ((uint8_t *)(EECONFIG_SIZE + 64)), md_led_config);
+
+void eeconfig_update_md_led_default(void) {
+    md_led_config.ver                   = 1;
+    md_led_config.animation_orientation = 0;
+    md_led_config.animation_direction   = 0;
+    md_led_config.animation_breathing   = 0;
+    md_led_config.animation_id          = 0;
+    md_led_config.animation_speed       = 4.0f;
+    md_led_config.lighting_mode         = LED_MODE_NORMAL;
+    md_led_config.enabled               = 1;
+    md_led_config.animation_breathe_cur = BREATHE_MIN_STEP;
+    md_led_config.animation_breathe_dir = 1;
+
+    eeconfig_flush_md_led(true);
+}
+
+void md_led_changed(void) {
+    eeconfig_flag_md_led(true);
+}
+
+//todo: use real task rather than this bodge
+void housekeeping_task_kb(void) {
+    eeconfig_flush_md_led_task();
+}
 
 __attribute__((weak)) led_instruction_t led_instructions[] = {{.end = 1}};
 static void                             md_rgb_matrix_config_override(int i);
@@ -232,6 +246,11 @@ static void led_set_all(uint8_t r, uint8_t g, uint8_t b) {
 
 static void init(void) {
     DBGC(DC_LED_MATRIX_INIT_BEGIN);
+
+    eeconfig_init_md_led();
+    if (md_led_config.ver != 1) {
+        eeconfig_update_md_led_default();
+    }
 
     issi3733_prepare_arrays();
 
