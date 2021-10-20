@@ -14,7 +14,7 @@ def status():
             'githash': '<sha-1 hash for the submodule>
         }
 
-    status is None when the submodule doesn't exist, False when it's out of date, and True when it's current
+    status is None when the submodule doesn't exist, False when it's out of date, Empty string on modified, and True when it's current
     """
     submodules = {}
     git_cmd = cli.run(['git', 'submodule', 'status'], timeout=30)
@@ -27,7 +27,12 @@ def status():
         githash, submodule = line[1:].split()[:2]
         submodules[submodule] = {'name': submodule, 'githash': githash}
 
-        if status == '-':
+        if cli.run(['git', '-C', submodule, 'diff-files','--quiet'], timeout=30).returncode:
+            status = 'm'
+
+        if status == 'm':
+            submodules[submodule]['status'] = ''
+        elif status == '-':
             submodules[submodule]['status'] = None
         elif status == '+':
             submodules[submodule]['status'] = False

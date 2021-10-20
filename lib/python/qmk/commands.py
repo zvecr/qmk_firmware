@@ -93,8 +93,8 @@ def create_make_command(keyboard, keymap, target=None, dry_run=False, parallel=1
     return create_make_target(':'.join(make_args), dry_run=dry_run, parallel=parallel, **env_vars)
 
 
-def get_git_version(current_time, repo_dir='.', check_dir='.'):
-    """Returns the current git version for a repo, or the current time.
+def get_git_version(repo_dir='.', check_dir='.'):
+    """Returns the current git version for a repo, or None.
     """
     git_describe_cmd = ['git', 'describe', '--abbrev=6', '--dirty', '--always', '--tags']
 
@@ -113,9 +113,9 @@ def get_git_version(current_time, repo_dir='.', check_dir='.'):
         else:
             cli.log.warn(f'"{" ".join(git_describe_cmd)}" returned error code {git_describe.returncode}')
             print(git_describe.stderr)
-            return current_time
+            return None
 
-    return current_time
+    return None
 
 
 def get_make_parallel_args(parallel=1):
@@ -149,9 +149,9 @@ def create_version_h(skip_git=False, skip_all=False):
         chibios_version = "NA"
         chibios_contrib_version = "NA"
     else:
-        git_version = get_git_version(current_time)
-        chibios_version = get_git_version(current_time, "chibios", "os")
-        chibios_contrib_version = get_git_version(current_time, "chibios-contrib", "os")
+        git_version = get_git_version() or current_time
+        chibios_version = get_git_version("chibios", "os") or current_time
+        chibios_contrib_version = get_git_version("chibios-contrib", "os") or current_time
 
     version_h_lines = f"""/* This file was automatically generated. Do not edit or copy.
  */
