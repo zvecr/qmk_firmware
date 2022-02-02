@@ -27,6 +27,7 @@
 #include "host_driver.h"
 #include "keyboard.h"
 #include "matrix.h"
+#include "suspend.h"
 #include "debug.h"
 #include "usb_device_state.h"
 #include "usb_driver.h"
@@ -450,11 +451,16 @@ void protocol_post_init(void) {
 }
 
 void protocol_pre_task(void) {
-    // TODO: better suspend stuffs
     if (g_usbus.state == USBUS_STATE_SUSPEND) {
         while (g_usbus.state == USBUS_STATE_SUSPEND) {
-            wait_ms(15);
+            suspend_power_down();
+            /* Remote wakeup */
+            if (suspend_wakeup_condition()) {
+                // TODO: handle remote wakeup
+                wait_ms(25);
+            }
         }
+        suspend_wakeup_init();
     }
 }
 
