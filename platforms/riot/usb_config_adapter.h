@@ -17,7 +17,7 @@ uint16_t    qmk_get_usb_max_power(void);
 #define CONFIG_USB_MANUF_STR qmk_get_usb_manuf()
 #define CONFIG_USB_PRODUCT_STR qmk_get_usb_product()
 #define CONFIG_USB_VID qmk_get_usb_vid()
-#define CONFIG_USB_PID qmk_get_usb_bcd()
+#define CONFIG_USB_PID qmk_get_usb_pid()
 #define CONFIG_USB_BCD qmk_get_usb_bcd()
 #define CONFIG_USB_MAX_POWER qmk_get_usb_max_power()
 

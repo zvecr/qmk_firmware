@@ -28,11 +28,6 @@ enum usb_interfaces {
     TOTAL_INTERFACES = NEXT_INTERFACE
 };
 
-// TODO: remove bodge
-#ifndef NKRO_ENABLE
-#define NKRO_INTERFACE 0xFF
-#endif
-
 #define NKRO_EPSIZE 32
 #define CONSOLE_EPSIZE 32
 #define RAW_EPSIZE 32
@@ -41,6 +36,8 @@ extern usbus_t g_usbus;
 
 typedef struct comp_hid_device_conf {
     uint8_t        id;
+    uint32_t       subclass;
+    uint32_t       protocol;
     const uint8_t *report_desc;      /**< report descriptor reference */
     size_t         report_desc_size; /**< report descriptor size */
     size_t         ep_size;
@@ -51,3 +48,5 @@ void usbdrv_init(comp_hid_device_conf_t *config, size_t len);
 void usbdrv_write(uint8_t index, const void *buffer, size_t len);
 
 uint8_t usbdrv_keyboard_leds(void);
+
+void usbdrv_wake(void);

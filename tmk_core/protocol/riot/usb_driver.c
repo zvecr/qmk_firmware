@@ -9,8 +9,8 @@
 #include "usb_driver.h"
 #include "report.h"
 
-static uint8_t                keyboard_led_state                            = 0;
-uint8_t usbdrv_keyboard_leds(void) { return keyboard_led_state; }
+static uint8_t keyboard_led_state = 0;
+uint8_t        usbdrv_keyboard_leds(void) { return keyboard_led_state; }
 
 typedef struct comp_hid_device comp_hid_device_t;
 
@@ -42,6 +42,10 @@ static void _hid_rx_pipe(comp_hid_device_t *dev, uint8_t *data, size_t len) {
     // if (_rx_cb) {
     //     _rx_cb(_rx_cb_arg);
     // }
+#ifdef RAW_ENABLE
+    void raw_hid_dump(uint8_t * data, uint8_t length);
+    raw_hid_dump(data, len);
+#endif
 }
 
 static size_t _gen_hid_descriptor(usbus_t *usbus, void *arg) {
@@ -50,7 +54,7 @@ static size_t _gen_hid_descriptor(usbus_t *usbus, void *arg) {
     usb_desc_hid_t hid_desc;
     hid_desc.length        = sizeof(usb_desc_hid_t);
     hid_desc.desc_type     = USB_HID_DESCR_HID;
-    hid_desc.bcd_hid       = USB_HID_VERSION_BCD; //0x1111;  // dev->conf.id == KEYBOARD_INTERFACE ? 0x0101 : 0x0111;
+    hid_desc.bcd_hid       = USB_HID_VERSION_BCD;
     hid_desc.country_code  = USB_HID_COUNTRY_CODE_NOTSUPPORTED;
     hid_desc.num_descrs    = 0x01;
     hid_desc.report_type   = USB_HID_DESCR_REPORT;
@@ -81,13 +85,9 @@ static void _init(usbus_t *usbus, usbus_handler_t *handler) {
     dev->hid_descr.funcs = &_hid_descriptor;
     dev->hid_descr.arg   = dev;
 
-    /*
-       Configure Interface as USB_HID interface, choosing NONE for subclass and
-       protocol in order to represent a generic I/O device
-     */
     dev->iface.class     = USB_CLASS_HID;
-    dev->iface.subclass  = ((dev->conf.id == KEYBOARD_INTERFACE) || (dev->conf.id == NKRO_INTERFACE)) ? USB_HID_SUBCLASS_BOOT : USB_HID_SUBCLASS_NONE;
-    dev->iface.protocol  = ((dev->conf.id == KEYBOARD_INTERFACE) || (dev->conf.id == NKRO_INTERFACE)) ? USB_HID_PROTOCOL_KEYBOARD : USB_HID_PROTOCOL_NONE;
+    dev->iface.subclass  = dev->conf.subclass;
+    dev->iface.protocol  = dev->conf.protocol;
     dev->iface.descr_gen = &dev->hid_descr;
     dev->iface.handler   = handler;
 
@@ -128,8 +128,7 @@ static int _control_handler(usbus_t *usbus, usbus_handler_t *handler, usbus_cont
                 // Bodge to get windows to get past "IRP USBD_STATUS: USBD_STATUS_CANCELED"
                 uint8_t status[2] = {0};
                 usbus_control_slicer_put_bytes(usbus, status, sizeof(status));
-            }
-            else if (desc_type == USB_HID_DESCR_HID) {
+            } else if (desc_type == USB_HID_DESCR_HID) {
                 _gen_hid_descriptor(usbus, dev);
             }
             break;
@@ -141,13 +140,13 @@ static int _control_handler(usbus_t *usbus, usbus_handler_t *handler, usbus_cont
             if ((state == USBUS_CONTROL_REQUEST_STATE_OUTDATA)) {
                 size_t   size = 0;
                 uint8_t *data = usbus_control_get_out_data(usbus, &size);
-                if ((setup->index == KEYBOARD_INTERFACE) || (setup->index == NKRO_INTERFACE)) {
+                if (dev->conf.protocol == USB_HID_PROTOCOL_KEYBOARD) {  // KEYBOARD_INTERFACE || NKRO_INTERFACE
                     if (size == 2) {
                         keyboard_led_state = data[1];
                     } else if (size == 1) {
                         keyboard_led_state = data[0];
                     }
-                } else{
+                } else {
                     if (size > 0) {
                         dev->cb(dev, data, size);
                     }
@@ -245,7 +244,7 @@ void usbdrv_write(uint8_t id, const void *buffer, size_t len) {
 
     while (len) {
         mutex_lock(&dev->in_lock);
-        //TODO: Implement timeout???
+        // TODO: Implement timeout???
         // uint8_t locked = mutex_trylock(&dev->in_lock);
         // if(locked == 0)
         //     return;
@@ -264,3 +263,23 @@ void usbdrv_write(uint8_t id, const void *buffer, size_t len) {
         usbus_event_post(dev->usbus, &dev->tx_ready);
     }
 }
+
+// TODO: handle remote wakeup
+//       This functionality is currently MIA within RIOT
+#ifdef MCU_SAMD51
+#    include "sam_usb.h"
+void usbdrv_wake(void) {
+    // mimic udc_remotewakeup/usb_device_send_remote_wake_up from lib/arm_atsam
+    usbdev_t *         usbdev = usbdev_get_ctx(0);
+    sam0_common_usb_t *dev    = (sam0_common_usb_t *)usbdev;
+
+    uint8_t try = 5;
+    while (2 != dev->config->device->FSMSTATUS.reg && try--) {
+        dev->config->device->CTRLB.reg |= USB_DEVICE_CTRLB_UPRSM;
+    }
+}
+#else
+void usbdrv_wake(void) {
+#    pragma message("remote wakeup not currently supported")
+}
+#endif

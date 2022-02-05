@@ -172,6 +172,63 @@ static const uint8_t shared_hid_report[] = {
     0x81, 0x00,                //   Input (Data, Array, Absolute)
     0xC0,                      // End Collection
 #endif
+
+#ifdef DIGITIZER_ENABLE
+    // Digitizer report descriptor
+    0x05, 0x0D,                 // Usage Page (Digitizers)
+    0x09, 0x01,                 // Usage (Digitizer)
+    0xA1, 0x01,                 // Collection (Application)
+    0x85, REPORT_ID_DIGITIZER,  //   Report ID
+    0x09, 0x22,                 //   Usage (Finger)
+    0xA1, 0x00,                 //   Collection (Physical)
+    // Tip Switch (1 bit)
+    0x09, 0x42,  //     Usage (Tip Switch)
+    0x15, 0x00,  //     Logical Minimum
+    0x25, 0x01,  //     Logical Maximum
+    0x95, 0x01,  //     Report Count (1)
+    0x75, 0x01,  //     Report Size (16)
+    0x81, 0x02,  //     Input (Data, Variable, Absolute)
+    // In Range (1 bit)
+    0x09, 0x32,  //     Usage (In Range)
+    0x81, 0x02,  //     Input (Data, Variable, Absolute)
+    // Padding (6 bits)
+    0x95, 0x06,  //     Report Count (6)
+    0x81, 0x03,  //     Input (Constant)
+
+    // X/Y Position (4 bytes)
+    0x05, 0x01,        //     Usage Page (Generic Desktop)
+    0x26, 0xFF, 0x7F,  //     Logical Maximum (32767)
+    0x95, 0x01,        //     Report Count (1)
+    0x75, 0x10,        //     Report Size (16)
+    0x65, 0x33,        //     Unit (Inch, English Linear)
+    0x55, 0x0E,        //     Unit Exponent (-2)
+    0x09, 0x30,        //     Usage (X)
+    0x81, 0x02,        //     Input (Data, Variable, Absolute)
+    0x09, 0x31,        //     Usage (Y)
+    0x81, 0x02,        //     Input (Data, Variable, Absolute)
+    0xC0,              //   End Collection
+    0xC0,              // End Collection
+#endif
+
+#ifdef PROGRAMMABLE_BUTTON_ENABLE
+    // Programmable buttons report descriptor
+    0x05, 0x0C,                           // Usage Page (Consumer)
+    0x09, 0x01,                           // Usage (Consumer Control)
+    0xA1, 0x01,                           // Collection (Application)
+    0x85, REPORT_ID_PROGRAMMABLE_BUTTON,  //   Report ID
+    0x09, 0x03,                           //   Usage (Programmable Buttons)
+    0xA1, 0x04,                           //   Collection (Named Array)
+    0x05, 0x09,                           //     Usage Page (Button)
+    0x19, 0x01,                           //     Usage Minimum (Button 1)
+    0x29, 0x20,                           //     Usage Maximum (Button 32)
+    0x15, 0x00,                           //     Logical Minimum (0)
+    0x25, 0x01,                           //     Logical Maximum (1)
+    0x95, 0x20,                           //     Report Count (32)
+    0x75, 0x01,                           //     Report Size (1)
+    0x81, 0x02,                           //     Input (Data, Variable, Absolute)
+    0xC0,                                 //   End Collection
+    0xC0,                                 // End Collection
+#endif
 };
 
 #ifdef NKRO_ENABLE
@@ -242,20 +299,20 @@ static const uint8_t raw_hid_report[] = {
     0x09, RAW_USAGE_ID,                          // Usage (Vendor Defined)
     0xA1, 0x01,                                  // Collection (Application)
     // Data to host
-    0x09, 0x62,             //   Usage (Vendor Defined)
-    0x15, 0x00,             //   Logical Minimum (0)
-    0x26, 0xFF, 0x00,       //   Logical Maximum (255)
-    0x95, RAW_EPSIZE,       //   Report Count
-    0x75, 0x08,             //   Report Size (8)
-    0x81, 0x02,             //   Input (Data, Variable, Absolute)
+    0x09, 0x62,        //   Usage (Vendor Defined)
+    0x15, 0x00,        //   Logical Minimum (0)
+    0x26, 0xFF, 0x00,  //   Logical Maximum (255)
+    0x95, RAW_EPSIZE,  //   Report Count
+    0x75, 0x08,        //   Report Size (8)
+    0x81, 0x02,        //   Input (Data, Variable, Absolute)
     // Data from host
-    0x09, 0x63,             //   Usage (Vendor Defined)
-    0x15, 0x00,             //   Logical Minimum (0)
-    0x26, 0xFF, 0x00,       //   Logical Maximum (255)
-    0x95, RAW_EPSIZE,       //   Report Count
-    0x75, 0x08,             //   Report Size (8)
-    0x91, 0x02,             //   Output (Data, Variable, Absolute)
-    0xC0                    // End Collection
+    0x09, 0x63,        //   Usage (Vendor Defined)
+    0x15, 0x00,        //   Logical Minimum (0)
+    0x26, 0xFF, 0x00,  //   Logical Maximum (255)
+    0x95, RAW_EPSIZE,  //   Report Count
+    0x75, 0x08,        //   Report Size (8)
+    0x91, 0x02,        //   Output (Data, Variable, Absolute)
+    0xC0               // End Collection
 };
 #endif
 
@@ -270,8 +327,9 @@ static void    send_keyboard(report_keyboard_t *report);
 static void    send_mouse(report_mouse_t *report);
 static void    send_system(uint16_t data);
 static void    send_consumer(uint16_t data);
+static void    send_programmable_button(uint32_t data);
 
-static host_driver_t driver = {keyboard_leds, send_keyboard, send_mouse, send_system, send_consumer};
+static host_driver_t driver = {keyboard_leds, send_keyboard, send_mouse, send_system, send_consumer, send_programmable_button};
 
 static uint8_t keyboard_leds(void) { return usbdrv_keyboard_leds(); }
 
@@ -293,7 +351,7 @@ static void send_keyboard(report_keyboard_t *report) {
 #ifdef NKRO_ENABLE
     if (!keyboard_protocol || !keymap_config.nkro)
 #endif
-    keyboard_report_sent = *report;
+        keyboard_report_sent = *report;
 }
 
 static void send_mouse(report_mouse_t *report) {
@@ -336,6 +394,30 @@ static void send_consumer(uint16_t data) {
 #endif
 }
 
+void send_digitizer(report_digitizer_t *report) {
+#ifdef DIGITIZER_ENABLE
+    if (g_usbus.state != USBUS_STATE_CONFIGURED) {
+        return;
+    }
+    usbdrv_write(SHARED_INTERFACE, &report, sizeof(report_digitizer_t));
+#endif
+}
+
+static void send_programmable_button(uint32_t data) {
+#ifdef PROGRAMMABLE_BUTTON_ENABLE
+    static report_programmable_button_t report = {
+        .report_id = REPORT_ID_PROGRAMMABLE_BUTTON,
+    };
+
+    report.usage = data;
+
+    if (g_usbus.state != USBUS_STATE_CONFIGURED) {
+        return;
+    }
+    usbdrv_write(SHARED_INTERFACE, &report, sizeof(report_programmable_button_t));
+#endif
+}
+
 /*------------------------------------------------------------------*
  * RAW HID
  *------------------------------------------------------------------*/
@@ -344,11 +426,18 @@ static void send_consumer(uint16_t data) {
 static uint8_t raw_output_buffer[RAW_EPSIZE];
 static uint8_t raw_output_received_bytes = 0;
 
+void raw_hid_dump(uint8_t *data, uint8_t length) {
+    memcpy(&raw_output_buffer[raw_output_received_bytes], data, length);
+    raw_output_received_bytes += length;
+}
+
 void raw_hid_send(uint8_t *data, uint8_t length) {
     if (length != RAW_EPSIZE) {
         return;
     }
-    // TODO: send data...
+
+    usbdrv_write(RAW_INTERFACE, data, length);
+    usbdrv_write(RAW_INTERFACE, 0, 0);
 }
 
 __attribute__((weak)) void raw_hid_receive(uint8_t *data, uint8_t length) {
@@ -401,6 +490,8 @@ void protocol_pre_init(void) {
     comp_hid_device_conf_t config[TOTAL_INTERFACES] = {
         {
             .id               = KEYBOARD_INTERFACE,
+            .subclass         = USB_HID_SUBCLASS_BOOT,
+            .protocol         = USB_HID_PROTOCOL_KEYBOARD,
             .report_desc      = report_desc_keyboard,
             .report_desc_size = sizeof(report_desc_keyboard),
             .ep_size          = 8,
@@ -409,6 +500,8 @@ void protocol_pre_init(void) {
 #ifdef RAW_ENABLE
         {
             .id               = RAW_INTERFACE,
+            .subclass         = USB_HID_SUBCLASS_NONE,
+            .protocol         = USB_HID_PROTOCOL_NONE,
             .report_desc      = raw_hid_report,
             .report_desc_size = sizeof(raw_hid_report),
             .ep_size          = RAW_EPSIZE,
@@ -418,6 +511,8 @@ void protocol_pre_init(void) {
 #ifdef NKRO_ENABLE
         {
             .id               = NKRO_INTERFACE,
+            .subclass         = USB_HID_SUBCLASS_BOOT,
+            .protocol         = USB_HID_PROTOCOL_KEYBOARD,
             .report_desc      = nkro_hid_report,
             .report_desc_size = sizeof(nkro_hid_report),
             .ep_size          = NKRO_EPSIZE,
@@ -426,6 +521,8 @@ void protocol_pre_init(void) {
 #endif
         {
             .id               = SHARED_INTERFACE,
+            .subclass         = USB_HID_SUBCLASS_NONE,
+            .protocol         = USB_HID_PROTOCOL_NONE,
             .report_desc      = shared_hid_report,
             .report_desc_size = sizeof(shared_hid_report),
             .ep_size          = 8,
@@ -434,6 +531,8 @@ void protocol_pre_init(void) {
 #ifdef CONSOLE_ENABLE
         {
             .id               = CONSOLE_INTERFACE,
+            .subclass         = USB_HID_SUBCLASS_NONE,
+            .protocol         = USB_HID_PROTOCOL_NONE,
             .report_desc      = console_hid_report,
             .report_desc_size = sizeof(console_hid_report),
             .ep_size          = CONSOLE_EPSIZE,
@@ -457,7 +556,7 @@ void protocol_pre_task(void) {
             /* Remote wakeup */
             if (suspend_wakeup_condition()) {
                 // TODO: handle remote wakeup
-                wait_ms(25);
+                usbdrv_wake();
             }
         }
         suspend_wakeup_init();
