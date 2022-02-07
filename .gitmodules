@@ -21,4 +21,4 @@
 [submodule "lib/riot"]
 	path = lib/riot
 	url = https://github.com/qmk/RIOT
-	branch = extra_usb
+	branch = 2021.10
