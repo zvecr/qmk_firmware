@@ -184,3 +184,18 @@ void eeprom_update_block(const void *buf, void *addr, size_t len) {
         eeprom_write_byte(p++, *src++);
     }
 }
+
+void eeprom_driver_init(void) {
+  // do nothing
+}
+
+void eeprom_driver_erase(void) {
+    if (get_virtual_eeprom_size() == 0) {
+        return;
+    }
+
+    // zero everything
+    for (uint32_t addr = 0; addr < get_virtual_eeprom_size(); addr += sizeof(uint8_t)) {
+        eeprom_write_byte((void *)(uintptr_t)addr, 0);
+    }
+}

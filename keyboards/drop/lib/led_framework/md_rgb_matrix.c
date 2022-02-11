@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define FLUSH_TIMEOUT 5000
 #define EECONFIG_MD_LED ((uint8_t*)(EECONFIG_SIZE + 64))
-#define MD_LED_CONFIG_VERSION 1
+#define MD_LED_CONFIG_VERSION 2
 
 // TODO?: wire these up to keymap.c
 md_led_config_t md_led_config = {0};
@@ -59,11 +59,20 @@ uint8_t gcr_breathe;
 float   breathe_mult = 1;
 float   pomod        = 0;
 
-void md_rgb_matrix_init(void) {
+void keyboard_post_init_kb(void) {
+    if (!eeconfig_is_enabled()) {
+        eeconfig_init();
+    }
+
     eeconfig_init_md_led();
     if (md_led_config.ver != MD_LED_CONFIG_VERSION) {
         eeconfig_update_md_led_default();
+        eeconfig_update_rgb_matrix_default();
     }
+    keyboard_post_init_user();
+}
+
+void md_rgb_matrix_init(void) {
 }
 
 void md_rgb_matrix_effect_start(void) {
