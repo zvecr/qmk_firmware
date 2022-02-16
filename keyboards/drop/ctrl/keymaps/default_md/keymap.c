@@ -93,16 +93,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case L_BRI:
             if (record->event.pressed) {
-                if (LED_GCR_STEP > LED_GCR_MAX - gcr_desired) gcr_desired = LED_GCR_MAX;
-                else gcr_desired += LED_GCR_STEP;
-                if (led_animation_breathing) gcr_breathe = gcr_desired;
+                // if (LED_GCR_STEP > LED_GCR_MAX - gcr_desired) gcr_desired = LED_GCR_MAX;
+                // else gcr_desired += LED_GCR_STEP;
+                // if (led_animation_breathing) gcr_breathe = gcr_desired;
+                rgb_matrix_increase_val();
             }
             return false;
         case L_BRD:
             if (record->event.pressed) {
-                if (LED_GCR_STEP > gcr_desired) gcr_desired = 0;
-                else gcr_desired -= LED_GCR_STEP;
-                if (led_animation_breathing) gcr_breathe = gcr_desired;
+                // if (LED_GCR_STEP > gcr_desired) gcr_desired = 0;
+                // else gcr_desired -= LED_GCR_STEP;
+                // if (led_animation_breathing) gcr_breathe = gcr_desired;
+                rgb_matrix_decrease_val();
             }
             return false;
         case L_EDG_M:
@@ -188,7 +190,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 led_animation_breathing = !led_animation_breathing;
                 if (led_animation_breathing) {
-                    gcr_breathe = gcr_desired;
+                    // gcr_breathe = gcr_desired;
                     led_animation_breathe_cur = BREATHE_MIN_STEP;
                     breathe_dir = 1;
                 }
@@ -237,7 +239,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 led_edge_mode = LED_EDGE_MODE_ALL;
                 led_animation_breathing = 0;
                 led_animation_id = 7; //led_programs.c led_setups leds_white index
-                gcr_desired = LED_GCR_MAX;
                 led_enabled = 1;
                 rgb_matrix_set_enabled(led_enabled);
             }

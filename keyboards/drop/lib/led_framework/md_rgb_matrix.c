@@ -32,7 +32,7 @@ EECONFIG_DEBOUNCE_HELPER(md_led, EECONFIG_MD_LED, md_led_config);
 void eeconfig_update_md_led_default(void) {
     md_led_config.ver = MD_LED_CONFIG_VERSION;
 
-    gcr_desired               = LED_GCR_MAX;
+    // gcr_desired               = LED_GCR_MAX;
     led_animation_orientation = 0;
     led_animation_direction   = 0;
     led_animation_breathing   = 0;
@@ -55,9 +55,9 @@ void md_led_changed(void) { eeconfig_flag_md_led(true); }
 // TODO: use real task rather than this bodge
 void housekeeping_task_kb(void) { eeconfig_flush_md_led_task(FLUSH_TIMEOUT); }
 
-uint8_t gcr_breathe;
-float   breathe_mult = 1;
-float   pomod        = 0;
+// uint8_t gcr_breathe;
+float breathe_mult = 1;
+float pomod        = 0;
 
 void keyboard_post_init_kb(void) {
     if (!eeconfig_is_enabled()) {
@@ -72,8 +72,7 @@ void keyboard_post_init_kb(void) {
     keyboard_post_init_user();
 }
 
-void md_rgb_matrix_init(void) {
-}
+void md_rgb_matrix_init(void) {}
 
 void md_rgb_matrix_effect_start(void) {
     breathe_mult = 1;
@@ -100,6 +99,53 @@ void md_rgb_matrix_effect_start(void) {
     pomod *= 100.0f;
     pomod = (uint32_t)pomod % 10000;
     pomod /= 100.0f;
+
+    // mimic behaviour of gcr_compute
+    void push_gcr(uint8_t value);
+    push_gcr(rgb_matrix_config.hsv.v);
+}
+
+void push_gcr(uint8_t value) {
+    // ignore if the value has already been set
+    static uint8_t last = 0xFF;
+    if(last == value) {
+        return;
+    }
+    last = value;
+
+#define ISSI_COMMANDREGISTER 0xFD
+#define ISSI_COMMANDREGISTER_WRITELOCK 0xFE
+#define ISSI_INTERRUPTMASKREGISTER 0xF0
+#define ISSI_INTERRUPTSTATUSREGISTER 0xF1
+
+#define ISSI_PAGE_LEDCONTROL 0x00  // PG0
+#define ISSI_PAGE_PWM 0x01         // PG1
+#define ISSI_PAGE_AUTOBREATH 0x02  // PG2
+#define ISSI_PAGE_FUNCTION 0x03    // PG3
+
+#define ISSI_REG_CONFIGURATION 0x00  // PG3
+#define ISSI_REG_GLOBALCURRENT 0x01  // PG3
+#define ISSI_REG_RESET 0x11          // PG3
+#define ISSI_REG_SWPULLUP 0x0F       // PG3
+#define ISSI_REG_CSPULLUP 0x10       // PG3
+
+#ifdef DRIVER_ADDR_1
+    IS31FL3733_write_register(DRIVER_ADDR_1, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5);
+    IS31FL3733_write_register(DRIVER_ADDR_1, ISSI_COMMANDREGISTER, ISSI_PAGE_FUNCTION);
+    IS31FL3733_write_register(DRIVER_ADDR_1, ISSI_REG_GLOBALCURRENT, rgb_matrix_config.hsv.v);
+#endif
+
+#ifdef DRIVER_ADDR_2
+    IS31FL3733_write_register(DRIVER_ADDR_2, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5);
+    IS31FL3733_write_register(DRIVER_ADDR_2, ISSI_COMMANDREGISTER, ISSI_PAGE_FUNCTION);
+    IS31FL3733_write_register(DRIVER_ADDR_2, ISSI_REG_GLOBALCURRENT, rgb_matrix_config.hsv.v);
+#endif
+
+#ifdef DRIVER_ADDR_3
+    IS31FL3733_write_register(DRIVER_ADDR_3, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5);
+    IS31FL3733_write_register(DRIVER_ADDR_3, ISSI_COMMANDREGISTER, ISSI_PAGE_FUNCTION);
+    IS31FL3733_write_register(DRIVER_ADDR_3, ISSI_REG_GLOBALCURRENT, rgb_matrix_config.hsv.v);
+#endif
 }
 
 static void led_run_pattern(led_setup_t* f, float* ro, float* go, float* bo, float pos) {

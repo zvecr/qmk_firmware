@@ -26,12 +26,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //*******************************************************************************************************************
 // Usually in <keyboard>/config_led.h but here are some defaults instead
-#ifndef LED_GCR_MAX
-#    define LED_GCR_MAX 165  // Max GCR value (0 - 255) WARNING: Raising this value may overload the LED drivers and USB bus
-#endif
-#ifndef LED_GCR_STEP
-#    define LED_GCR_STEP 10  // GCR increment/decrement value
-#endif
+// #ifndef LED_GCR_MAX
+// #    define LED_GCR_MAX 165  // Max GCR value (0 - 255) WARNING: Raising this value may overload the LED drivers and USB bus
+// #endif
+// #ifndef LED_GCR_STEP
+// #    define LED_GCR_STEP 10  // GCR increment/decrement value
+// #endif
 
 #ifndef ANIMATION_SPEED_STEP
 #    define ANIMATION_SPEED_STEP 1
@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //*******************************************************************************************************************
 
-extern uint8_t gcr_breathe;
+// extern uint8_t gcr_breathe;
 // extern uint8_t gcr_actual;
 // extern uint8_t gcr_actual_last;
 
