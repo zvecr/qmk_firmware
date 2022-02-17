@@ -227,7 +227,7 @@ void md_rgb_matrix_effect_render(uint8_t i) {
         }
     }
 
-    if (led_edge_mode == LED_EDGE_MODE_ALTERNATE && !HAS_FLAGS(g_led_config.flags[i], 0x80)) {
+    if (led_edge_mode == LED_EDGE_MODE_ALTERNATE && HAS_FLAGS(g_led_config.flags[i], 0x80)) {
         // Do not act on this LED (Edge alternate lighting mode)
     } else if (led_lighting_mode == LED_MODE_KEYS_ONLY && HAS_FLAGS(g_led_config.flags[i], LED_FLAG_UNDERGLOW)) {
         // Do not act on this LED
