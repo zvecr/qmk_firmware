@@ -16,6 +16,7 @@
 #include "eeprom.h"
 #include "debug.h"
 #include "periph_cpu.h"
+#include "xtimer.h"
 
 #ifndef MCU_SAMD51
 #    error MCU NOT SUPPORTED
@@ -50,8 +51,9 @@ volatile uint8_t *                         SmartEEPROM8        = (uint8_t *)SEEP
 
 static inline bool eeprom_is_busy(void) {
     uint32_t timeout = BUSY_RETRIES;
-    while (NVMCTRL->SEESTAT.bit.BUSY && timeout-- > 0)
-        ;
+    while (NVMCTRL->SEESTAT.bit.BUSY && timeout-- > 0) {
+        xtimer_usleep(1);
+    }
 
     return NVMCTRL->SEESTAT.bit.BUSY;
 }
@@ -182,20 +184,5 @@ void eeprom_update_block(const void *buf, void *addr, size_t len) {
     const uint8_t *src = (const uint8_t *)buf;
     while (len--) {
         eeprom_write_byte(p++, *src++);
-    }
-}
-
-void eeprom_driver_init(void) {
-  // do nothing
-}
-
-void eeprom_driver_erase(void) {
-    if (get_virtual_eeprom_size() == 0) {
-        return;
-    }
-
-    // zero everything
-    for (uint32_t addr = 0; addr < get_virtual_eeprom_size(); addr += sizeof(uint8_t)) {
-        eeprom_write_byte((void *)(uintptr_t)addr, 0);
     }
 }

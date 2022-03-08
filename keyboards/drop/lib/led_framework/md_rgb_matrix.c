@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define FLUSH_TIMEOUT 5000
 #define EECONFIG_MD_LED ((uint8_t*)(EECONFIG_SIZE + 64))
-#define MD_LED_CONFIG_VERSION 2
+#define MD_LED_CONFIG_VERSION 3
 
 // TODO?: wire these up to keymap.c
 md_led_config_t md_led_config = {0};
@@ -30,7 +30,7 @@ md_led_config_t md_led_config = {0};
 EECONFIG_DEBOUNCE_HELPER(md_led, EECONFIG_MD_LED, md_led_config);
 
 void eeconfig_update_md_led_default(void) {
-    md_led_config.ver = MD_LED_CONFIG_VERSION;
+    uint32_t version = MD_LED_CONFIG_VERSION;
 
     // gcr_desired               = LED_GCR_MAX;
     led_animation_orientation = 0;
@@ -48,9 +48,10 @@ void eeconfig_update_md_led_default(void) {
     led_edge_mode             = LED_EDGE_MODE_ALL;
 
     eeconfig_flush_md_led(true);
+    eeconfig_update_kb(version);
 }
 
-void md_led_changed(void) { eeconfig_flag_md_led(true); }
+void md_led_changed(void) { eeconfig_flag_md_led(false); }
 
 // TODO: use real task rather than this bodge
 void housekeeping_task_kb(void) { eeconfig_flush_md_led_task(FLUSH_TIMEOUT); }
@@ -64,12 +65,24 @@ void keyboard_post_init_kb(void) {
         eeconfig_init();
     }
 
+    uint32_t version = eeconfig_read_kb();
     eeconfig_init_md_led();
-    if (md_led_config.ver != MD_LED_CONFIG_VERSION) {
+
+    if (version != MD_LED_CONFIG_VERSION) {
         eeconfig_update_md_led_default();
         eeconfig_update_rgb_matrix_default();
     }
+
     keyboard_post_init_user();
+}
+
+void eeconfig_init_kb(void) {
+    static md_led_config_t blank_led_config = {0};
+
+    eeconfig_update_kb(0);
+    eeconfig_write_md_led(blank_led_config);
+
+    eeconfig_init_user();
 }
 
 void md_rgb_matrix_init(void) {}
