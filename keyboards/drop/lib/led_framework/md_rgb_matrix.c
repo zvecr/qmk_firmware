@@ -51,7 +51,7 @@ void eeconfig_update_md_led_default(void) {
     eeconfig_update_kb(version);
 }
 
-void md_led_changed(void) { eeconfig_flag_md_led(false); }
+void md_led_changed(void) { eeconfig_flag_md_led(true); }
 
 // TODO: use real task rather than this bodge
 void housekeeping_task_kb(void) { eeconfig_flush_md_led_task(FLUSH_TIMEOUT); }
