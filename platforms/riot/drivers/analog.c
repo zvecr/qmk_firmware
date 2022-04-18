@@ -19,7 +19,7 @@
 #include "periph/gpio.h"
 
 #ifndef ADC_RESOLUTION
-#    define ADC_RESOLUTION ADC_RES_10BIT
+#    define ADC_RESOLUTION ADC_RES_12BIT
 #endif
 
 static inline void manageAdcInitialization(uint8_t index) {

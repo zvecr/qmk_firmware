@@ -4,6 +4,7 @@
 #include "shift_register.h"
 #include "lib/shifter.h"
 #include "analog.h"
+#include "wait.h"
 
 sr_exp_t sr_exp_data = {
     .bit.HUB_CONNECT = 0,
@@ -38,6 +39,8 @@ void SR_EXP_USB_enable(void) {
     sr_exp_data.bit.HUB_CONNECT = 1;  // connect signal
     sr_exp_data.bit.HUB_RESET_N = 1;  // reset high
     SR_EXP_flush();
+
+    wait_ms(100);  // Allow power dissapation time on CC lines
 
     uint16_t v_con_1 = analogReadPin(B2);
     uint16_t v_con_2 = analogReadPin(B1);
