@@ -340,7 +340,6 @@ $(KEYBOARD_OUTPUT)/src/layouts.h: $(INFO_JSON_FILES)
 
 generated-files: $(KEYBOARD_OUTPUT)/src/info_config.h $(KEYBOARD_OUTPUT)/src/default_keyboard.h $(KEYBOARD_OUTPUT)/src/layouts.h
 
-.INTERMEDIATE : generated-files
 
 # Userspace setup and definitions
 ifeq ("$(USER_NAME)","")
@@ -376,6 +375,18 @@ endif
 ifneq ("$(wildcard $(KEYBOARD_PATH_5)/post_rules.mk)","")
     include $(KEYBOARD_PATH_5)/post_rules.mk
 endif
+
+# TODO: if via - force legacy?
+KEYCODE_VERSION ?= legacy
+
+$(KEYBOARD_OUTPUT)/src/keycodes.h: $(INFO_JSON_FILES)
+	@$(SILENT) || printf "$(MSG_GENERATING) $@" | $(AWK_CMD)
+	$(eval CMD=$(QMK_BIN) generate-keycodes --quiet --version $(KEYCODE_VERSION) --output $(KEYBOARD_OUTPUT)/src/keycodes.h)
+	@$(BUILD_CMD)
+
+generated-files: $(KEYBOARD_OUTPUT)/src/keycodes.h
+
+.INTERMEDIATE : generated-files
 
 ifneq ("$(wildcard $(KEYMAP_PATH)/config.h)","")
     CONFIG_H += $(KEYMAP_PATH)/config.h
