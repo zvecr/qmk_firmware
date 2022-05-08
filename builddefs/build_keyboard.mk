@@ -379,7 +379,7 @@ endif
 # TODO: if via - force legacy?
 KEYCODE_VERSION ?= legacy
 
-$(KEYBOARD_OUTPUT)/src/keycodes.h: $(INFO_JSON_FILES)
+$(KEYBOARD_OUTPUT)/src/keycodes.h:
 	@$(SILENT) || printf "$(MSG_GENERATING) $@" | $(AWK_CMD)
 	$(eval CMD=$(QMK_BIN) generate-keycodes --quiet --version $(KEYCODE_VERSION) --output $(KEYBOARD_OUTPUT)/src/keycodes.h)
 	@$(BUILD_CMD)
