@@ -33,6 +33,45 @@ def _remove_newlines_from_labels(layouts):
                 key['label'] = key['label'].split('\n')[0]
 
 
+def _extra_validation(info_data):
+    """
+    """
+    # Check that the reported matrix size is consistent with the actual matrix size
+    _check_matrix(info_data)
+
+    # Filter out any non-existing community layouts
+    for layout in info_data.get('community_layouts', []):
+        if not _valid_community_layout(layout):
+            # Ignore layout from future checks
+            info_data['community_layouts'].remove(layout)
+            _log_error(info_data, 'Claims to support a community layout that does not exist: %s' % (layout))
+
+    # Make sure we supply layout macros for the community layouts we claim to support
+    for layout in info_data.get('community_layouts', []):
+        layout_name = 'LAYOUT_' + layout
+        if layout_name not in info_data.get('layouts', {}) and layout_name not in info_data.get('layout_aliases', {}):
+            _log_error(info_data, 'Claims to support community layout %s but no %s() macro found' % (layout, layout_name))
+
+    # Ensure that matrix data is valid
+    bad_layouts = []
+    for layout_name, data in info_data.get('layouts', {}).items():
+        # Matrix data should be a list with exactly two integers: [0, 1]
+        if not all('matrix' in key_data.keys() for key_data in data['layout']):
+            bad_layouts.append(layout_name)
+            _log_error(info_data, 'Layout "%s" has no "matrix" definition in either "info.json" or "<keyboard>.h"!' % layout_name)
+
+        # Pos data should be at least x.y
+        if not all('x' in key_data.keys() and 'y' in key_data.keys() for key_data in data['layout']):
+            _log_warning(info_data, 'Layout "%s" has no "position" definition in "info.json"!' % layout_name)
+
+    for layout_name in bad_layouts:
+        # Ignore layout from future checks
+        info_data['layouts'].pop(layout_name)
+
+    if not info_data.get('layouts'):
+        _log_error(info_data, 'No LAYOUTs defined! Need at least one layout defined in the keyboard.h or info.json.')
+
+
 def info_json(keyboard):
     """Generate the info.json data for a specific keyboard.
     """
@@ -79,6 +118,13 @@ def info_json(keyboard):
     # Merge in data from <keyboard.c>
     info_data = _extract_led_config(info_data, str(keyboard))
 
+    # Make sure we have at least one layout
+    if not info_data.get('layouts'):
+        _find_missing_layouts(info_data, keyboard)
+
+    # Remove newline characters from layout labels
+    _remove_newlines_from_labels(layouts)
+
     # Validate against the jsonschema
     try:
         validate(info_data, 'qmk.api.keyboard.v1')
@@ -88,32 +134,7 @@ def info_json(keyboard):
         cli.log.error('Invalid API data: %s: %s: %s', keyboard, json_path, e.message)
         exit(1)
 
-    # Make sure we have at least one layout
-    if not info_data.get('layouts'):
-        _find_missing_layouts(info_data, keyboard)
-
-    if not info_data.get('layouts'):
-        _log_error(info_data, 'No LAYOUTs defined! Need at least one layout defined in the keyboard.h or info.json.')
-
-    # Filter out any non-existing community layouts
-    for layout in info_data.get('community_layouts', []):
-        if not _valid_community_layout(layout):
-            # Ignore layout from future checks
-            info_data['community_layouts'].remove(layout)
-            _log_error(info_data, 'Claims to support a community layout that does not exist: %s' % (layout))
-
-    # Make sure we supply layout macros for the community layouts we claim to support
-    for layout in info_data.get('community_layouts', []):
-        layout_name = 'LAYOUT_' + layout
-        if layout_name not in info_data.get('layouts', {}) and layout_name not in info_data.get('layout_aliases', {}):
-            _log_error(info_data, 'Claims to support community layout %s but no %s() macro found' % (layout, layout_name))
-
-    # Check that the reported matrix size is consistent with the actual matrix size
-    _check_matrix(info_data)
-
-    # Remove newline characters from layout labels
-    _remove_newlines_from_labels(layouts)
-
+    _extra_validation(info_data)
     return info_data
 
 
@@ -807,11 +828,8 @@ def merge_info_jsons(keyboard, info_data):
                     for new_key, existing_key in zip(layout['layout'], info_data['layouts'][layout_name]['layout']):
                         existing_key.update(new_key)
             else:
-                if not all('matrix' in key_data.keys() or len(key_data) == 2 or all(isinstance(n, int) for n in key_data) for key_data in layout['layout']):
-                    _log_error(info_data, 'Layout "%s" has no "matrix" definition in either "info.json" or "<keyboard>.h"!' % layout_name)
-                else:
-                    layout['c_macro'] = False
-                    info_data['layouts'][layout_name] = layout
+                layout['c_macro'] = False
+                info_data['layouts'][layout_name] = layout
 
         # Update info_data with the new data
         if 'layouts' in new_info_data:

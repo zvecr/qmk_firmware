@@ -11,7 +11,6 @@ from milc import cli
 
 from qmk.comment_remover import comment_remover
 
-default_key_entry = {'x': -1, 'y': 0, 'w': 1}
 single_comment_regex = re.compile(r'\s+/[/*].*$')
 multi_comment_regex = re.compile(r'/\*(.|\n)*?\*/', re.MULTILINE)
 layout_macro_define_regex = re.compile(r'^#\s*define')
@@ -81,9 +80,8 @@ def find_layouts(file):
             matrix_locations = _parse_matrix_locations(matrix, file, macro_name)
 
             # Parse the layout entries into a basic structure
-            default_key_entry['x'] = -1  # Set to -1 so _default_key(key) will increment it to 0
             layout = layout.strip()
-            parsed_layout = [_default_key(key) for key in layout.split(',')]
+            parsed_layout = [{'label': key or "" } for key in layout.split(',')]
 
             for i, key in enumerate(parsed_layout):
                 if 'label' not in key:
@@ -147,18 +145,6 @@ def parse_config_h_file(config_h_file, config_h=None):
                     cli.log.error('%s: Incomplete #undef! On or around line %s' % (config_h_file, linenum))
 
     return config_h
-
-
-def _default_key(label=None):
-    """Increment x and return a copy of the default_key_entry.
-    """
-    default_key_entry['x'] += 1
-    new_key = default_key_entry.copy()
-
-    if label:
-        new_key['label'] = label
-
-    return new_key
 
 
 def _parse_layout_macro(layout_macro):
