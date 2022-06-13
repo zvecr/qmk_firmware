@@ -35,6 +35,7 @@ FEATURES_OPTIONAL += periph_flashpage # For eeprom emulation
 FEATURES_OPTIONAL += periph_adc
 FEATURES_OPTIONAL += periph_spi
 FEATURES_OPTIONAL += periph_wdt
+FEATURES_OPTIONAL += periph_cpuid
 DISABLE_MODULE += auto_init_usbus
 USEMODULE += usbus
 USEMODULE += usbus_hid
