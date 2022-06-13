@@ -15,12 +15,13 @@
  */
 
 #include "usb_board_reset.h"
+#include "periph/pm.h"
 
 __attribute__((weak)) void bootloader_jump(void) {
-#ifdef BOOTLOADER_MD_BOOT
-#pragma message ("TODO: port over logic")
-#else
     // reuse logic from reset.c where possible
     usb_board_reset_in_bootloader();
-#endif
+}
+
+__attribute__((weak)) void mcu_reset(void) {
+    pm_reboot();
 }
