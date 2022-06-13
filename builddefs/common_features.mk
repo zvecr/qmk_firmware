@@ -207,6 +207,7 @@ else
         SRC += eeprom_driver.c eeprom_transient.c
       endif
     else ifeq ($(PLATFORM),RIOT)
+      OPT_DEFS += -DEEPROM_RIOT
       SRC += $(PLATFORM_COMMON_DIR)/eeprom.c
     else ifeq ($(PLATFORM),ARM_ATSAM)
       # arm_atsam EEPROM
