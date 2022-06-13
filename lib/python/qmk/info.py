@@ -7,7 +7,7 @@ import jsonschema
 from dotty_dict import dotty
 from milc import cli
 
-from qmk.constants import CHIBIOS_PROCESSORS, LUFA_PROCESSORS, VUSB_PROCESSORS
+from qmk.constants import CHIBIOS_PROCESSORS, LUFA_PROCESSORS, VUSB_PROCESSORS, RIOT_PROCESSORS
 from qmk.c_parse import find_layouts, parse_config_h_file, find_led_config
 from qmk.json_schema import deep_update, json_load, validate
 from qmk.keyboard import config_h, rules_mk
@@ -538,7 +538,7 @@ def _extract_rules_mk(info_data, rules):
     """
     info_data['processor'] = rules.get('MCU', info_data.get('processor', 'atmega32u4'))
 
-    if info_data['processor'] in CHIBIOS_PROCESSORS:
+    if info_data['processor'] in CHIBIOS_PROCESSORS + RIOT_PROCESSORS:
         arm_processor_rules(info_data, rules)
 
     elif info_data['processor'] in LUFA_PROCESSORS + VUSB_PROCESSORS:
@@ -648,7 +648,11 @@ def _check_matrix(info_data):
         actual_row_count = info_data['matrix_size'].get('rows', 0)
         col_count = row_count = 0
 
-        if 'direct' in info_data['matrix_pins']:
+        if 'custom' in info_data['matrix_pins'] or 'custom_lite' in info_data['matrix_pins']:
+            cli.log.debug("Skipping consistency checks for custom matrix")
+            col_count = actual_col_count
+            row_count = actual_row_count
+        elif 'direct' in info_data['matrix_pins']:
             col_count = len(info_data['matrix_pins']['direct'][0])
             row_count = len(info_data['matrix_pins']['direct'])
         elif 'cols' in info_data['matrix_pins'] and 'rows' in info_data['matrix_pins']:
@@ -727,7 +731,7 @@ def arm_processor_rules(info_data, rules):
     """Setup the default info for an ARM board.
     """
     info_data['processor_type'] = 'arm'
-    info_data['protocol'] = 'ChibiOS'
+    info_data['protocol'] = 'Riot' if rules.get('MCU') in RIOT_PROCESSORS else 'ChibiOS'
 
     if 'bootloader' not in info_data:
         info_data['bootloader'] = 'unknown'
@@ -738,6 +742,8 @@ def arm_processor_rules(info_data, rules):
         info_data['platform'] = rules['MCU_SERIES']
     elif 'ARM_ATSAM' in rules:
         info_data['platform'] = 'ARM_ATSAM'
+    elif 'PROTOCOL_RIOT' in rules:
+        info_data['platform'] = 'Riot'
 
     return info_data
 

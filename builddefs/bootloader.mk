@@ -50,6 +50,17 @@ ifeq ($(strip $(BOOTLOADER)), custom)
     OPT_DEFS += -DBOOTLOADER_CUSTOM
     BOOTLOADER_TYPE = custom
 endif
+
+ifeq ($(strip $(BOOTLOADER)), sam-ba)
+    OPT_DEFS += -DBOOTLOADER_SAM_BA
+    BOOTLOADER_TYPE = sam_ba
+endif
+
+ifeq ($(strip $(BOOTLOADER)), adafruit-nrfutil)
+    OPT_DEFS += -DBOOTLOADER_ADA_NRF
+    BOOTLOADER_TYPE = adafruit_nrfutil
+endif
+
 ifeq ($(strip $(BOOTLOADER)), atmel-dfu)
     OPT_DEFS += -DBOOTLOADER_ATMEL_DFU
     OPT_DEFS += -DBOOTLOADER_DFU
