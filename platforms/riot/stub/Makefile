@@ -43,6 +43,11 @@ USEMODULE += xtimer
 USEMODULE += ztimer_xtimer_compat
 USEMODULE += ztimer64_xtimer_compat
 
+# automatic reset to bootloader could be seen as an exploit
+DISABLE_MODULE += stdio
+DISABLE_MODULE += usb_board_reset
+USEMODULE += stdio_null
+
 # Bind USB Config
 CFLAGS += -include $(CURDIR)/../usb_config_adapter.h
 
