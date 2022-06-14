@@ -17,4 +17,4 @@
 #include "xtimer.h"
 
 void wait_ms(uint32_t ms) { xtimer_msleep(ms); }
-void wait_us(uint32_t us) { xtimer_usleep(us); }
+void wait_us(uint32_t us) { (us > 30) ? xtimer_usleep(us) : xtimer_spin(xtimer_ticks_from_usec(us)); }

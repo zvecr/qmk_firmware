@@ -61,7 +61,7 @@ bool _spi_start(pin_t slavePin, bool lsbFirst, uint8_t mode, uint16_t divisor) {
     }
 
     // TODO: divisor -> clock?
-    spi_clk_t spi_clock = SPI_CLK_1MHZ;
+    spi_clk_t spi_clock = SPI_CLK_5MHZ;
 
     currentSlavePin  = slavePin;
     setPinOutput(currentSlavePin);
