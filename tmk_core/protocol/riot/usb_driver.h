@@ -19,6 +19,10 @@ enum usb_interfaces {
     RAW_INTERFACE = NEXT_INTERFACE,
 #endif
 
+#ifdef XAP_ENABLE
+    XAP_INTERFACE = NEXT_INTERFACE,
+#endif
+
 #ifdef NKRO_ENABLE
     NKRO_INTERFACE = NEXT_INTERFACE,
 #endif
@@ -35,6 +39,7 @@ enum usb_interfaces {
 #define NKRO_EPSIZE 32
 #define CONSOLE_EPSIZE 32
 #define RAW_EPSIZE 32
+#define XAP_EPSIZE 64
 
 extern usbus_t g_usbus;
 

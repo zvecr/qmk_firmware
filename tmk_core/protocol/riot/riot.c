@@ -41,6 +41,11 @@
 #    include "keycode_config.h"
 #endif
 
+#ifdef XAP_ENABLE
+#    include "xap.h"
+#    include <string.h>
+#endif
+
 #ifdef CONSOLE_ENABLE
 #    define RBUF_SIZE 512
 #    include "ring_buffer.h"
@@ -318,6 +323,29 @@ static const uint8_t raw_hid_report[] = {
 };
 #endif
 
+#ifdef XAP_ENABLE
+static const uint8_t xap_hid_report[] = {
+    0x06, 0x51, 0xFF, // Usage Page (Vendor Defined)
+    0x09, 0x58,       // Usage (Vendor Defined)
+    0xA1, 0x01,       // Collection (Application)
+    // Data to host
+    0x09, 0x62,            //   Usage (Vendor Defined)
+    0x15, 0x00,            //   Logical Minimum (0)
+    0x26, 0xFF, 0x00,      //   Logical Maximum (255)
+    0x95, XAP_EPSIZE,      //   Report Count
+    0x75, 0x08,            //   Report Size (8)
+    0x81, 0x02,            //   Input (Data, Variable, Absolute)
+    // Data from host
+    0x09, 0x63,            //   Usage (Vendor Defined)
+    0x15, 0x00,            //   Logical Minimum (0)
+    0x26, 0xFF, 0x00,      //   Logical Maximum (255)
+    0x95, XAP_EPSIZE,      //   Report Count
+    0x75, 0x08,            //   Report Size (8)
+    0x91, 0x02,            //   Output (Data, Variable, Absolute)
+    0xC0                   // End Collection
+};
+#endif
+
 /*------------------------------------------------------------------*
  * Host driver
  *------------------------------------------------------------------*/
@@ -457,6 +485,78 @@ void raw_hid_task(void) {
 #endif
 
 /*------------------------------------------------------------------*
+ * XAP
+ *------------------------------------------------------------------*/
+#ifdef XAP_ENABLE
+
+static uint8_t xap_output_buffer[XAP_EPSIZE];
+static uint8_t xap_output_received_bytes = 0;
+
+extern void xap_receive(xap_token_t token, const uint8_t *data, size_t length);
+
+void xap_dump(uint8_t *data, uint8_t length) {
+    memcpy(&xap_output_buffer[xap_output_received_bytes], data, length);
+    xap_output_received_bytes += length;
+}
+
+void xap_send_base(uint8_t *data, uint8_t length) {
+    if (length != XAP_EPSIZE) {
+        return;
+    }
+
+    usbdrv_write(XAP_INTERFACE, data, length);
+    usbdrv_write(XAP_INTERFACE, 0, 0);
+}
+
+void xap_send(xap_token_t token, xap_response_flags_t response_flags, const void *data, size_t length) {
+    uint8_t                rdata[XAP_EPSIZE] = {0};
+    xap_response_header_t *header            = (xap_response_header_t *)&rdata[0];
+    header->token                            = token;
+
+    if (length > (XAP_EPSIZE - sizeof(xap_response_header_t))) response_flags &= ~(XAP_RESPONSE_FLAG_SUCCESS);
+    header->flags = response_flags;
+
+    if (response_flags & (XAP_RESPONSE_FLAG_SUCCESS)) {
+        header->length = (uint8_t)length;
+        if (data != NULL) {
+            memcpy(&rdata[sizeof(xap_response_header_t)], data, length);
+        }
+    }
+    xap_send_base(rdata, sizeof(rdata));
+}
+
+void xap_broadcast(uint8_t type, const void *data, size_t length) {
+    uint8_t                 rdata[XAP_EPSIZE] = {0};
+    xap_broadcast_header_t *header            = (xap_broadcast_header_t *)&rdata[0];
+    header->token                             = XAP_BROADCAST_TOKEN;
+    header->type                              = type;
+
+    if (length > (XAP_EPSIZE - sizeof(xap_broadcast_header_t))) return;
+
+    header->length = (uint8_t)length;
+    if (data != NULL) {
+        memcpy(&rdata[sizeof(xap_broadcast_header_t)], data, length);
+    }
+    xap_send_base(rdata, sizeof(rdata));
+}
+
+void xap_receive_base(const void *data) {
+    const uint8_t *       u8data = (const uint8_t *)data;
+    xap_request_header_t *header = (xap_request_header_t *)&u8data[0];
+    if (header->length <= (XAP_EPSIZE - sizeof(xap_request_header_t))) {
+        xap_receive(header->token, &u8data[sizeof(xap_request_header_t)], header->length);
+    }
+}
+
+void xap_task(void) {
+    if (xap_output_received_bytes == XAP_EPSIZE) {
+        xap_receive_base(xap_output_buffer);
+        xap_output_received_bytes = 0;
+    }
+}
+#endif
+
+/*------------------------------------------------------------------*
  * Console
  *------------------------------------------------------------------*/
 #ifdef CONSOLE_ENABLE
@@ -507,6 +607,17 @@ void protocol_pre_init(void) {
             .report_desc      = raw_hid_report,
             .report_desc_size = sizeof(raw_hid_report),
             .ep_size          = RAW_EPSIZE,
+            .interval         = 1
+        },
+#endif
+#ifdef XAP_ENABLE
+        {
+            .id               = XAP_INTERFACE,
+            .subclass         = USB_HID_SUBCLASS_NONE,
+            .protocol         = USB_HID_PROTOCOL_NONE,
+            .report_desc      = xap_hid_report,
+            .report_desc_size = sizeof(xap_hid_report),
+            .ep_size          = XAP_EPSIZE,
             .interval         = 1
         },
 #endif

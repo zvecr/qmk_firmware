@@ -275,6 +275,10 @@ static void _hid_rx_pipe(comp_hid_device_t *dev, uint8_t *data, size_t len) {
     void raw_hid_dump(uint8_t * data, uint8_t length);
     raw_hid_dump(data, len);
 #endif
+#ifdef XAP_ENABLE
+    void xap_dump(uint8_t * data, uint8_t length);
+    xap_dump(data, len);
+#endif
 }
 
 static comp_hid_device_t hid_interfaces[TOTAL_INTERFACES];
