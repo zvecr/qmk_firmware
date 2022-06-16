@@ -17,7 +17,8 @@ import_names = {
     'pep8-naming': 'pep8ext_naming',
     'pyusb': 'usb.core',
     'qmk-dotty-dict': 'dotty_dict',
-    'pillow': 'PIL'
+    'pillow': 'PIL',
+    'Jinja2': 'jinja2'
 }
 
 safe_commands = [
@@ -73,6 +74,10 @@ subcommands = [
     'qmk.cli.pyformat',
     'qmk.cli.pytest',
     'qmk.cli.via2json',
+    'qmk.cli.xap',
+    'qmk.cli.xap.generate_docs',
+    'qmk.cli.xap.generate_json',
+    'qmk.cli.xap.generate_qmk',
 ]
 
 

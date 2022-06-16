@@ -45,6 +45,10 @@ else ifeq ($(strip $(DEBUG_MATRIX_SCAN_RATE_ENABLE)), api)
     OPT_DEFS += -DDEBUG_MATRIX_SCAN_RATE
 endif
 
+ifeq ($(strip $(XAP_ENABLE)), yes)
+    include $(BUILDDEFS_PATH)/xap.mk
+endif
+
 AUDIO_ENABLE ?= no
 ifeq ($(strip $(AUDIO_ENABLE)), yes)
     ifeq ($(PLATFORM),CHIBIOS)
@@ -786,6 +790,19 @@ ifeq ($(strip $(USBPD_ENABLE)), yes)
             # Board designers can add their own driver to $(SRC)
         endif
     endif
+endif
+
+ifeq ($(strip $(XAP_ENABLE)), yes)
+    ifeq ($(strip $(VIA_ENABLE)), yes)
+        $(error 'XAP_ENABLE = $(XAP_ENABLE)' deprecates 'VIA_ENABLE = $(VIA_ENABLE)'. Please set 'VIA_ENABLE = no')
+    endif
+
+    OPT_DEFS += -DXAP_ENABLE
+    DYNAMIC_KEYMAP_ENABLE := yes
+    SECURE_ENABLE := yes
+    EMBED_INFO_JSON := yes
+    VPATH += $(QUANTUM_DIR)/xap
+    SRC += $(QUANTUM_DIR)/xap/xap.c $(QUANTUM_DIR)/xap/xap_handlers.c
 endif
 
 BLUETOOTH_ENABLE ?= no

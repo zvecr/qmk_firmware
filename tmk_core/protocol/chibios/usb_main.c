@@ -53,6 +53,10 @@ extern keymap_config_t keymap_config;
 #    include "joystick.h"
 #endif
 
+#ifdef XAP_ENABLE
+#    include "xap.h"
+#endif
+
 /* ---------------------------------------------------------
  *       Global interface variables and declarations
  * ---------------------------------------------------------
@@ -313,6 +317,9 @@ typedef struct {
 #ifdef RAW_ENABLE
             usb_driver_config_t raw_driver;
 #endif
+#ifdef XAP_ENABLE
+            usb_driver_config_t xap_driver;
+#endif
 #ifdef MIDI_ENABLE
             usb_driver_config_t midi_driver;
 #endif
@@ -348,6 +355,14 @@ static usb_driver_configs_t drivers = {
 #    define RAW_IN_MODE USB_EP_MODE_TYPE_INTR
 #    define RAW_OUT_MODE USB_EP_MODE_TYPE_INTR
     .raw_driver = QMK_USB_DRIVER_CONFIG(RAW, 0, false),
+#endif
+
+#ifdef XAP_ENABLE
+#    define XAP_IN_CAPACITY 4
+#    define XAP_OUT_CAPACITY 4
+#    define XAP_IN_MODE USB_EP_MODE_TYPE_INTR
+#    define XAP_OUT_MODE USB_EP_MODE_TYPE_INTR
+    .xap_driver = QMK_USB_DRIVER_CONFIG(XAP, 0, false),
 #endif
 
 #ifdef MIDI_ENABLE
@@ -1114,6 +1129,69 @@ void raw_hid_task(void) {
 }
 
 #endif
+
+#ifdef XAP_ENABLE
+extern void xap_receive(xap_token_t token, const uint8_t *data, size_t length);
+
+void xap_send_base(uint8_t *data, uint8_t length) {
+    // TODO: implement variable size packet
+    if (length != XAP_EPSIZE) {
+        return;
+    }
+    chnWrite(&drivers.xap_driver.driver, data, length);
+}
+
+void xap_send(xap_token_t token, xap_response_flags_t response_flags, const void *data, size_t length) {
+    uint8_t                rdata[XAP_EPSIZE] = {0};
+    xap_response_header_t *header            = (xap_response_header_t *)&rdata[0];
+    header->token                            = token;
+
+    if (length > (XAP_EPSIZE - sizeof(xap_response_header_t))) response_flags &= ~(XAP_RESPONSE_FLAG_SUCCESS);
+    header->flags = response_flags;
+
+    if (response_flags & (XAP_RESPONSE_FLAG_SUCCESS)) {
+        header->length = (uint8_t)length;
+        if (data != NULL) {
+            memcpy(&rdata[sizeof(xap_response_header_t)], data, length);
+        }
+    }
+    xap_send_base(rdata, sizeof(rdata));
+}
+
+void xap_broadcast(uint8_t type, const void *data, size_t length) {
+    uint8_t                 rdata[XAP_EPSIZE] = {0};
+    xap_broadcast_header_t *header            = (xap_broadcast_header_t *)&rdata[0];
+    header->token                             = XAP_BROADCAST_TOKEN;
+    header->type                              = type;
+
+    if (length > (XAP_EPSIZE - sizeof(xap_broadcast_header_t))) return;
+
+    header->length = (uint8_t)length;
+    if (data != NULL) {
+        memcpy(&rdata[sizeof(xap_broadcast_header_t)], data, length);
+    }
+    xap_send_base(rdata, sizeof(rdata));
+}
+
+void xap_receive_base(const void *data) {
+    const uint8_t *       u8data = (const uint8_t *)data;
+    xap_request_header_t *header = (xap_request_header_t *)&u8data[0];
+    if (header->length <= (XAP_EPSIZE - sizeof(xap_request_header_t))) {
+        xap_receive(header->token, &u8data[sizeof(xap_request_header_t)], header->length);
+    }
+}
+
+void xap_task(void) {
+    uint8_t buffer[XAP_EPSIZE];
+    size_t  size = 0;
+    do {
+        size_t size = chnReadTimeout(&drivers.xap_driver.driver, buffer, sizeof(buffer), TIME_IMMEDIATE);
+        if (size > 0) {
+            xap_receive_base(buffer);
+        }
+    } while (size > 0);
+}
+#endif // XAP_ENABLE
 
 #ifdef MIDI_ENABLE
 
