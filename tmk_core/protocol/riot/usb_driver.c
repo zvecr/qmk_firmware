@@ -264,9 +264,7 @@ static isrpipe_t _hid_stdio_isrpipe = ISRPIPE_INIT(_hid_rx_buf_mem);
 
 static void _hid_rx_pipe(comp_hid_device_t *dev, uint8_t *data, size_t len) {
     (void)dev;
-    for (size_t i = 0; i < len; i++) {
-        isrpipe_write_one(&_hid_stdio_isrpipe, data[i]);
-    }
+    isrpipe_write(&_hid_stdio_isrpipe, data, len);
 
     // if (_rx_cb) {
     //     _rx_cb(_rx_cb_arg);

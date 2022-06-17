@@ -457,6 +457,10 @@ static uint8_t raw_output_buffer[RAW_EPSIZE];
 static uint8_t raw_output_received_bytes = 0;
 
 void raw_hid_dump(uint8_t *data, uint8_t length) {
+    if (raw_output_buffer + length > RAW_EPSIZE) {
+        return;
+    }
+
     memcpy(&raw_output_buffer[raw_output_received_bytes], data, length);
     raw_output_received_bytes += length;
 }
@@ -495,6 +499,10 @@ static uint8_t xap_output_received_bytes = 0;
 extern void xap_receive(xap_token_t token, const uint8_t *data, size_t length);
 
 void xap_dump(uint8_t *data, uint8_t length) {
+    if (xap_output_received_bytes + length > XAP_EPSIZE) {
+        return;
+    }
+
     memcpy(&xap_output_buffer[xap_output_received_bytes], data, length);
     xap_output_received_bytes += length;
 }
@@ -681,6 +689,9 @@ void protocol_pre_task(void) {
 void protocol_post_task(void) {
 #ifdef RAW_ENABLE
     raw_hid_task();
+#endif
+#ifdef XAP_ENABLE
+    xap_task();
 #endif
 #ifdef CONSOLE_ENABLE
     console_task();
