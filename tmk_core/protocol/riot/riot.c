@@ -470,6 +470,10 @@ void raw_hid_send(uint8_t *data, uint8_t length) {
         return;
     }
 
+    if (g_usbus.state != USBUS_STATE_CONFIGURED) {
+        return;
+    }
+
     usbdrv_write(RAW_INTERFACE, data, length);
     usbdrv_write(RAW_INTERFACE, 0, 0);
 }
@@ -509,6 +513,10 @@ void xap_dump(uint8_t *data, uint8_t length) {
 
 void xap_send_base(uint8_t *data, uint8_t length) {
     if (length != XAP_EPSIZE) {
+        return;
+    }
+
+    if (g_usbus.state != USBUS_STATE_CONFIGURED) {
         return;
     }
 
@@ -583,6 +591,10 @@ void console_task(void) {
     uint8_t send_buf_count           = 0;
     while (rbuf_has_data() && send_buf_count < CONSOLE_EPSIZE) {
         send_buf[send_buf_count++] = rbuf_dequeue();
+    }
+
+    if (g_usbus.state != USBUS_STATE_CONFIGURED) {
+        return;
     }
 
     usbdrv_write(CONSOLE_INTERFACE, send_buf, sizeof(send_buf));
