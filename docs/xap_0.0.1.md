@@ -28,13 +28,16 @@ This list defines the terms used across the entire set of XAP protocol documenta
 | _Request Header_ | Packet format for inbound data. Takes the format:<br>`token` - token<br>`u8` - length |
 | _Response Flags_ | An `u8` containing the status of the request. |
 | _Response Header_ | Packet format for outbound data. Takes the format:<br>`token` - token<br>`response_flags` - flags<br>`u8` - length |
-| _Token_ | A `u16` associated with a specific request as well as its corresponding response. |
+| _Token_ | A `u16` associated with a specific request as well as its corresponding response. Valid token values are within the range `0x0100`-`0xFFFF`. |
 
 ## Requests and Responses
 
 Communication generally follows a request/response pattern.
 
-Each request needs to include a _token_ -- this `u16` value prefixes each outbound request from the host application and its corresponding response, allowing response messages to be correlated with their request, even if multiple host applications are communicating with the firmware simultaneously. Host applications should randomly generate a token ID for **every** outbound request, unless using a reserved token defined below.
+Each request needs to include a _token_ -- this `u16` value prefixes each outbound request from the host application and its corresponding response.
+This allows response messages to be correlated with their request, even if multiple host applications are communicating with the firmware simultaneously.
+Host applications should randomly generate a token ID for **every** outbound request, unless using a reserved token defined below.
+To ensure host interoperability, valid token values are within the range `0x0100`-`0xFFFF`.
 
 This token is followed by a `u8` signifying the length of data in the request.
 
@@ -77,6 +80,6 @@ This subsystem is always present, and provides the ability to query information 
 
 | Name | Route | Tags | Payloads | Description |
 | -- | -- | -- | -- | -- |
-| Version Query | `0x00 0x00` |  |<br>__Response:__ `u32`| XAP protocol version query.<br><br>* Returns the BCD-encoded version in the format of XX.YY.ZZZZ => `0xXXYYZZZZ`<br>    * e.g. 3.2.115 will match `0x03020115`, or bytes {0x15,0x01,0x02,0x03}.|
+| Version Query | `0x00 0x00` |  |__Response:__ `u32`| XAP protocol version query.<br><br>* Returns the BCD-encoded version in the format of XX.YY.ZZZZ => `0xXXYYZZZZ`<br>    * e.g. 3.2.115 will match `0x03020115`, or bytes {0x15,0x01,0x02,0x03}.|
 
 

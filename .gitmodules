@@ -22,3 +22,6 @@
 	path = lib/riot
 	url = https://github.com/qmk/RIOT
 	branch = 2022.01
+[submodule "lib/pico-sdk"]
+	path = lib/pico-sdk
+	url = https://github.com/qmk/pico-sdk.git

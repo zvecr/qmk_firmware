@@ -34,18 +34,21 @@ This list defines the terms used across the entire set of XAP protocol documenta
 | _Request Header_ | Packet format for inbound data. Takes the format:<br>`token` - token<br>`u8` - length |
 | _Response Flags_ | An `u8` containing the status of the request. |
 | _Response Header_ | Packet format for outbound data. Takes the format:<br>`token` - token<br>`response_flags` - flags<br>`u8` - length |
-| _Token_ | A `u16` associated with a specific request as well as its corresponding response. |
+| _Token_ | A `u16` associated with a specific request as well as its corresponding response. Valid token values are within the range `0x0100`-`0xFFFF`. |
 
 ## Requests and Responses
 
 Communication generally follows a request/response pattern.
 
-Each request needs to include a _token_ -- this `u16` value prefixes each outbound request from the host application and its corresponding response, allowing response messages to be correlated with their request, even if multiple host applications are communicating with the firmware simultaneously. Host applications should randomly generate a token ID for **every** outbound request, unless using a reserved token defined below.
+Each request needs to include a _token_ -- this `u16` value prefixes each outbound request from the host application and its corresponding response.
+This allows response messages to be correlated with their request, even if multiple host applications are communicating with the firmware simultaneously.
+Host applications should randomly generate a token ID for **every** outbound request, unless using a reserved token defined below.
+To ensure host interoperability, valid token values are within the range `0x0100`-`0xFFFF`.
 
 This token is followed by a `u8` signifying the length of data in the request.
 
-Two token values are reserved: `0x0000` and `0xFFFF`:
-* `0x0000`: A message sent by a host application may use this token if no response is to be sent -- a "fire and forget" message.
+Two token values are reserved: `0xFFFE` and `0xFFFF`:
+* `0xFFFE`: A message sent by a host application may use this token if no response is to be sent -- a "fire and forget" message.
 * `0xFFFF`: Signifies a "broadcast" message sent by the firmware without prompting from the host application. Broadcast messages are defined later in this document.
 
 Any request will generate at least one corresponding response, with the exception of messages using reserved tokens. Maximum total message length is 128 bytes due to RAM constraints.
@@ -90,10 +93,10 @@ This subsystem is always present, and provides the ability to query information 
 
 | Name | Route | Tags | Payloads | Description |
 | -- | -- | -- | -- | -- |
-| Version Query | `0x00 0x00` |  |<br>__Response:__ `u32`| XAP protocol version query.<br><br>* Returns the BCD-encoded version in the format of XX.YY.ZZZZ => `0xXXYYZZZZ`<br>    * e.g. 3.2.115 will match `0x03020115`, or bytes {0x15,0x01,0x02,0x03}.|
-| Capabilities Query | `0x00 0x01` |  |<br>__Response:__ `u32`| XAP subsystem capabilities query. Each bit should be considered as a "usable" route within this subsystem.|
-| Enabled subsystem query | `0x00 0x02` |  |<br>__Response:__ `u32`| XAP protocol subsystem query. Each bit should be considered as a "usable" subsystem. For example, checking `(value & (1 << XAP_ROUTE_QMK) != 0)` means the QMK subsystem is enabled and available for querying.|
-| Secure Status | `0x00 0x03` |  |<br>__Response:__ `u8`| Query secure route status<br><br>* 0 means secure routes are disabled<br>* 1 means unlock sequence initiated but incomplete<br>* 2 means secure routes are allowed<br>* any other value should be interpreted as disabled|
+| Version Query | `0x00 0x00` |  |__Response:__ `u32`| XAP protocol version query.<br><br>* Returns the BCD-encoded version in the format of XX.YY.ZZZZ => `0xXXYYZZZZ`<br>    * e.g. 3.2.115 will match `0x03020115`, or bytes {0x15,0x01,0x02,0x03}.|
+| Capabilities Query | `0x00 0x01` |  |__Response:__ `u32`| XAP subsystem capabilities query. Each bit should be considered as a "usable" route within this subsystem.|
+| Enabled subsystem query | `0x00 0x02` |  |__Response:__ `u32`| XAP protocol subsystem query. Each bit should be considered as a "usable" subsystem. For example, checking `(value & (1 << XAP_ROUTE_QMK) != 0)` means the QMK subsystem is enabled and available for querying.|
+| Secure Status | `0x00 0x03` |  |__Response:__ `u8`| Query secure route status<br><br>* 0 means secure routes are disabled<br>* 1 means unlock sequence initiated but incomplete<br>* 2 means secure routes are allowed<br>* any other value should be interpreted as disabled|
 | Secure Unlock | `0x00 0x04` |  || Initiate secure route unlock sequence|
 | Secure Lock | `0x00 0x05` |  || Disable secure routes|
 
@@ -103,18 +106,18 @@ This subsystem is always present, and provides the ability to address QMK-specif
 
 | Name | Route | Tags | Payloads | Description |
 | -- | -- | -- | -- | -- |
-| Version Query | `0x01 0x00` |  |<br>__Response:__ `u32`| QMK protocol version query.<br><br>* Returns the BCD-encoded version in the format of XX.YY.ZZZZ => `0xXXYYZZZZ`<br>    * e.g. 3.2.115 will match `0x03020115`, or bytes {0x15,0x01,0x02,0x03}.|
-| Capabilities Query | `0x01 0x01` |  |<br>__Response:__ `u32`| QMK subsystem capabilities query. Each bit should be considered as a "usable" route within this subsystem.|
-| Board identifiers | `0x01 0x02` |  |<br>__Response:__<br>&nbsp;&nbsp;&nbsp;&nbsp;* Vendor ID: `u16`<br>&nbsp;&nbsp;&nbsp;&nbsp;* Product ID: `u16`<br>&nbsp;&nbsp;&nbsp;&nbsp;* Product Version: `u16`<br>&nbsp;&nbsp;&nbsp;&nbsp;* QMK Unique Identifier: `u32`| Retrieves the set of identifying information for the board.|
-| Board Manufacturer | `0x01 0x03` |  |<br>__Response:__ `string`| Retrieves the name of the manufacturer|
-| Product Name | `0x01 0x04` |  |<br>__Response:__ `string`| Retrieves the product name|
-| Config Blob Length | `0x01 0x05` |  |<br>__Response:__ `u32`| Retrieves the length of the configuration data bundled within the firmware|
-| Config Blob Chunk | `0x01 0x06` |  |<br>__Request:__ `u16`<br>__Response:__ `u8[32]`| Retrieves a chunk of the configuration data bundled within the firmware|
-| Jump to bootloader | `0x01 0x07` | __Secure__ |<br>__Response:__ `u8`| Jump to bootloader<br><br>May not be present – if QMK capabilities query returns “true”, then jump to bootloader is supported<br><br>* 0 means secure routes are disabled, and should be considered as a failure<br>* 1 means successful, board will jump to bootloader|
-| Unique Identifier | `0x01 0x08` |  |<br>__Response:__ `u32[4]`| Retrieves a unique identifier for the board.|
+| Version Query | `0x01 0x00` |  |__Response:__ `u32`| QMK protocol version query.<br><br>* Returns the BCD-encoded version in the format of XX.YY.ZZZZ => `0xXXYYZZZZ`<br>    * e.g. 3.2.115 will match `0x03020115`, or bytes {0x15,0x01,0x02,0x03}.|
+| Capabilities Query | `0x01 0x01` |  |__Response:__ `u32`| QMK subsystem capabilities query. Each bit should be considered as a "usable" route within this subsystem.|
+| Board identifiers | `0x01 0x02` |  |__Response:__<br>&nbsp;&nbsp;&nbsp;&nbsp;* Vendor ID: `u16`<br>&nbsp;&nbsp;&nbsp;&nbsp;* Product ID: `u16`<br>&nbsp;&nbsp;&nbsp;&nbsp;* Product Version: `u16`<br>&nbsp;&nbsp;&nbsp;&nbsp;* QMK Unique Identifier: `u32`| Retrieves the set of identifying information for the board.|
+| Board Manufacturer | `0x01 0x03` |  |__Response:__ `string`| Retrieves the name of the manufacturer|
+| Product Name | `0x01 0x04` |  |__Response:__ `string`| Retrieves the product name|
+| Config Blob Length | `0x01 0x05` |  |__Response:__ `u32`| Retrieves the length of the configuration data bundled within the firmware|
+| Config Blob Chunk | `0x01 0x06` |  |__Request:__ `u16`<br><br>__Response:__ `u8[32]`| Retrieves a chunk of the configuration data bundled within the firmware|
+| Jump to bootloader | `0x01 0x07` | __Secure__ |__Response:__ `u8`| Jump to bootloader<br><br>May not be present – if QMK capabilities query returns “true”, then jump to bootloader is supported<br><br>* 0 means secure routes are disabled, and should be considered as a failure<br>* 1 means successful, board will jump to bootloader|
+| Hardware Identifier | `0x01 0x08` |  |__Response:__ `u32[4]`| Retrieves a unique identifier for the board.|
 
 ### Keyboard - `0x02`
-This subsystem is always present, and reserved for user-specific functionality. No routes are defined by XAP.
+This subsystem is always present, and reserved for vendor-specific functionality. No routes are defined by XAP.
 
 
 ### User - `0x03`
@@ -147,4 +150,8 @@ Secure status has changed. Payloads include a `u8` matching a 'Secure Status' re
 | --- | --- | --- | --- | --- |
 | **Purpose** | Token | Token | Broadcast Type | Secure Status |
 | **Value** | `0xFF` | `0xFF` | `0x01` | `0x01` |
+### Keyboard - `0x02`
+Reserved for vendor-specific functionality. No messages are defined by XAP.
+### User - `0x03`
+Reserved for user-specific functionality. No messages are defined by XAP.
 

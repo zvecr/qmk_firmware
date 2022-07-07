@@ -13,6 +13,14 @@ endif
 include paths.mk
 include $(BUILDDEFS_PATH)/message.mk
 
+# Helper to add defines with a 'QMK_' prefix
+define add_qmk_prefix_defs
+    ifdef $1
+        # Need to cater for 'STM32L4xx+'
+        OPT_DEFS += -DQMK_$(2)="$($1)" -DQMK_$(2)_$(shell echo $($1) | sed -e 's@+@Plus@g' -e 's@[^a-zA-Z0-9]@_@g' | tr '[:lower:]' '[:upper:]')
+    endif
+endef
+
 # Set the qmk cli to use
 QMK_BIN ?= qmk
 
@@ -349,7 +357,12 @@ $(KEYBOARD_OUTPUT)/src/layouts.h: $(INFO_JSON_FILES)
 	$(eval CMD=$(QMK_BIN) generate-layouts --quiet --keyboard $(KEYBOARD) --output $(KEYBOARD_OUTPUT)/src/layouts.h)
 	@$(BUILD_CMD)
 
-generated-files: $(KEYBOARD_OUTPUT)/src/info_config.h $(KEYBOARD_OUTPUT)/src/default_keyboard.c $(KEYBOARD_OUTPUT)/src/default_keyboard.h $(KEYBOARD_OUTPUT)/src/layouts.h
+$(KEYBOARD_OUTPUT)/src/keymap_hash.h:
+	@$(SILENT) || printf "$(MSG_GENERATING) $@" | $(AWK_CMD)
+	$(eval CMD=$(QMK_BIN) generate-keymap-hash -q -o "$(KEYMAP_OUTPUT)/src/keymap_hash.h" -kb $(KEYBOARD) -km $(KEYMAP))
+	@$(BUILD_CMD)
+
+generated-files: $(KEYBOARD_OUTPUT)/src/keymap_hash.h $(KEYBOARD_OUTPUT)/src/info_config.h $(KEYBOARD_OUTPUT)/src/default_keyboard.c $(KEYBOARD_OUTPUT)/src/default_keyboard.h $(KEYBOARD_OUTPUT)/src/layouts.h
 
 .INTERMEDIATE : generated-files
 
@@ -397,6 +410,12 @@ endif
 
 OPT_DEFS += -DKEYMAP_C=\"$(KEYMAP_C)\"
 
+# If a keymap or userspace places their keymap array in another file instead, allow for it to be included
+# !!NOTE!! -- For this to work, the source file cannot be part of $(SRC), so users should not add it via `SRC += <file>`
+ifneq ($(strip $(INTROSPECTION_KEYMAP_C)),)
+OPT_DEFS += -DINTROSPECTION_KEYMAP_C=\"$(strip $(INTROSPECTION_KEYMAP_C))\"
+endif
+
 # project specific files
 SRC += \
     $(KEYBOARD_SRC) \
@@ -442,6 +461,14 @@ ifneq ($(strip $(PROTOCOL)),)
 else
     include $(TMK_PATH)/protocol/$(PLATFORM_KEY).mk
 endif
+
+# Setup definitions based on the selected MCU
+$(eval $(call add_qmk_prefix_defs,MCU_ORIG,MCU))
+$(eval $(call add_qmk_prefix_defs,MCU_ARCH,MCU_ARCH))
+$(eval $(call add_qmk_prefix_defs,MCU_PORT_NAME,MCU_PORT_NAME))
+$(eval $(call add_qmk_prefix_defs,MCU_FAMILY,MCU_FAMILY))
+$(eval $(call add_qmk_prefix_defs,MCU_SERIES,MCU_SERIES))
+$(eval $(call add_qmk_prefix_defs,BOARD,BOARD))
 
 # TODO: remove this bodge?
 PROJECT_DEFS := $(OPT_DEFS)

@@ -10,6 +10,8 @@ For this, we will mostly be talking about the generic implementation used by the
 
 !> ARM split supports most QMK subsystems when using the 'serial' and 'serial_usart' drivers. I2C slave is currently unsupported.
 
+!> Both sides must use the same MCU family, for eg two Pro Micro-compatible controllers or two Blackpills. Currently, mixing AVR and ARM is not possible as ARM vs AVR uses different method for serial communication, and are not compatible. Moreover Blackpill's uses 3.3v logic, and atmega32u4 uses 5v logic.
+
 ## Compatibility Overview
 
 | Transport                    | AVR                | ARM                |
@@ -368,7 +370,7 @@ There are some settings that you may need to configure, based on how the hardwar
 #define MATRIX_COL_PINS_RIGHT { <col pins> }
 ```
 
-This allows you to specify a different set of pins for the matrix on the right side.  This is useful if you have a board with differently-shaped halves that requires a different configuration (such as Keebio's Quefrency).
+This allows you to specify a different set of pins for the matrix on the right side.  This is useful if you have a board with differently-shaped halves that requires a different configuration (such as Keebio's Quefrency). The number of pins in the right and left matrices must be the same, if you have a board with a different number of rows or columns on one side, pad out the extra spaces with `NO_PIN` and make sure you add the unused rows or columns to your matrix.
 
 ```c
 #define DIRECT_PINS_RIGHT { { F1, F0, B0, C7 }, { F4, F5, F6, F7 } }
