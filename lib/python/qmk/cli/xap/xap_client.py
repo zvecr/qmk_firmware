@@ -42,14 +42,16 @@ class XAPFlags(IntFlag):
     FAILURE = 0
     SUCCESS = 1 << 0
     SECURE_FAILURE = 1 << 1
-    UNLOCK_IN_PROGRESS = 1 << 6
-    UNLOCKED = 1 << 7
 
 
 class XAPEventType(IntEnum):
     SECURE = 0x01
     KEYBOARD = 0x02
     USER = 0x03
+
+
+class XAPRouteError(Exception):
+    pass
 
 
 class XAPDevice:
@@ -67,7 +69,7 @@ class XAPDevice:
         """Background thread to signal waiting transactions
         """
         while 1:
-            array_alpha = self.dev.read(64, 100)
+            array_alpha = self.dev.read(ResponseStruct.size, 100)
             if array_alpha:
                 token = int.from_bytes(array_alpha[:2], 'little')
                 event = self.responses.get(token)
@@ -96,12 +98,13 @@ class XAPDevice:
         event = threading.Event()
         self.responses[token] = event
 
-        event.wait()
+        while not hasattr(event, '_ret'):
+            event.wait(timeout=0.25)
 
         r = ResponsePacket._make(ResponseStruct.unpack(event._ret))
         return (r.flags, r.data[:r.length])
 
-    def transaction(self, *args):
+    def _transaction(self, *args):
         """Request/Receive
         """
         # convert args to array of bytes
@@ -131,17 +134,41 @@ class XAPDevice:
             return None
 
         r = ResponsePacket._make(ResponseStruct.unpack(event._ret))
-        if r.flags != XAPFlags.SUCCESS:
+        if r.flags & XAPFlags.SUCCESS == 0:
             return None
 
         return r.data[:r.length]
 
-    @functools.cache
+    @functools.lru_cache
+    def capability(self, route):
+        cap = int.from_bytes(self._transaction(route) or bytes(0), 'little')
+        return cap
+
+    @functools.lru_cache
+    def subsystem(self):
+        sub = int.from_bytes(self._transaction(b'\x00\x02') or bytes(0), 'little')
+        return sub
+
+    @functools.lru_cache
     def version(self):
-        ver = int.from_bytes(self.transaction(b'\x00\x00') or bytes(0), 'little')
+        ver = int.from_bytes(self._transaction(b'\x00\x00') or bytes(0), 'little')
         return {'xap': _u32toBCD(ver)}
 
-    @functools.cache
+    def _ensure_route(self, route):
+        (sub, rt) = route
+        cap = bytes([sub, 1])
+
+        if self.subsystem() & (1 << sub) == 0:
+            raise XAPRouteError("subsystem not available")
+        if self.capability(cap) & (1 << rt) == 0:
+            raise XAPRouteError("route not available")
+
+    def transaction(self, route, *args):
+        self._ensure_route(route)
+
+        return self._transaction(route, *args)
+
+    @functools.lru_cache
     def info(self):
         data = self._query_device_info()
         data['_id'] = self.transaction(b'\x01\x08')
