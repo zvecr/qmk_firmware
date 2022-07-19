@@ -5,6 +5,10 @@
 .DS_Store
 ._*
 
+# Merge files
+*.orig
+*.rej
+
 # Build artifacts
 .clang_complete
 .build/
@@ -30,6 +34,10 @@ quantum/version.h
 /keyboards/**/Makefile
 # ...But allow RIOT board files
 !/keyboards/**/boards/*/Makefile
+
+# kbfirmware....
+/keyboards/**/kb.h
+/keyboards/**/kb.c
 
 # Eclipse/PyCharm/Other IDE Settings
 *.iml

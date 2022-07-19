@@ -19,7 +19,14 @@
 #include "progmem.h" // to read default from flash
 #include "quantum.h" // for send_string()
 #include "dynamic_keymap.h"
-#include "via.h" // for default VIA_EEPROM_ADDR_END
+#include "fnv.h"
+
+#ifdef VIA_ENABLE
+#    include "via.h" // for VIA_EEPROM_CONFIG_END
+#    define DYNAMIC_KEYMAP_EEPROM_START (VIA_EEPROM_CONFIG_END)
+#else
+#    define DYNAMIC_KEYMAP_EEPROM_START (EECONFIG_SIZE)
+#endif
 
 #ifdef ENCODER_ENABLE
 #    include "encoder.h"
@@ -55,13 +62,8 @@
 #endif
 
 // If DYNAMIC_KEYMAP_EEPROM_ADDR not explicitly defined in config.h,
-// default it start after VIA_EEPROM_CUSTOM_ADDR+VIA_EEPROM_CUSTOM_SIZE
 #ifndef DYNAMIC_KEYMAP_EEPROM_ADDR
-#    ifdef VIA_EEPROM_CUSTOM_CONFIG_ADDR
-#        define DYNAMIC_KEYMAP_EEPROM_ADDR (VIA_EEPROM_CUSTOM_CONFIG_ADDR + VIA_EEPROM_CUSTOM_CONFIG_SIZE)
-#    else
-#        error DYNAMIC_KEYMAP_EEPROM_ADDR not defined
-#    endif
+#    define DYNAMIC_KEYMAP_EEPROM_ADDR DYNAMIC_KEYMAP_EEPROM_START
 #endif
 
 // Dynamic encoders starts after dynamic keymaps
@@ -146,6 +148,47 @@ void dynamic_keymap_set_encoder(uint8_t layer, uint8_t encoder_id, bool clockwis
 }
 #endif // ENCODER_MAP_ENABLE
 
+static uint32_t dynamic_keymap_compute_hash(void) {
+    Fnv32_t hash = FNV1_32A_INIT;
+
+    uint16_t keycode;
+    for (int layer = 0; layer < DYNAMIC_KEYMAP_LAYER_COUNT; layer++) {
+        for (int row = 0; row < MATRIX_ROWS; row++) {
+            for (int column = 0; column < MATRIX_COLS; column++) {
+                keycode = pgm_read_word(&keymaps[layer][row][column]);
+                hash    = fnv_32a_buf(&keycode, sizeof(keycode), hash);
+            }
+        }
+#ifdef ENCODER_MAP_ENABLE
+        for (int encoder = 0; encoder < NUM_ENCODERS; encoder++) {
+            keycode = pgm_read_word(&encoder_map[layer][encoder][0]);
+            hash    = fnv_32a_buf(&keycode, sizeof(keycode), hash);
+
+            keycode = pgm_read_word(&encoder_map[layer][encoder][1]);
+            hash    = fnv_32a_buf(&keycode, sizeof(keycode), hash);
+        }
+#endif // ENCODER_MAP_ENABLE
+    }
+
+    return hash;
+}
+
+static uint32_t dynamic_keymap_hash(void) {
+    static uint32_t hash = 0;
+
+    static uint8_t s_init = 0;
+    if (!s_init) {
+        s_init = 1;
+
+        hash = dynamic_keymap_compute_hash();
+    }
+    return hash;
+}
+
+bool dynamic_keymap_is_valid(void) {
+    return eeprom_read_dword(EECONFIG_KEYMAP_HASH) == dynamic_keymap_hash();
+}
+
 void dynamic_keymap_reset(void) {
     // Reset the keymaps in EEPROM to what is in flash.
     // All keyboards using dynamic keymaps should define a layout
@@ -163,6 +206,7 @@ void dynamic_keymap_reset(void) {
         }
 #endif // ENCODER_MAP_ENABLE
     }
+    eeprom_update_dword(EECONFIG_KEYMAP_HASH, dynamic_keymap_hash());
 }
 
 void dynamic_keymap_get_buffer(uint16_t offset, uint16_t size, uint8_t *data) {

@@ -7,7 +7,7 @@ from milc import cli
 from qmk.keyboard import render_layout
 from qmk.xap.common import get_xap_keycodes
 
-from .xap_client import XAPClient, XAPEventType, XAPSecureStatus
+from xap_client import XAPClient, XAPEventType, XAPSecureStatus
 
 KEYCODE_MAP = get_xap_keycodes('latest')
 
@@ -42,14 +42,14 @@ def _list_devices():
     """Dump out available devices
     """
     cli.log.info('Available devices:')
-    devices = XAPClient.list()
-    for dev in devices:
+    for dev in XAPClient.devices():
         device = XAPClient().connect(dev)
+        ver = device.version()
 
-        data = device.info()
-        cli.log.info('  %04x:%04x %s %s [API:%s]', dev['vendor_id'], dev['product_id'], dev['manufacturer_string'], dev['product_string'], data['xap'])
+        cli.log.info('  %04x:%04x %s %s [API:%s]', dev['vendor_id'], dev['product_id'], dev['manufacturer_string'], dev['product_string'], ver['xap'])
 
-        if cli.config.general.verbose:
+        if cli.args.verbose:
+            data = device.info()
             # TODO: better formatting like 'lsusb -v'?
             print_dotted_output(data)
 
@@ -65,10 +65,10 @@ class XAPShell(cmd.Cmd):
         self.keycodes = get_xap_keycodes(device.version()['xap'])
 
     def do_about(self, arg):
-        """Prints out the current version of QMK with a build date
+        """Prints out the version info of QMK
         """
-        # TODO: request stuff?
-        print(self.device.info()['xap'])
+        data = self.device.version()
+        print_dotted_output(data)
 
     def do_status(self, arg):
         """Prints out the current device state
@@ -102,7 +102,7 @@ class XAPShell(cmd.Cmd):
             while 1:
                 (event, data) = self.device.listen()
 
-                if event == XAPEventType.SECURE:
+                if event == XAPEventType.SECURE_STATUS:
                     secure_status = XAPSecureStatus(data[0]).name
 
                     cli.log.info('  Secure[%s]', secure_status)
@@ -188,6 +188,7 @@ class XAPShell(cmd.Cmd):
         return False
 
 
+@cli.argument('-v', '--verbose', arg_only=True, action='store_true', help='Turns on verbose output.')
 @cli.argument('-d', '--device', help='device to select - uses format <pid>:<vid>.')
 @cli.argument('-l', '--list', arg_only=True, action='store_true', help='List available devices.')
 @cli.argument('-i', '--interactive', arg_only=True, action='store_true', help='Start interactive shell.')
@@ -200,7 +201,7 @@ def xap(cli):
         return _list_devices()
 
     # Connect to first available device
-    devices = XAPClient.list()
+    devices = XAPClient.devices()
     if not devices:
         cli.log.error('No devices found!')
         return False
