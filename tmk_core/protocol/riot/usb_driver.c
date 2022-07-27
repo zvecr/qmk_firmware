@@ -1,3 +1,6 @@
+// Copyright 2022 QMK
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 #include "isrpipe.h"
 #include "isrpipe/read_timeout.h"
 
@@ -72,18 +75,18 @@ static void _transfer_handler(usbus_t *usbus, usbus_handler_t *handler, usbdev_e
 static void _handle_tx_ready(event_t *ev);
 
 static const usbus_handler_driver_t hid_driver = {
-    .init             = _init,             //
-    .event_handler    = _event_handler,    //
-    .control_handler  = _control_handler,  //
-    .transfer_handler = _transfer_handler  //
+    .init             = _init,            //
+    .event_handler    = _event_handler,   //
+    .control_handler  = _control_handler, //
+    .transfer_handler = _transfer_handler //
 };
 
 static size_t _gen_hid_descriptor(usbus_t *usbus, void *arg);
 
 static const usbus_descr_gen_funcs_t _hid_descriptor = {
-    .fmt_post_descriptor = _gen_hid_descriptor,                    //
-    .len                 = {.fixed_len = sizeof(usb_desc_hid_t)},  //
-    .len_type            = USBUS_DESCR_LEN_FIXED                   //
+    .fmt_post_descriptor = _gen_hid_descriptor,                   //
+    .len                 = {.fixed_len = sizeof(usb_desc_hid_t)}, //
+    .len_type            = USBUS_DESCR_LEN_FIXED                  //
 };
 
 static size_t _gen_hid_descriptor(usbus_t *usbus, void *arg) {
@@ -150,23 +153,28 @@ static void _init(usbus_t *usbus, usbus_handler_t *handler) {
     usbus_add_interface(usbus, &hid->iface);
 }
 
-static void _event_handler(usbus_t *usbus, usbus_handler_t *handler, usbus_event_usb_t event) {
-    (void)usbus;
-    (void)handler;
-
-    switch (event) {
-        default:
-            DEBUG("USB HID unhandled event: 0x%x\n", event);
-            break;
-    }
-}
-
 report_keyboard_t keyboard_report_sent                          = {{0}};
 uint8_t           keyboard_idle __attribute__((aligned(2)))     = 0;
 uint8_t           keyboard_protocol __attribute__((aligned(2))) = 1;
 
 static uint8_t keyboard_led_state = 0;
-uint8_t        usbdrv_keyboard_leds(void) { return keyboard_led_state; }
+uint8_t        usbdrv_keyboard_leds(void) {
+    return keyboard_led_state;
+}
+
+static void _event_handler(usbus_t *usbus, usbus_handler_t *handler, usbus_event_usb_t event) {
+    (void)usbus;
+    (void)handler;
+
+    switch (event) {
+        case USBUS_EVENT_USB_RESET:
+            keyboard_protocol = 1;
+            break;
+        default:
+            DEBUG("USB HID unhandled event: 0x%x\n", event);
+            break;
+    }
+}
 
 static int _control_handler(usbus_t *usbus, usbus_handler_t *handler, usbus_control_request_state_t state, usb_setup_t *setup) {
     comp_hid_device_t *hid = (comp_hid_device_t *)handler;
@@ -204,9 +212,12 @@ static int _control_handler(usbus_t *usbus, usbus_handler_t *handler, usbus_cont
             if ((state == USBUS_CONTROL_REQUEST_STATE_OUTDATA)) {
                 size_t   size = 0;
                 uint8_t *data = usbus_control_get_out_data(usbus, &size);
-                if (hid->conf.protocol == USB_HID_PROTOCOL_KEYBOARD) {  // KEYBOARD_INTERFACE || NKRO_INTERFACE
+                if (setup->index == KEYBOARD_INTERFACE) {
                     if (size == 2) {
-                        keyboard_led_state = data[1];
+                        uint8_t report_id = data[0];
+                        if (report_id == REPORT_ID_KEYBOARD || report_id == REPORT_ID_NKRO) {
+                            keyboard_led_state = data[1];
+                        }
                     } else if (size == 1) {
                         keyboard_led_state = data[0];
                     }
@@ -270,12 +281,16 @@ static void _hid_rx_pipe(comp_hid_device_t *dev, uint8_t *data, size_t len) {
     //     _rx_cb(_rx_cb_arg);
     // }
 #ifdef RAW_ENABLE
-    void raw_hid_dump(uint8_t * data, uint8_t length);
-    raw_hid_dump(data, len);
+    if (dev->conf.id == RAW_INTERFACE) {
+        void raw_hid_dump(uint8_t * data, uint8_t length);
+        raw_hid_dump(data, len);
+    }
 #endif
 #ifdef XAP_ENABLE
-    void xap_dump(uint8_t * data, uint8_t length);
-    xap_dump(data, len);
+    if (dev->conf.id == XAP_INTERFACE) {
+        void xap_dump(uint8_t * data, uint8_t length);
+        xap_dump(data, len);
+    }
 #endif
 }
 

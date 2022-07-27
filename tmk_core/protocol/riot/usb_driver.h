@@ -1,44 +1,58 @@
+// Copyright 2022 QMK
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 #pragma once
 
 #include "usb/usbus.h"
 
-#if defined(MOUSE_ENABLE) || defined(EXTRAKEY_ENABLE) || defined(DIGITIZER_ENABLE) || defined(PROGRAMMABLE_BUTTON_ENABLE)
-    #define SHARED_EP
-#endif
-
-#define NEXT_INTERFACE __COUNTER__
-
 enum usb_interfaces {
-
-    KEYBOARD_INTERFACE = NEXT_INTERFACE,
+#ifndef KEYBOARD_SHARED_EP
+    KEYBOARD_INTERFACE,
+#else
+    SHARED_INTERFACE,
+#    define KEYBOARD_INTERFACE SHARED_INTERFACE
+#endif
 
 // It is important that the Raw HID interface is at a constant
 // interface number, to support Linux/OSX platforms and chrome.hid
 // If Raw HID is enabled, let it be always 1.
 #ifdef RAW_ENABLE
-    RAW_INTERFACE = NEXT_INTERFACE,
+    RAW_INTERFACE,
 #endif
 
 #ifdef XAP_ENABLE
-    XAP_INTERFACE = NEXT_INTERFACE,
+    XAP_INTERFACE,
 #endif
 
-#ifdef NKRO_ENABLE
-    NKRO_INTERFACE = NEXT_INTERFACE,
+#if defined(MOUSE_ENABLE) && !defined(MOUSE_SHARED_EP)
+    MOUSE_INTERFACE,
+#else
+#    define MOUSE_INTERFACE SHARED_INTERFACE
 #endif
-#ifdef SHARED_EP
-    SHARED_INTERFACE = NEXT_INTERFACE,
+
+#if defined(SHARED_EP_ENABLE) && !defined(KEYBOARD_SHARED_EP)
+    SHARED_INTERFACE,
 #endif
+
 #ifdef CONSOLE_ENABLE
-    CONSOLE_INTERFACE = NEXT_INTERFACE,
+    CONSOLE_INTERFACE,
 #endif
 
-    TOTAL_INTERFACES = NEXT_INTERFACE
+#if defined(DIGITIZER_ENABLE) && !defined(DIGITIZER_SHARED_EP)
+    DIGITIZER_INTERFACE,
+#else
+#    define DIGITIZER_INTERFACE SHARED_INTERFACE
+#endif
+
+    TOTAL_INTERFACES
 };
 
-#define NKRO_EPSIZE 32
-#define CONSOLE_EPSIZE 32
+#define KEYBOARD_EPSIZE 8
+#define SHARED_EPSIZE 32
+#define MOUSE_EPSIZE 8
 #define RAW_EPSIZE 32
+#define CONSOLE_EPSIZE 32
+#define DIGITIZER_EPSIZE 8
 #define XAP_EPSIZE 64
 
 extern usbus_t g_usbus;

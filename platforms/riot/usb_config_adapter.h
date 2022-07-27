@@ -21,6 +21,7 @@ uint16_t    qmk_get_usb_max_power(void);
 #define CONFIG_USB_BCD qmk_get_usb_bcd()
 #define CONFIG_USB_MAX_POWER qmk_get_usb_max_power()
 
-// TODO: bind more?
-//#CONFIG_USB_SPEC_BCDVERSION_1_1
-//#CONFIG_USBUS_EP0_SIZE_8
+// Static config
+// #define CONFIG_USB_SPEC_BCDVERSION_1_1
+#define CONFIG_USBUS_EP0_SIZE_8
+#define CONFIG_USB_REM_WAKEUP 1
