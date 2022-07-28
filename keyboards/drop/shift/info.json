@@ -128,7 +128,7 @@
             ]
         }
     },
-    "rgb_matrix2": {
+    "rgb_matrix": {
         "layout": [
             { "flags": 4, "matrix": [0,  0], "x": 6,   "y":  7 },
             { "flags": 4, "matrix": [0,  1], "x": 20,  "y":  7 },
