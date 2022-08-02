@@ -21,7 +21,7 @@
 [submodule "lib/riot"]
 	path = lib/riot
 	url = https://github.com/qmk/RIOT
-	branch = 2022.01
+	branch = remote_wake
 [submodule "lib/pico-sdk"]
 	path = lib/pico-sdk
 	url = https://github.com/qmk/pico-sdk.git
