@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#define DYNAMIC_KEYMAP_EEPROM_ADDR (EECONFIG_SIZE+100)
+
 #undef RGB_MATRIX_STARTUP_MODE
 #define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CUSTOM_MD_RGB_MATRIX
 
