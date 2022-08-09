@@ -1,0 +1,133 @@
+{
+    "keycodes": {
+
+        "0x7600": {
+            "group": "macro",
+            "key": "MACRO_0"
+        },
+        "0x7601": {
+            "group": "macro",
+            "key": "MACRO_1"
+        },
+        "0x7602": {
+            "group": "macro",
+            "key": "MACRO_2"
+        },
+        "0x7603": {
+            "group": "macro",
+            "key": "MACRO_3"
+        },
+        "0x7604": {
+            "group": "macro",
+            "key": "MACRO_4"
+        },
+        "0x7605": {
+            "group": "macro",
+            "key": "MACRO_5"
+        },
+        "0x7606": {
+            "group": "macro",
+            "key": "MACRO_6"
+        },
+        "0x7607": {
+            "group": "macro",
+            "key": "MACRO_7"
+        },
+        "0x7608": {
+            "group": "macro",
+            "key": "MACRO_8"
+        },
+        "0x7609": {
+            "group": "macro",
+            "key": "MACRO_9"
+        },
+        "0x760A": {
+            "group": "macro",
+            "key": "MACRO_10"
+        },
+        "0x760B": {
+            "group": "macro",
+            "key": "MACRO_11"
+        },
+        "0x760C": {
+            "group": "macro",
+            "key": "MACRO_12"
+        },
+        "0x760D": {
+            "group": "macro",
+            "key": "MACRO_13"
+        },
+        "0x760E": {
+            "group": "macro",
+            "key": "MACRO_14"
+        },
+        "0x760F": {
+            "group": "macro",
+            "key": "MACRO_15"
+        },
+        "0x7610": {
+            "group": "macro",
+            "key": "MACRO_16"
+        },
+        "0x7611": {
+            "group": "macro",
+            "key": "MACRO_17"
+        },
+        "0x7612": {
+            "group": "macro",
+            "key": "MACRO_18"
+        },
+        "0x7613": {
+            "group": "macro",
+            "key": "MACRO_19"
+        },
+        "0x7614": {
+            "group": "macro",
+            "key": "MACRO_20"
+        },
+        "0x7615": {
+            "group": "macro",
+            "key": "MACRO_21"
+        },
+        "0x7616": {
+            "group": "macro",
+            "key": "MACRO_22"
+        },
+        "0x7617": {
+            "group": "macro",
+            "key": "MACRO_23"
+        },
+        "0x7618": {
+            "group": "macro",
+            "key": "MACRO_24"
+        },
+        "0x7619": {
+            "group": "macro",
+            "key": "MACRO_25"
+        },
+        "0x761A": {
+            "group": "macro",
+            "key": "MACRO_26"
+        },
+        "0x761B": {
+            "group": "macro",
+            "key": "MACRO_27"
+        },
+        "0x761C": {
+            "group": "macro",
+            "key": "MACRO_28"
+        },
+        "0x761D": {
+            "group": "macro",
+            "key": "MACRO_29"
+        },
+        "0x761E": {
+            "group": "macro",
+            "key": "MACRO_30"
+        },
+        "0x761F": {
+            "group": "macro",
+            "key": "MACRO_31"
+        }
+    }
+}

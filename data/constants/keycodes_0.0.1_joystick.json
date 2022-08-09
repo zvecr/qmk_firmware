@@ -1,0 +1,132 @@
+{
+    "keycodes": {
+        "0x7400": {
+            "group": "joystick",
+            "key": "JS_BUTTON0"
+        },
+        "0x7401": {
+            "group": "joystick",
+            "key": "JS_BUTTON1"
+        },
+        "0x7402": {
+            "group": "joystick",
+            "key": "JS_BUTTON2"
+        },
+        "0x7403": {
+            "group": "joystick",
+            "key": "JS_BUTTON3"
+        },
+        "0x7404": {
+            "group": "joystick",
+            "key": "JS_BUTTON4"
+        },
+        "0x7405": {
+            "group": "joystick",
+            "key": "JS_BUTTON5"
+        },
+        "0x7406": {
+            "group": "joystick",
+            "key": "JS_BUTTON6"
+        },
+        "0x7407": {
+            "group": "joystick",
+            "key": "JS_BUTTON7"
+        },
+        "0x7408": {
+            "group": "joystick",
+            "key": "JS_BUTTON8"
+        },
+        "0x7409": {
+            "group": "joystick",
+            "key": "JS_BUTTON9"
+        },
+        "0x740A": {
+            "group": "joystick",
+            "key": "JS_BUTTON10"
+        },
+        "0x740B": {
+            "group": "joystick",
+            "key": "JS_BUTTON11"
+        },
+        "0x740C": {
+            "group": "joystick",
+            "key": "JS_BUTTON12"
+        },
+        "0x740D": {
+            "group": "joystick",
+            "key": "JS_BUTTON13"
+        },
+        "0x740E": {
+            "group": "joystick",
+            "key": "JS_BUTTON14"
+        },
+        "0x740F": {
+            "group": "joystick",
+            "key": "JS_BUTTON15"
+        },
+        "0x7410": {
+            "group": "joystick",
+            "key": "JS_BUTTON16"
+        },
+        "0x7411": {
+            "group": "joystick",
+            "key": "JS_BUTTON17"
+        },
+        "0x7412": {
+            "group": "joystick",
+            "key": "JS_BUTTON18"
+        },
+        "0x7413": {
+            "group": "joystick",
+            "key": "JS_BUTTON19"
+        },
+        "0x7414": {
+            "group": "joystick",
+            "key": "JS_BUTTON20"
+        },
+        "0x7415": {
+            "group": "joystick",
+            "key": "JS_BUTTON21"
+        },
+        "0x7416": {
+            "group": "joystick",
+            "key": "JS_BUTTON22"
+        },
+        "0x7417": {
+            "group": "joystick",
+            "key": "JS_BUTTON23"
+        },
+        "0x7418": {
+            "group": "joystick",
+            "key": "JS_BUTTON24"
+        },
+        "0x7419": {
+            "group": "joystick",
+            "key": "JS_BUTTON25"
+        },
+        "0x741A": {
+            "group": "joystick",
+            "key": "JS_BUTTON26"
+        },
+        "0x741B": {
+            "group": "joystick",
+            "key": "JS_BUTTON27"
+        },
+        "0x741C": {
+            "group": "joystick",
+            "key": "JS_BUTTON28"
+        },
+        "0x741D": {
+            "group": "joystick",
+            "key": "JS_BUTTON29"
+        },
+        "0x741E": {
+            "group": "joystick",
+            "key": "JS_BUTTON30"
+        },
+        "0x741F": {
+            "group": "joystick",
+            "key": "JS_BUTTON31"
+        }
+    }
+}

@@ -1,0 +1,445 @@
+{
+    "keycodes": {
+        "0x7C00": {
+            "group": "quantum",
+            "key": "QK_BOOTLOADER",
+            "aliases": [
+                "QK_BOOT"
+            ]
+        },
+        "0x7C01": {
+            "group": "quantum",
+            "key": "QK_DEBUG_TOGGLE",
+            "aliases": [
+                "DB_TOGG"
+            ]
+        },
+        "0x7C02": {
+            "group": "quantum",
+            "key": "QK_GRAVE_ESCAPE",
+            "aliases": [
+                "QK_GESC"
+            ]
+        },
+        "0x7C03": {
+            "group": "quantum",
+            "key": "QK_CLEAR_EEPROM",
+            "aliases": [
+                "EE_CLR"
+            ]
+        },
+        "0x7C04": {
+            "group": "quantum",
+            "key": "QK_MAKE"
+        },
+        "0x7C05": {
+            "group": "quantum",
+            "key": "QK_REBOOT",
+            "aliases": [
+                "QK_RBT"
+            ]
+        },
+
+        "0x7C10": {
+            "group": "quantum",
+            "key": "KC_ASUP"
+        },
+        "0x7C11": {
+            "group": "quantum",
+            "key": "KC_ASDN"
+        },
+        "0x7C12": {
+            "group": "quantum",
+            "key": "KC_ASRP"
+        },
+        "0x7C13": {
+            "group": "quantum",
+            "key": "KC_ASTG"
+        },
+        "0x7C14": {
+            "group": "quantum",
+            "key": "KC_ASON"
+        },
+        "0x7C15": {
+            "group": "quantum",
+            "key": "KC_ASOFF"
+        },
+
+        "0x7C16": {
+            "group": "quantum",
+            "key": "AU_ON"
+        },
+        "0x7C17": {
+            "group": "quantum",
+            "key": "AU_OFF"
+        },
+        "0x7C18": {
+            "group": "quantum",
+            "key": "AU_TOG"
+        },
+
+        "0x7C19": {
+            "group": "quantum",
+            "key": "CLICKY_TOGGLE",
+            "aliases": [
+                "CK_TOGG",
+                "FC_TOGG"
+            ]
+        },
+        "0x7C1A": {
+            "group": "quantum",
+            "key": "CLICKY_ENABLE",
+            "aliases": [
+                "CK_ON",
+                "FC_ON"
+            ]
+        },
+        "0x7C1B": {
+            "group": "quantum",
+            "key": "CLICKY_DISABLE",
+            "aliases": [
+                "CK_OFF",
+                "FC_OFF"
+            ]
+        },
+        "0x7C1C": {
+            "group": "quantum",
+            "key": "CLICKY_UP",
+            "aliases": [
+                "CK_UP"
+            ]
+        },
+        "0x7C1D": {
+            "group": "quantum",
+            "key": "CLICKY_DOWN",
+            "aliases": [
+                "CK_DOWN"
+            ]
+        },
+        "0x7C1E": {
+            "group": "quantum",
+            "key": "CLICKY_RESET",
+            "aliases": [
+                "CK_RST"
+            ]
+        },
+
+        "0x7C1F": {
+            "group": "quantum",
+            "key": "MU_ON"
+        },
+        "0x7C20": {
+            "group": "quantum",
+            "key": "MU_OFF"
+        },
+        "0x7C21": {
+            "group": "quantum",
+            "key": "MU_TOG"
+        },
+        "0x7C22": {
+            "group": "quantum",
+            "key": "MU_MOD"
+        },
+        "0x7C23": {
+            "group": "quantum",
+            "key": "MUV_IN"
+        },
+        "0x7C24": {
+            "group": "quantum",
+            "key": "MUV_DE"
+        },
+
+        "0x7C25": {
+            "group": "quantum",
+            "key": "VLK_TOG"
+        },
+
+        "0x7C26": {
+            "group": "quantum",
+            "key": "KC_LSPO"
+        },
+        "0x7C27": {
+            "group": "quantum",
+            "key": "KC_RSPC"
+        },
+        "0x7C28": {
+            "group": "quantum",
+            "key": "KC_SFTENT"
+        },
+        "0x7C29": {
+            "group": "quantum",
+            "key": "KC_LCPO"
+        },
+        "0x7C2A": {
+            "group": "quantum",
+            "key": "KC_RCPC"
+        },
+        "0x7C2B": {
+            "group": "quantum",
+            "key": "KC_LAPO"
+        },
+        "0x7C2C": {
+            "group": "quantum",
+            "key": "KC_RAPC"
+        },
+
+        "0x7C2D": {
+            "group": "quantum",
+            "key": "PRINT_ON"
+        },
+        "0x7C2E": {
+            "group": "quantum",
+            "key": "PRINT_OFF"
+        },
+
+        "0x7C30": {
+            "group": "quantum",
+            "key": "OUT_AUTO"
+        },
+        "0x7C31": {
+            "group": "quantum",
+            "key": "OUT_USB"
+        },
+        "0x7C32": {
+            "group": "quantum",
+            "key": "OUT_BT"
+        },
+
+        "0x7C40": {
+            "group": "quantum",
+            "key": "UNICODE_MODE_FORWARD",
+            "aliases": [
+                "UC_MOD"
+            ]
+        },
+        "0x7C41": {
+            "group": "quantum",
+            "key": "UNICODE_MODE_REVERSE",
+            "aliases": [
+                "UC_RMOD"
+            ]
+        },
+        "0x7C42": {
+            "group": "quantum",
+            "key": "UNICODE_MODE_MAC",
+            "aliases": [
+                "UC_M_MA",
+                "UC_M_OS",
+                "UNICODE_MODE_OSX"
+            ]
+        },
+        "0x7C43": {
+            "group": "quantum",
+            "key": "UNICODE_MODE_LNX",
+            "aliases": [
+                "UC_M_LN"
+            ]
+        },
+        "0x7C44": {
+            "group": "quantum",
+            "key": "UNICODE_MODE_WIN",
+            "aliases": [
+                "UC_M_WI"
+            ]
+        },
+        "0x7C45": {
+            "group": "quantum",
+            "key": "UNICODE_MODE_BSD",
+            "aliases": [
+                "UC_M_BS"
+            ]
+        },
+        "0x7C46": {
+            "group": "quantum",
+            "key": "UNICODE_MODE_WINC",
+            "aliases": [
+                "UC_M_WC"
+            ]
+        },
+
+        "0x7C50": {
+            "group": "quantum",
+            "key": "HPT_ON"
+        },
+        "0x7C51": {
+            "group": "quantum",
+            "key": "HPT_OFF"
+        },
+        "0x7C52": {
+            "group": "quantum",
+            "key": "HPT_TOG"
+        },
+        "0x7C53": {
+            "group": "quantum",
+            "key": "HPT_RST"
+        },
+        "0x7C54": {
+            "group": "quantum",
+            "key": "HPT_FBK"
+        },
+        "0x7C55": {
+            "group": "quantum",
+            "key": "HPT_BUZ"
+        },
+        "0x7C56": {
+            "group": "quantum",
+            "key": "HPT_MODI"
+        },
+        "0x7C57": {
+            "group": "quantum",
+            "key": "HPT_MODD"
+        },
+        "0x7C58": {
+            "group": "quantum",
+            "key": "HPT_CONT"
+        },
+        "0x7C59": {
+            "group": "quantum",
+            "key": "HPT_CONI"
+        },
+        "0x7C5A": {
+            "group": "quantum",
+            "key": "HPT_COND"
+        },
+        "0x7C5B": {
+            "group": "quantum",
+            "key": "HPT_DWLI"
+        },
+        "0x7C5C": {
+            "group": "quantum",
+            "key": "HPT_DWLD"
+        },
+
+        "0x7C60": {
+            "group": "quantum",
+            "key": "CMB_ON"
+        },
+        "0x7C61": {
+            "group": "quantum",
+            "key": "CMB_OFF"
+        },
+        "0x7C62": {
+            "group": "quantum",
+            "key": "CMB_TOG"
+        },
+
+        "0x7C63": {
+            "group": "quantum",
+            "key": "DYN_REC_START1",
+            "aliases": [
+                "DM_REC1"
+            ]
+        },
+        "0x7C64": {
+            "group": "quantum",
+            "key": "DYN_REC_START2",
+            "aliases": [
+                "DM_REC2"
+            ]
+        },
+        "0x7C65": {
+            "group": "quantum",
+            "key": "DYN_REC_STOP",
+            "aliases": [
+                "DM_RSTP"
+            ]
+        },
+        "0x7C66": {
+            "group": "quantum",
+            "key": "DYN_MACRO_PLAY1",
+            "aliases": [
+                "DM_PLY1"
+            ]
+        },
+        "0x7C67": {
+            "group": "quantum",
+            "key": "DYN_MACRO_PLAY2",
+            "aliases": [
+                "DM_PLY2"
+            ]
+        },
+
+        "0x7C68": {
+            "group": "quantum",
+            "key": "KC_LEAD"
+        },
+
+        "0x7C69": {
+            "group": "quantum",
+            "key": "KC_LOCK"
+        },
+
+        "0x7C6A": {
+            "group": "quantum",
+            "key": "ONESHOT_ENABLE",
+            "aliases": [
+                "OS_ON"
+            ]
+        },
+        "0x7C6B": {
+            "group": "quantum",
+            "key": "ONESHOT_DISABLE",
+            "aliases": [
+                "OS_OFF"
+            ]
+        },
+        "0x7C6C": {
+            "group": "quantum",
+            "key": "ONESHOT_TOGGLE",
+            "aliases": [
+                "OS_TOGG"
+            ]
+        },
+
+        "0x7C6D": {
+            "group": "quantum",
+            "key": "KEY_OVERRIDE_TOGGLE"
+        },
+        "0x7C6E": {
+            "group": "quantum",
+            "key": "KEY_OVERRIDE_ON"
+        },
+        "0x7C6F": {
+            "group": "quantum",
+            "key": "KEY_OVERRIDE_OFF"
+        },
+
+        "0x7C70": {
+            "group": "quantum",
+            "key": "DT_PRNT"
+        },
+        "0x7C71": {
+            "group": "quantum",
+            "key": "DT_UP"
+        },
+        "0x7C72": {
+            "group": "quantum",
+            "key": "DT_DOWN"
+        },
+
+        "0x7C73": {
+            "group": "quantum",
+            "key": "SECURE_LOCK"
+        },
+        "0x7C74": {
+            "group": "quantum",
+            "key": "SECURE_UNLOCK"
+        },
+        "0x7C75": {
+            "group": "quantum",
+            "key": "SECURE_TOGGLE"
+        },
+        "0x7C76": {
+            "group": "quantum",
+            "key": "SECURE_REQUEST"
+        },
+
+        "0x7C77": {
+            "group": "quantum",
+            "key": "CAPS_WORD",
+            "aliases": [
+                "CAPSWRD"
+            ]
+        }
+    }
+}
