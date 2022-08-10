@@ -1,26 +1,62 @@
 """Used by the make system to generate keycodes.h from keycodes_{version}.json
 """
 from pathlib import Path
+from syslog import LOG_WARNING
 
 from milc import cli
 
 from qmk.constants import GPL2_HEADER_C_LIKE, GENERATED_HEADER_C_LIKE
-from qmk.json_schema import json_load
+from qmk.json_schema import deep_update, json_load
 from qmk.commands import dump_lines
 from qmk.path import normpath
 
 
-def _generate(lines, version):
-    """Build keycode from the requested spec file
+def _build(version):
+    """Build keycode data from the requested spec file
     """
-    spec = Path(f'data/constants/keycodes_{version}.json')
-    if not spec.exists():
+    data_dir = Path('data/constants/')
+
+    file = data_dir / f'keycodes_{version}.json'
+    if not file.exists():
         cli.log.error(f'Requested keycode spec ({version}) is invalid:!')
         exit(1)
 
-    keycodes = json_load(spec)
+    # Load base
+    spec = json_load(file)
+
+    # Merge in fragments
+    fragments = data_dir.glob(f'keycodes_{version}_*.json')
+    for file in fragments:
+        deep_update(spec, json_load(file))
+
+    # Sort?
+    return spec
+
+def _generate(lines, version):
+    """Generate keycode header from the requested spec file
+    """
+    keycodes = _build(version)
+
+    lines.append('')
+    lines.append('// Ranges')
+    for key, value in keycodes["ranges"].items():
+        lo, mask = map(lambda x: int(x, 16), key.split("/"))
+        hi = lo + mask
+        define = value.get("defines")[0]
+        lines.append(f'#define {define.ljust(30)} 0x{lo:04x}')
+        lines.append(f'#define {(define + "_MAX").ljust(30)} 0x{hi:04x}')
+
+    lines.append('')
+    lines.append('// Keycodes')
     for key, value in keycodes["keycodes"].items():
         lines.append(f'#define {value.get("key")} {key}')
+
+    lines.append('')
+    lines.append('// Alias')
+    for key, value in keycodes["keycodes"].items():
+        temp = value.get("key")
+        for alias in value.get("aliases", []):
+            lines.append(f'#define {alias.ljust(10)} {temp}')
 
 
 @cli.argument('-v', '--version', arg_only=True, required=True, help='Version of keycodes to generate.')
