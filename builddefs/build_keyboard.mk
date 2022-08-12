@@ -391,7 +391,7 @@ ifneq ("$(wildcard $(KEYBOARD_PATH_5)/post_rules.mk)","")
 endif
 
 # TODO: if via - force legacy?
-KEYCODE_VERSION ?= legacy
+KEYCODE_VERSION ?= "0.0.1"
 
 $(KEYBOARD_OUTPUT)/src/keycodes.h:
 	@$(SILENT) || printf "$(MSG_GENERATING) $@" | $(AWK_CMD)
