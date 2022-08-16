@@ -53,7 +53,7 @@ void SR_EXP_USB_enable(void) {
     // TODO: dynamic port port configure logic?
     if ((v_con_1 + v_con_3) > (v_con_2 + v_con_4)) {
         sr_exp_data.bit.ENB      = 1;  // Enable CON1
-        sr_exp_data.bit.ENA      = 0;  // Disable CON2
+        sr_exp_data.bit.ENA      = 1;  // Enable CON2
         sr_exp_data.bit.SRC_1_A5 = 1;  // HOST on USBC-1
         sr_exp_data.bit.SRC_1_B5 = 1;
         sr_exp_data.bit.SRC_2_A5 = 0;  // EXTRA available on USBC-2
@@ -62,18 +62,18 @@ void SR_EXP_USB_enable(void) {
         sr_exp_data.bit.S_A_EXT  = 1;  // 0 = Onboard, 1 = Offboard
         sr_exp_data.bit.S_B_EXT  = 0;  // 1 = Onboard, 0 = Offboard
         sr_exp_data.bit.E_VBUS_1 = 1;  // USBC-1 enable full power I/O
-        sr_exp_data.bit.E_VBUS_2 = 0;  // USBC-2 disable full power I/O
+        sr_exp_data.bit.E_VBUS_2 = 1;  // USBC-2 disable full power I/O
     } else {
-        sr_exp_data.bit.ENB      = 0;  // Disable CON1
+        sr_exp_data.bit.ENB      = 1;  // Enable CON1
         sr_exp_data.bit.ENA      = 1;  // Enable CON2
         sr_exp_data.bit.SRC_1_A5 = 0;  // HOST on USBC-2
         sr_exp_data.bit.SRC_1_B5 = 0;
-        sr_exp_data.bit.SRC_2_A5 = 1;  // EXTRA available on USBC-2
+        sr_exp_data.bit.SRC_2_A5 = 1;  // EXTRA available on USBC-1
         sr_exp_data.bit.SRC_2_B5 = 1;
         sr_exp_data.bit.S_A_UP   = 0;  // 0 = DN1 to A and UP to B, 1 = DN1 to B and UP to A
         sr_exp_data.bit.S_A_EXT  = 1;  // 0 = Onboard, 1 = Offboard
         sr_exp_data.bit.S_B_EXT  = 0;  // 1 = Onboard, 0 = Offboard
-        sr_exp_data.bit.E_VBUS_1 = 0;  // USBC-1 enable full power I/O
+        sr_exp_data.bit.E_VBUS_1 = 1;  // USBC-1 enable full power I/O
         sr_exp_data.bit.E_VBUS_2 = 1;  // USBC-2 disable full power I/O
     }
 
