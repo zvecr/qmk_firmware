@@ -29,11 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "gpio.h" // for pin_t
 #include "quantum_keycodes.h"
 
-// Gross hack, remove me and change RESET keycode to QK_BOOT
-#if defined(MCU_RP)
-#    undef RESET
-#endif
-
 // translates key to keycode
 uint16_t keymap_key_to_keycode(uint8_t layer, keypos_t key);
 

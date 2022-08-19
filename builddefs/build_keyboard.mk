@@ -393,12 +393,12 @@ endif
 # TODO: if via - force legacy?
 KEYCODE_VERSION ?= "0.0.1"
 
-$(KEYBOARD_OUTPUT)/src/keycodes.h:
+$(KEYBOARD_OUTPUT)/src/generated_keycodes.h:
 	@$(SILENT) || printf "$(MSG_GENERATING) $@" | $(AWK_CMD)
-	$(eval CMD=$(QMK_BIN) generate-keycodes --quiet --version $(KEYCODE_VERSION) --output $(KEYBOARD_OUTPUT)/src/keycodes.h)
+	$(eval CMD=$(QMK_BIN) generate-keycodes --quiet --version $(KEYCODE_VERSION) --output $(KEYBOARD_OUTPUT)/src/generated_keycodes.h)
 	@$(BUILD_CMD)
 
-generated-files: $(KEYBOARD_OUTPUT)/src/keycodes.h
+generated-files: $(KEYBOARD_OUTPUT)/src/generated_keycodes.h
 
 .INTERMEDIATE : generated-files
 
