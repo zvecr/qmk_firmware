@@ -1,0 +1,32 @@
+{
+    "keycodes": {
+        "0x56F0": {
+            "group": "sequencer",
+            "key": "SH_TG"
+        },
+        "0x56F1": {
+            "group": "sequencer",
+            "key": "SH_TT"
+        },
+        "0x56F2": {
+            "group": "sequencer",
+            "key": "SH_MON"
+        },
+        "0x56F3": {
+            "group": "sequencer",
+            "key": "SH_MOFF"
+        },
+        "0x56F4": {
+            "group": "sequencer",
+            "key": "SH_OFF"
+        },
+        "0x56F5": {
+            "group": "sequencer",
+            "key": "SH_ON"
+        },
+        "0x56F6": {
+            "group": "sequencer",
+            "key": "SH_OS"
+        }
+    }
+}

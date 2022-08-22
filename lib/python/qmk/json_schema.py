@@ -10,7 +10,18 @@ import jsonschema
 from milc import cli
 
 
-def json_load(json_file):
+def _dict_raise_on_duplicates(ordered_pairs):
+    """Reject duplicate keys."""
+    d = {}
+    for k, v in ordered_pairs:
+        if k in d:
+            raise ValueError("duplicate key: %r" % (k,))
+        else:
+            d[k] = v
+    return d
+
+
+def json_load(json_file, strict=False):
     """Load a json file from disk.
 
     Note: file must be a Path object.
@@ -20,6 +31,8 @@ def json_load(json_file):
         # Not necessary if the data is provided via stdin
         if isinstance(json_file, Path):
             json_file = json_file.open(encoding='utf-8')
+        if strict:
+            return hjson.load(json_file, object_pairs_hook=_dict_raise_on_duplicates)
         return hjson.load(json_file)
 
     except (json.decoder.JSONDecodeError, hjson.HjsonDecodeError) as e:

@@ -1,7 +1,6 @@
 """Used by the make system to generate keycodes.h from keycodes_{version}.json
 """
 from pathlib import Path
-from syslog import LOG_WARNING
 
 from milc import cli
 
@@ -11,6 +10,28 @@ from qmk.commands import dump_lines
 from qmk.path import normpath
 
 
+def _validate(spec):
+    # no duplicate keycodes
+    keycodes = []
+    for value in spec['keycodes'].values():
+        keycodes.append(value['key'])
+        keycodes.extend(value.get('aliases', []))
+    duplicates = set([x for x in keycodes if keycodes.count(x) > 1])
+    if duplicates:
+        cli.log.error(f'Keycode spec contains duplicate keycodes! ({",".join(duplicates)})')
+        exit(1)
+
+    # all groups exist
+    groups = set(spec['groups'])
+    bad_groups = set()
+    for value in spec['keycodes'].values():
+        group = value.get('group', 'basic')
+        if group not in groups:
+            bad_groups.add(group)
+    if bad_groups:
+        cli.log.warning(f'Keycode spec contains group/s ({",".join(bad_groups)}) that are not declared!')
+
+
 def _build(version):
     """Build keycode data from the requested spec file
     """
@@ -18,19 +39,25 @@ def _build(version):
 
     file = data_dir / f'keycodes_{version}.json'
     if not file.exists():
-        cli.log.error(f'Requested keycode spec ({version}) is invalid:!')
+        cli.log.error(f'Requested keycode spec ({version}) is invalid!')
         exit(1)
 
     # Load base
-    spec = json_load(file)
+    spec = json_load(file, True)
 
     # Merge in fragments
     fragments = data_dir.glob(f'keycodes_{version}_*.json')
     for file in fragments:
-        deep_update(spec, json_load(file))
+        deep_update(spec, json_load(file, True))
 
     # Sort?
+    spec['keycodes'] = dict(sorted(spec['keycodes'].items()))
+
+    # Validate?
+    _validate(spec)
+
     return spec
+
 
 def _generate(lines, version):
     """Generate keycode header from the requested spec file

@@ -4,7 +4,7 @@
 
 #include "generated_keycodes.h"
 
-// TODO: ranges?
+// TODO: sub-ranges?
 #define QK_LCTL      0x0100
 #define QK_LSFT      0x0200
 #define QK_LALT      0x0400
@@ -30,26 +30,6 @@
 #define IS_MOUSEKEY_BUTTON(code) (KC_MS_BTN1 <= (code) && (code) <= KC_MS_BTN8)
 #define IS_MOUSEKEY_WHEEL(code) (KC_MS_WH_UP <= (code) && (code) <= KC_MS_WH_RIGHT)
 #define IS_MOUSEKEY_ACCEL(code) (KC_MS_ACCEL0 <= (code) && (code) <= KC_MS_ACCEL2)
-
-#define MOD_BIT(code) (1 << MOD_INDEX(code))
-#define MOD_INDEX(code) ((code)&0x07)
-
-#define MOD_MASK_CTRL (MOD_BIT(KC_LEFT_CTRL) | MOD_BIT(KC_RIGHT_CTRL))
-#define MOD_MASK_SHIFT (MOD_BIT(KC_LEFT_SHIFT) | MOD_BIT(KC_RIGHT_SHIFT))
-#define MOD_MASK_ALT (MOD_BIT(KC_LEFT_ALT) | MOD_BIT(KC_RIGHT_ALT))
-#define MOD_MASK_GUI (MOD_BIT(KC_LEFT_GUI) | MOD_BIT(KC_RIGHT_GUI))
-#define MOD_MASK_CS (MOD_MASK_CTRL | MOD_MASK_SHIFT)
-#define MOD_MASK_CA (MOD_MASK_CTRL | MOD_MASK_ALT)
-#define MOD_MASK_CG (MOD_MASK_CTRL | MOD_MASK_GUI)
-#define MOD_MASK_SA (MOD_MASK_SHIFT | MOD_MASK_ALT)
-#define MOD_MASK_SG (MOD_MASK_SHIFT | MOD_MASK_GUI)
-#define MOD_MASK_AG (MOD_MASK_ALT | MOD_MASK_GUI)
-#define MOD_MASK_CSA (MOD_MASK_CTRL | MOD_MASK_SHIFT | MOD_MASK_ALT)
-#define MOD_MASK_CSG (MOD_MASK_CTRL | MOD_MASK_SHIFT | MOD_MASK_GUI)
-#define MOD_MASK_CAG (MOD_MASK_CTRL | MOD_MASK_ALT | MOD_MASK_GUI)
-#define MOD_MASK_SAG (MOD_MASK_SHIFT | MOD_MASK_ALT | MOD_MASK_GUI)
-#define MOD_MASK_CSAG (MOD_MASK_CTRL | MOD_MASK_SHIFT | MOD_MASK_ALT | MOD_MASK_GUI)
-
 
 // Keycode modifiers & aliases
 #define LCTL(kc) (QK_LCTL | (kc))
@@ -83,74 +63,6 @@
 #define RSA(kc) (QK_RSFT | QK_RALT | (kc))
 #define RCS(kc) (QK_RCTL | QK_RSFT | (kc))
 #define SAGR(kc) RSA(kc)
-
-#define MOD_HYPR 0xF
-#define MOD_MEH 0x7
-
-// US ANSI shifted keycode aliases
-#define KC_TILDE LSFT(KC_GRAVE) // ~
-#define KC_TILD KC_TILDE
-
-#define KC_EXCLAIM LSFT(KC_1) // !
-#define KC_EXLM KC_EXCLAIM
-
-#define KC_AT LSFT(KC_2) // @
-
-#define KC_HASH LSFT(KC_3) // #
-
-#define KC_DOLLAR LSFT(KC_4) // $
-#define KC_DLR KC_DOLLAR
-
-#define KC_PERCENT LSFT(KC_5) // %
-#define KC_PERC KC_PERCENT
-
-#define KC_CIRCUMFLEX LSFT(KC_6) // ^
-#define KC_CIRC KC_CIRCUMFLEX
-
-#define KC_AMPERSAND LSFT(KC_7) // &
-#define KC_AMPR KC_AMPERSAND
-
-#define KC_ASTERISK LSFT(KC_8) // *
-#define KC_ASTR KC_ASTERISK
-
-#define KC_LEFT_PAREN LSFT(KC_9) // (
-#define KC_LPRN KC_LEFT_PAREN
-
-#define KC_RIGHT_PAREN LSFT(KC_0) // )
-#define KC_RPRN KC_RIGHT_PAREN
-
-#define KC_UNDERSCORE LSFT(KC_MINUS) // _
-#define KC_UNDS KC_UNDERSCORE
-
-#define KC_PLUS LSFT(KC_EQUAL) // +
-
-#define KC_LEFT_CURLY_BRACE LSFT(KC_LEFT_BRACKET) // {
-#define KC_LCBR KC_LEFT_CURLY_BRACE
-
-#define KC_RIGHT_CURLY_BRACE LSFT(KC_RIGHT_BRACKET) // }
-#define KC_RCBR KC_RIGHT_CURLY_BRACE
-
-#define KC_LEFT_ANGLE_BRACKET LSFT(KC_COMMA) // <
-#define KC_LABK KC_LEFT_ANGLE_BRACKET
-#define KC_LT KC_LEFT_ANGLE_BRACKET
-
-#define KC_RIGHT_ANGLE_BRACKET LSFT(KC_DOT) // >
-#define KC_RABK KC_RIGHT_ANGLE_BRACKET
-#define KC_GT KC_RIGHT_ANGLE_BRACKET
-
-#define KC_COLON LSFT(KC_SEMICOLON) // :
-#define KC_COLN KC_COLON
-
-#define KC_PIPE LSFT(KC_BACKSLASH) // |
-
-#define KC_QUESTION LSFT(KC_SLASH) // ?
-#define KC_QUES KC_QUESTION
-
-#define KC_DOUBLE_QUOTE LSFT(KC_QUOTE) // "
-#define KC_DQUO KC_DOUBLE_QUOTE
-#define KC_DQT KC_DOUBLE_QUOTE
-
-#define KC_DELT KC_DELETE // Del key (four letter code)
 
 // Modified keycode aliases
 #define C(kc) LCTL(kc)
@@ -254,32 +166,12 @@
 
 // Swap Hands
 #define SH_T(kc) (QK_SWAP_HANDS | (kc))
-#define SH_TG (QK_SWAP_HANDS | OP_SH_TOGGLE)
-#define SH_TT (QK_SWAP_HANDS | OP_SH_TAP_TOGGLE)
-#define SH_OS (QK_SWAP_HANDS | OP_SH_ONESHOT)
-#define SH_MON (QK_SWAP_HANDS | OP_SH_ON_OFF)
-#define SH_MOFF (QK_SWAP_HANDS | OP_SH_OFF_ON)
-#define SH_ON (QK_SWAP_HANDS | OP_SH_ON)
-#define SH_OFF (QK_SWAP_HANDS | OP_SH_OFF)
 
-// TODO: migrate to DD
+// TODO: migrate to DD?
 // Sequencer
 #include "sequencer.h"
 
-#define SQ_ON 0x7200
-#define SQ_OFF 0x7201
-#define SQ_TOG 0x7202
-
-#define SQ_TMPD 0x7203
-#define SQ_TMPU 0x7204
-
-#define SQ_RESD 0x7205
-#define SQ_RESU 0x7206
-
-#define SQ_SALL 0x7207
-#define SQ_SCLR 0x7208
-
-#define SEQUENCER_STEP_MIN 0x7210
+#define SEQUENCER_STEP_MIN (QK_SEQUENCER + 0xF)
 #define SEQUENCER_STEP_MAX (SEQUENCER_STEP_MIN + SEQUENCER_STEPS)
 
 #define SEQUENCER_RESOLUTION_MIN (SEQUENCER_STEP_MAX + 1)
@@ -294,3 +186,6 @@
 
 // TODO: remove?
 // #include "quantum_keycodes_legacy.h"
+
+// TODO: force include US ANSI shifted keycode aliases?
+#include "quantum/keymap_extras/keymap_us.h"

@@ -448,7 +448,8 @@
             "key": "KC_DELETE",
             "label": "Delete",
             "aliases": [
-                "KC_DEL"
+                "KC_DEL",
+                "KC_DELT"
             ]
         },
         "0x004d": {
