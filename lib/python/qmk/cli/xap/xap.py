@@ -167,6 +167,26 @@ class XAPShell(cmd.Cmd):
 
         print(render_layout(layout, False, keycodes))
 
+    def do_perf(self, arg):
+        """Perform read test
+        """
+        print('Performing read test...')
+        import timeit
+        number = 500
+        repeat = 5
+        r = timeit.repeat(lambda: self.device.transaction(b'\x04\x03', b'\x00\x00\x00'), repeat=repeat, number=number, globals=globals())
+        best = min(r)
+        usec = best * 1e6 / number
+        if usec < 1000:
+            print("best of %d: %.*g usec per loop" % (repeat, 3, usec))
+        else:
+            msec = usec / 1000
+            if msec < 1000:
+                print("best of %d: %.*g msec per loop" % (repeat, 3, msec))
+            else:
+                sec = msec / 1000
+                print("best of %d: %.*g sec per loop" % (repeat, 3, sec))
+
     def do_exit(self, line):
         """Quit shell
         """
