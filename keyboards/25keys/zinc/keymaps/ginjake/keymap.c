@@ -169,7 +169,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = { \
    * `-----------------------------------------'             `-----------------------------------------'
    */
     [_ADJUST] =  LAYOUT_ortho_4x12( \
-      _______, RESET,   RGBRST,  _______, _______, _______,                   _______, QWERTY,  COLEMAK, DVORAK,  _______, KC_INS, \
+      _______, QK_BOOT, RGBRST,  _______, _______, _______,                   _______, QWERTY,  COLEMAK, DVORAK,  _______, KC_INS, \
        AQOURS, RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, AG_NORM,                   AG_SWAP, KC_MINS, KC_EQL,  KC_PSCR, KC_SLCK, KC_PAUS,\
       _______, RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, _______,                   _______, _______, _______, _______, _______, _______,\
       _______, _______, _______, EISU,    EISU,    EISU,                      KANA,    KANA,    KC_HOME, KC_PGDN, KC_PGUP, KC_END\
@@ -333,7 +333,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       aqours_num++;
       aqours_next_color_timer_count = 0;
       target_col = 0;
-      if (aqours_num == sizeof(aqours_h) / sizeof(int)) {
+      if (aqours_num == ARRAY_SIZE(aqours_h)) {
         aqours_num = 0;
       }
     }
