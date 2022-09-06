@@ -388,11 +388,10 @@ extern report_keyboard_t keyboard_report_sent;
 static uint8_t keyboard_leds(void);
 static void    send_keyboard(report_keyboard_t *report);
 static void    send_mouse(report_mouse_t *report);
-static void    send_system(uint16_t data);
-static void    send_consumer(uint16_t data);
+static void    send_extra(uint8_t report_id, uint16_t data);
 static void    send_programmable_button(uint32_t data);
 
-static host_driver_t driver = {keyboard_leds, send_keyboard, send_mouse, send_system, send_consumer, send_programmable_button};
+static host_driver_t driver = {keyboard_leds, send_keyboard, send_mouse, send_extra, send_programmable_button};
 
 static uint8_t keyboard_leds(void) {
     return usbdrv_keyboard_leds();
@@ -440,23 +439,11 @@ static void send_report(void *report, size_t size) {
 }
 #endif
 
-#ifdef EXTRAKEY_ENABLE
 static void send_extra(uint8_t report_id, uint16_t data) {
+#ifdef EXTRAKEY_ENABLE
     static report_extra_t r;
     r = (report_extra_t){.report_id = report_id, .usage = data};
     send_report(&r, sizeof(r));
-}
-#endif
-
-static void send_system(uint16_t data) {
-#ifdef EXTRAKEY_ENABLE
-    send_extra(REPORT_ID_SYSTEM, data);
-#endif
-}
-
-static void send_consumer(uint16_t data) {
-#ifdef EXTRAKEY_ENABLE
-    send_extra(REPORT_ID_CONSUMER, data);
 #endif
 }
 
