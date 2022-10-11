@@ -12,7 +12,7 @@ void keyboard_pre_init_kb(void) {
 }
 
 #ifdef RGB_MATRIX_ENABLE
-const is31_led PROGMEM g_is31_leds[DRIVER_LED_TOTAL] = {
+const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
      { 0, K_1,  J_1,  L_1  },
      { 0, K_2,  J_2,  L_2  },
      { 0, K_3,  J_3,  L_3  },
@@ -181,8 +181,10 @@ const is31_led PROGMEM g_is31_leds[DRIVER_LED_TOTAL] = {
      { 1, E_3,  D_3,  F_3  },
 };
 
-__attribute__ ((weak))
-void rgb_matrix_indicators_user(void) {
+bool rgb_matrix_indicators_kb(void) {
+    if (!rgb_matrix_indicators_user()) {
+        return false;
+    }
     uint8_t num_state = host_keyboard_led_state().num_lock ? 0xFF : 0;
     uint8_t caps_state = host_keyboard_led_state().caps_lock ? 0xFF : 0;
     uint8_t scroll_state = host_keyboard_led_state().scroll_lock ? 0xFF : 0;
@@ -190,6 +192,7 @@ void rgb_matrix_indicators_user(void) {
     rgb_matrix_set_color(163, num_state, num_state, num_state);
     rgb_matrix_set_color(164, caps_state, caps_state, caps_state);
     rgb_matrix_set_color(165, scroll_state, scroll_state, scroll_state);
+    return true;
 }
 
 #endif

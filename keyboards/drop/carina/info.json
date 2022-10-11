@@ -14,7 +14,7 @@
     "usb": {
         "vid": "0x04D8",
         "pid": "0xEE69",
-        "device_ver": "0x0100"
+        "device_version": "1.0.0"
     },
     "features": {
         "bootmagic": true,
