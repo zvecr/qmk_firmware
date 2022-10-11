@@ -50,10 +50,6 @@
 extern keymap_config_t keymap_config;
 #endif
 
-#ifdef JOYSTICK_ENABLE
-#    include "joystick.h"
-#endif
-
 #ifdef XAP_ENABLE
 #    include "xap.h"
 #endif
@@ -753,6 +749,7 @@ void init_usb_driver(USBDriver *usbp) {
      * after a reset.
      */
     usbDisconnectBus(usbp);
+    usbStop(usbp);
     wait_ms(50);
     usbStart(usbp, &usbcfg);
     usbConnectBus(usbp);
@@ -761,8 +758,8 @@ void init_usb_driver(USBDriver *usbp) {
 }
 
 __attribute__((weak)) void restart_usb_driver(USBDriver *usbp) {
-    usbStop(usbp);
     usbDisconnectBus(usbp);
+    usbStop(usbp);
 
 #if USB_SUSPEND_WAKEUP_DELAY > 0
     // Some hubs, kvm switches, and monitors do
@@ -961,7 +958,7 @@ void shared_in_cb(USBDriver *usbp, usbep_t ep) {
  * ---------------------------------------------------------
  */
 
-void send_extra(uint8_t report_id, uint16_t data) {
+void send_extra(report_extra_t *report) {
 #ifdef EXTRAKEY_ENABLE
     osalSysLock();
     if (usbGetDriverStateI(&USB_DRIVER) != USB_ACTIVE) {
@@ -980,15 +977,12 @@ void send_extra(uint8_t report_id, uint16_t data) {
         }
     }
 
-    static report_extra_t report;
-    report = (report_extra_t){.report_id = report_id, .usage = data};
-
-    usbStartTransmitI(&USB_DRIVER, SHARED_IN_EPNUM, (uint8_t *)&report, sizeof(report_extra_t));
+    usbStartTransmitI(&USB_DRIVER, SHARED_IN_EPNUM, (uint8_t *)report, sizeof(report_extra_t));
     osalSysUnlock();
 #endif
 }
 
-void send_programmable_button(uint32_t data) {
+void send_programmable_button(report_programmable_button_t *report) {
 #ifdef PROGRAMMABLE_BUTTON_ENABLE
     osalSysLock();
     if (usbGetDriverStateI(&USB_DRIVER) != USB_ACTIVE) {
@@ -1006,13 +1000,8 @@ void send_programmable_button(uint32_t data) {
             return;
         }
     }
-    static report_programmable_button_t report = {
-        .report_id = REPORT_ID_PROGRAMMABLE_BUTTON,
-    };
 
-    report.usage = data;
-
-    usbStartTransmitI(&USB_DRIVER, SHARED_IN_EPNUM, (uint8_t *)&report, sizeof(report));
+    usbStartTransmitI(&USB_DRIVER, SHARED_IN_EPNUM, (uint8_t *)report, sizeof(report_programmable_button_t));
     osalSysUnlock();
 #endif
 }
@@ -1173,7 +1162,7 @@ void xap_task(void) {
     uint8_t buffer[XAP_EPSIZE];
     size_t  size = 0;
     do {
-        size_t size = chnReadTimeout(&drivers.xap_driver.driver, buffer, sizeof(buffer), TIME_IMMEDIATE);
+        size = chnReadTimeout(&drivers.xap_driver.driver, buffer, sizeof(buffer), TIME_IMMEDIATE);
         if (size > 0) {
             xap_receive_base(buffer);
         }
@@ -1229,59 +1218,15 @@ void virtser_task(void) {
 
 #endif
 
+void send_joystick(report_joystick_t *report) {
 #ifdef JOYSTICK_ENABLE
-
-void send_joystick_packet(joystick_t *joystick) {
-    static joystick_report_t rep;
-    rep = (joystick_report_t) {
-#    if JOYSTICK_AXES_COUNT > 0
-        .axes =
-        { joystick->axes[0],
-
-#        if JOYSTICK_AXES_COUNT >= 2
-          joystick->axes[1],
-#        endif
-#        if JOYSTICK_AXES_COUNT >= 3
-          joystick->axes[2],
-#        endif
-#        if JOYSTICK_AXES_COUNT >= 4
-          joystick->axes[3],
-#        endif
-#        if JOYSTICK_AXES_COUNT >= 5
-          joystick->axes[4],
-#        endif
-#        if JOYSTICK_AXES_COUNT >= 6
-          joystick->axes[5],
-#        endif
-        },
-#    endif // JOYSTICK_AXES_COUNT>0
-
-#    if JOYSTICK_BUTTON_COUNT > 0
-        .buttons = {
-            joystick->buttons[0],
-
-#        if JOYSTICK_BUTTON_COUNT > 8
-            joystick->buttons[1],
-#        endif
-#        if JOYSTICK_BUTTON_COUNT > 16
-            joystick->buttons[2],
-#        endif
-#        if JOYSTICK_BUTTON_COUNT > 24
-            joystick->buttons[3],
-#        endif
-        }
-#    endif // JOYSTICK_BUTTON_COUNT>0
-    };
-
-    // chnWrite(&drivers.joystick_driver.driver, (uint8_t *)&rep, sizeof(rep));
     osalSysLock();
     if (usbGetDriverStateI(&USB_DRIVER) != USB_ACTIVE) {
         osalSysUnlock();
         return;
     }
 
-    usbStartTransmitI(&USB_DRIVER, JOYSTICK_IN_EPNUM, (uint8_t *)&rep, sizeof(joystick_report_t));
+    usbStartTransmitI(&USB_DRIVER, JOYSTICK_IN_EPNUM, (uint8_t *)report, sizeof(report_joystick_t));
     osalSysUnlock();
-}
-
 #endif
+}

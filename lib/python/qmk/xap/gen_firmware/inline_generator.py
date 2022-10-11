@@ -1,9 +1,46 @@
 """This script generates the XAP protocol generated header to be compiled into QMK.
 """
+import re
+from pathlib import Path
+
 from qmk.casing import to_snake
 from qmk.commands import dump_lines
 from qmk.constants import GPL2_HEADER_C_LIKE, GENERATED_HEADER_C_LIKE
 from qmk.xap.common import merge_xap_defs, route_conditions
+from qmk.json_schema import json_load
+
+PREFIX_MAP = {
+    'rgblight': {
+        'ifdef': 'RGBLIGHT_EFFECT',
+        'def': 'RGBLIGHT_MODE',
+    },
+    'rgb_matrix': {
+        'ifdef': 'ENABLE_RGB_MATRIX',
+        'def': 'RGB_MATRIX',
+    },
+    'led_matrix': {
+        'ifdef': 'ENABLE_LED_MATRIX',
+        'def': 'LED_MATRIX',
+    },
+}
+
+
+def _get_lighting_spec(xap_defs, feature):
+    version = xap_defs['uses'][feature]
+    spec = json_load(Path(f'data/constants/{feature}_{version}.json'))
+
+    # preprocess for gross rgblight "mode + n"
+    for obj in spec.get('effects', {}).values():
+        define = obj['key']
+        offset = 0
+        found = re.match('(.*)_(\\d+)$', define)
+        if found:
+            define = found.group(1)
+            offset = int(found.group(2)) - 1
+        obj['define'] = define
+        obj['offset'] = offset
+
+    return spec
 
 
 def _get_c_type(xap_type):
@@ -53,6 +90,8 @@ def _get_route_type(container):
             return 'XAP_CONST_MEM'
         elif container['return_type'] == 'u32':
             return 'XAP_CONST_MEM'
+        elif container['return_type'] == 'u64':
+            return 'XAP_CONST_MEM'
         elif container['return_type'] == 'struct':
             return 'XAP_CONST_MEM'
         elif container['return_type'] == 'string':
@@ -68,9 +107,12 @@ def _append_routing_table_declaration(lines, container, container_id, route_stac
 
     route_name = to_snake('_'.join([r['define'] for r in route_stack]))
 
+    condition = route_conditions(route_stack)
+    if condition:
+        lines.append(f'#if {condition}')
+
     if 'routes' in container:
         pass
-
     elif 'return_execute' in container:
         execute = container['return_execute']
         lines.append(f'bool xap_respond_{execute}(xap_token_t token, const uint8_t *data, size_t data_len);')
@@ -98,6 +140,11 @@ def _append_routing_table_declaration(lines, container, container_id, route_stac
             lines.append('')
             lines.append(f'static const uint32_t {route_name}_data PROGMEM = {constant};')
 
+        elif container['return_type'] == 'u64':
+            constant = container['return_constant']
+            lines.append('')
+            lines.append(f'static const uint64_t {route_name}_data PROGMEM = {constant};')
+
         elif container['return_type'] == 'struct':
             lines.append('')
             lines.append(f'static const {route_name}_t {route_name}_data PROGMEM = {{')
@@ -120,6 +167,10 @@ def _append_routing_table_declaration(lines, container, container_id, route_stac
 
         elif container['return_type'] == 'struct':
             pass
+
+    if condition:
+        lines.append(f'#endif  // {condition}')
+        lines.append('')
 
     route_stack.pop()
 
@@ -196,6 +247,8 @@ def _append_routing_table_entry(lines, container, container_id, route_stack):
             _append_routing_table_entry_const_data(lines, container, container_id, route_stack)
         elif container['return_type'] == 'u32':
             _append_routing_table_entry_const_data(lines, container, container_id, route_stack)
+        elif container['return_type'] == 'u64':
+            _append_routing_table_entry_const_data(lines, container, container_id, route_stack)
         elif container['return_type'] == 'struct':
             _append_routing_table_entry_const_data(lines, container, container_id, route_stack)
         elif container['return_type'] == 'string':
@@ -267,6 +320,101 @@ def _append_broadcast_messages(lines, container):
             lines.append(f'void {name}(const void *data, size_t length){{ xap_broadcast({key}, data, length); }}')
 
 
+def _append_lighting_map(lines, feature, spec):
+    """TODO:
+    """
+    groups = spec.get('groups', {})
+    ifdef_prefix = PREFIX_MAP[feature]['ifdef']
+    def_prefix = PREFIX_MAP[feature]['def']
+
+    lines.append(f'static uint8_t {feature}_effect_map[][2] = {{')
+    for id, obj in spec.get('effects', {}).items():
+        define = obj['define']
+        offset = f' + {obj["offset"]}' if obj['offset'] else ''
+
+        line = f'''
+#ifdef {ifdef_prefix}_{define}
+    {{ {id}, {def_prefix}_{define}{offset}}},
+#endif'''
+
+        group = groups.get(obj.get('group', None), {}).get('define', None)
+        if group:
+            line = f'''
+#ifdef {group}
+{line}
+#endif'''
+
+        lines.append(line)
+
+    lines.append('};')
+
+    # add helper funcs
+    lines.append(
+        f'''
+uint8_t {feature}2xap(uint8_t val) {{
+    for(uint8_t i = 0; i < ARRAY_SIZE({feature}_effect_map); i++) {{
+        if ({feature}_effect_map[i][1] == val)
+            return {feature}_effect_map[i][0];
+    }}
+    return 0xFF;
+}}
+
+uint8_t xap2{feature}(uint8_t val) {{
+    for(uint8_t i = 0; i < ARRAY_SIZE({feature}_effect_map); i++) {{
+        if ({feature}_effect_map[i][0] == val)
+            return {feature}_effect_map[i][1];
+    }}
+    return 0xFF;
+}}'''
+    )
+
+
+def _append_lighting_bitmask(lines, feature, spec):
+    """TODO:
+    """
+    groups = spec.get('groups', {})
+    ifdef_prefix = PREFIX_MAP[feature]['ifdef']
+
+    lines.append(f'enum {{ ENABLED_{feature.upper()}_EFFECTS = 0')
+    for id, obj in spec.get('effects', {}).items():
+        define = obj['define']
+
+        line = f'''
+#ifdef {ifdef_prefix}_{define}
+    | (1ULL << {id})
+#endif'''
+
+        group = groups.get(obj.get('group', None), {}).get('define', None)
+        if group:
+            line = f'''
+#ifdef {group}
+{line}
+#endif'''
+
+        lines.append(line)
+
+    lines.append('};')
+
+
+def _append_lighting_mapping(lines, xap_defs):
+    """TODO:
+    """
+    # TODO: remove bodge for always enabled effects
+    lines.append('''
+#define RGBLIGHT_EFFECT_STATIC_LIGHT
+#define ENABLE_RGB_MATRIX_SOLID_COLOR
+#define ENABLE_LED_MATRIX_SOLID
+''')
+
+    for feature in PREFIX_MAP.keys():
+        spec = _get_lighting_spec(xap_defs, feature)
+
+        lines.append(f'#ifdef {feature.upper()}_ENABLE')
+        _append_lighting_map(lines, feature, spec)
+        _append_lighting_bitmask(lines, feature, spec)
+        lines.append(f'#endif //{feature.upper()}_ENABLE')
+
+
 def generate_inline(output_file, keyboard, keymap):
     """Generates the XAP protocol header file, generated during normal build.
     """
@@ -274,6 +422,9 @@ def generate_inline(output_file, keyboard, keymap):
 
     # Preamble
     lines = [GPL2_HEADER_C_LIKE, GENERATED_HEADER_C_LIKE, '']
+
+    # TODO: gen somewhere else?
+    _append_lighting_mapping(lines, xap_defs)
 
     # Add all the generated code
     _append_broadcast_messages(lines, xap_defs)

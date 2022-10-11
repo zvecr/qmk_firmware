@@ -28,6 +28,13 @@ bool get_config_blob_chunk(uint16_t offset, uint8_t *data, uint8_t data_len) {
     return true;
 }
 
+// TODO: move to better location?
+#ifdef BACKLIGHT_BREATHING
+#    define ENABLED_BACKLIGHT_EFFECTS 0b00000001
+#else
+#    define ENABLED_BACKLIGHT_EFFECTS 0b00000000
+#endif
+
 #define QSTR2(z) #z
 #define QSTR(z) QSTR2(z)
 

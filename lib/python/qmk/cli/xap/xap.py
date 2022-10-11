@@ -7,7 +7,7 @@ from milc import cli
 from qmk.keyboard import render_layout
 from qmk.xap.common import get_xap_keycodes
 
-from xap_client import XAPClient, XAPEventType, XAPSecureStatus
+from xap_client import XAPClient, XAPEventType, XAPSecureStatus, XAPConfigRgblight, XAPConfigBacklight, XAPConfigRgbMatrix, XAPRoutes
 
 KEYCODE_MAP = get_xap_keycodes('latest')
 
@@ -206,6 +206,33 @@ class XAPShell(cmd.Cmd):
         except KeyboardInterrupt:
             print('^C')
         return False
+
+    def do_dump(self, line):
+        caps = self.device.int_transaction(XAPRoutes.LIGHTING_CAPABILITIES_QUERY)
+
+        if caps & (1 << XAPRoutes.LIGHTING_BACKLIGHT[-1]):
+            ret = self.device.transaction(XAPRoutes.LIGHTING_BACKLIGHT_GET_CONFIG)
+            ret = XAPConfigBacklight.from_bytes(ret)
+            print(ret)
+
+            ret = self.device.int_transaction(XAPRoutes.LIGHTING_BACKLIGHT_GET_ENABLED_EFFECTS)
+            print(f'XAPEffectBacklight(enabled={bin(ret)})')
+
+        if caps & (1 << XAPRoutes.LIGHTING_RGBLIGHT[-1]):
+            ret = self.device.transaction(XAPRoutes.LIGHTING_RGBLIGHT_GET_CONFIG)
+            ret = XAPConfigRgblight.from_bytes(ret)
+            print(ret)
+
+            ret = self.device.int_transaction(XAPRoutes.LIGHTING_RGBLIGHT_GET_ENABLED_EFFECTS)
+            print(f'XAPEffectRgblight(enabled={bin(ret)})')
+
+        if caps & (1 << XAPRoutes.LIGHTING_RGB_MATRIX[-1]):
+            ret = self.device.transaction(XAPRoutes.LIGHTING_RGB_MATRIX_GET_CONFIG)
+            ret = XAPConfigRgbMatrix.from_bytes(ret)
+            print(ret)
+
+            ret = self.device.int_transaction(XAPRoutes.LIGHTING_RGB_MATRIX_GET_ENABLED_EFFECTS)
+            print(f'XAPEffectRgbMatrix(enabled={bin(ret)})')
 
 
 @cli.argument('-v', '--verbose', arg_only=True, action='store_true', help='Turns on verbose output.')

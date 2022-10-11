@@ -107,7 +107,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * └────┴────┴────┴────────────────────────┴────┴────┘ └───┴───┴───┘
      */
     [_FN3] = LAYOUT_65_ansi_blocker(
-        QK_BOOT,  MACRO01,  MACRO02, MACRO03, MACRO04, MACRO05, MACRO06, MACRO07, MACRO08, MACRO09, MACRO10, MACRO11,   MACRO12, KC_POWER,  KC_F15, \
+        QK_BOOT,  MACRO01,  MACRO02, MACRO03, MACRO04, MACRO05, MACRO06, MACRO07, MACRO08, MACRO09, MACRO10, MACRO11,   MACRO12, KC_PWR,    KC_F15, \
         XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   XXXXXXX, KC_SLEP,   XXXXXXX, \
         XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,            DEBUG,     XXXXXXX, \
         XXXXXXX,            XXXXXXX, XXXXXXX, XXXXXXX, KB_VRSN, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   XXXXXXX, MACRO00,   XXXXXXX, \
@@ -129,7 +129,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #define LED_FLAG_ALPHA_KEY 0x10  // Alpha keys (for Caps Lock)
 #define LED_FLAG_LAYER_IND 0x20  // Layer indicator
 
-const uint8_t g_led_config_new_flags[DRIVER_LED_TOTAL] = {
+const uint8_t g_led_config_new_flags[RGB_MATRIX_LED_COUNT] = {
     // Extended LED Index to Flag
     // ** Remember: on ID67 this is in reverse order
     0x21, 0x01, 0x01, 0x01, 0x01,                   0x04,             0x01,       0x01, 0x21,  // Spc row
@@ -147,18 +147,14 @@ static uint16_t recording_timer;
 
 void keyboard_pre_init_user(void) {
     // override `config.h` flags with new values
-    for (int i = 0; i < DRIVER_LED_TOTAL; i++) g_led_config.flags[i] = g_led_config_new_flags[i];
+    for (int i = 0; i < RGB_MATRIX_LED_COUNT; i++) g_led_config.flags[i] = g_led_config_new_flags[i];
 }
 
 void keyboard_post_init_user(void) {
     isRGBOff = false;
 }
 
-void rgb_matrix_indicators_user(void) {
-    // do nothing, override base <<weak>> function to disable it
-}
-
-void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
     uint8_t v = MIN( rgblight_get_val() + RGB_BRIGHTER_BY, 0xFF );
     uint8_t current_layer = get_highest_layer(layer_state);
@@ -239,18 +235,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             }
             break;
     }
-}
-
-/*
- * Sleep mode stuff (untested)
- */
-
-void suspend_power_down_user(void) {
-    rgb_matrix_set_suspend_state(true);
-}
-
-void suspend_wakeup_init_user(void) {
-    rgb_matrix_set_suspend_state(false);
+    return false;
 }
 
 #endif
