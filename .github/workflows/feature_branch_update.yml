@@ -31,9 +31,9 @@ jobs:
         git fetch origin develop ${{ matrix.branch }}
         git checkout ${{ matrix.branch }}
 
+    - uses: ./.github/actions/become-bot
+
     - name: Update branch from develop
       run: |
-        git config --global user.name "QMK Bot"
-        git config --global user.email "hello@qmk.fm"
         git merge origin/develop
         git push origin ${{ matrix.branch }}

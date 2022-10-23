@@ -1,4 +1,4 @@
-name: Lint Format
+name: Regenerate Files
 
 on:
   push:
@@ -7,30 +7,18 @@ on:
     - develop
 
 jobs:
-  lint:
+  regen:
     runs-on: ubuntu-latest
 
     container: qmkfm/qmk_cli
 
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
 
-    - name: Disable automatic eol conversion
-      run: |
-        echo "* -text" > .git/info/attributes
-
-    - name: Install dependencies
-      run: |
-        pip3 install -r requirements-dev.txt
-
-    - name: Run qmk formatters
+    - name: Run qmk generators
       shell: 'bash {0}'
       run: |
-        qmk format-c -a
-        qmk format-python -a
-        qmk format-text -a
+        qmk generate-keycodes --version latest > quantum/keycodes.h
         git diff
 
     - uses: rlespinasse/github-slug-action@v3.x
@@ -46,5 +34,5 @@ jobs:
         branch: bugfix/format_${{ env.GITHUB_REF_SLUG }}
         author: QMK Bot <hello@qmk.fm>
         committer: QMK Bot <hello@qmk.fm>
-        commit-message: Format code according to conventions
-        title: '[CI] Format code according to conventions'
+        commit-message: Regenerate Files
+        title: '[CI] Regenerate Files'

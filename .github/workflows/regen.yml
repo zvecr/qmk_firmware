@@ -1,0 +1,30 @@
+name: PR Regenerate Files
+
+on:
+  pull_request:
+    paths:
+    - 'data/constants/**'
+    - 'lib/python/**'
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+
+    container: qmkfm/qmk_cli
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Run qmk generators
+      shell: 'bash {0}'
+      run: |
+        qmk generate-keycodes --version latest > quantum/keycodes.h
+
+    - name: Fail when regeneration required
+      run: |
+        git diff
+        for file in $(git diff --name-only); do
+          echo "File '${file}' Requires Regeneration"
+          echo "::error file=${file}::Requires Regeneration"
+        done
+        test -z "$(git diff --name-only)"
