@@ -409,7 +409,11 @@ static void rgb_task_flush(uint8_t effect) {
     rgb_task_state = SYNCING;
 }
 
+__attribute__((weak)) void rgb_matrix_pre_task(void) {}
+__attribute__((weak)) void rgb_matrix_post_task(void) {}
+
 void rgb_matrix_task(void) {
+    rgb_matrix_pre_task();
     rgb_task_timers();
 
     // Ideally we would also stop sending zeros to the LED driver PWM buffers
@@ -440,6 +444,8 @@ void rgb_matrix_task(void) {
             rgb_task_sync();
             break;
     }
+
+    rgb_matrix_post_task();
 }
 
 void rgb_matrix_indicators(void) {
