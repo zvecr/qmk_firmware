@@ -95,5 +95,12 @@
             ]
             return_execute: kb_set_rgb_layer
         }
+        0x04: {
+            type: command
+            name: Save Config
+            define: SAVE_CONFIG
+            description: Save the current config.
+            return_execute: kb_save_rgb_layers
+        }
     }
 }

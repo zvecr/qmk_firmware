@@ -756,3 +756,7 @@ void rgb_matrix_set_flags(led_flags_t flags) {
 void rgb_matrix_set_flags_noeeprom(led_flags_t flags) {
     rgb_matrix_set_flags_eeprom_helper(flags, false);
 }
+
+void rgb_matrix_reset_task_state(void){
+    rgb_task_state = STARTING;
+}

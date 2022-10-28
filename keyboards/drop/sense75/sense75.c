@@ -1,6 +1,7 @@
 // Copyright 2022 Massdrop, Inc.
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include "rgb_matrix.h"
+#include "eeprom.h"
 
 #ifdef RGB_MATRIX_ENABLE
 const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
@@ -149,19 +150,45 @@ bool encoder_update_kb(uint8_t index, bool clockwise) {
 
 #ifdef XAP_ENABLE
 
+#define EECONFIG_KB_LED ((uint8_t*)(EECONFIG_SIZE + 64))
+#define KB_LED_CONFIG_VERSION 1
+
 #define INVALID_EFFECT 0xFF
 
 uint8_t rgb_matrix2xap(uint8_t val);
 uint8_t xap2rgb_matrix(uint8_t val);
 
-rgb_config_t rgb_layers[DYNAMIC_KEYMAP_LAYER_COUNT] = {};
+rgb_config_t rgb_layers[DYNAMIC_KEYMAP_LAYER_COUNT] = {0};
 
-void keyboard_pre_init_kb(void) {
-    keyboard_pre_init_user();
+EECONFIG_DEBOUNCE_HELPER(kb_led, EECONFIG_KB_LED, rgb_layers);
 
+void eeconfig_update_kb_led_default(void) {
+    uint32_t version = KB_LED_CONFIG_VERSION;
+
+    // defaults?
     rgb_layers[1].enable = 1;
     rgb_layers[1].mode = RGB_MATRIX_SOLID_COLOR;
     rgb_layers[1].hsv = (HSV){HSV_BLUE};
+
+
+    eeconfig_flush_kb_led(true);
+    eeconfig_update_kb(version);
+}
+
+void keyboard_post_init_kb(void) {
+    if (!eeconfig_is_enabled()) {
+        eeconfig_init();
+    }
+
+    uint32_t version = eeconfig_read_kb();
+    eeconfig_init_kb_led();
+
+    if (version != KB_LED_CONFIG_VERSION) {
+        eeconfig_update_kb_led_default();
+        eeconfig_update_rgb_matrix_default();
+    }
+
+    keyboard_post_init_user();
 }
 
 bool xap_respond_kb_get_rgb_layer(xap_token_t token, const void *data, size_t length) {
@@ -207,19 +234,40 @@ bool xap_respond_kb_set_rgb_layer(xap_token_t token, const void *data, size_t le
     return true;
 }
 
-rgb_config_t rgb_matrix_backup;
+bool xap_respond_kb_save_rgb_layers(xap_token_t token, const void *data, size_t length) {
+    eeconfig_flush_kb_led(true);
+
+    xap_respond_success(token);
+    return true;
+}
+
+static uint8_t last_layer = 0;
+static rgb_config_t rgb_matrix_backup;
 
 void rgb_matrix_pre_task(void) {
+    // backup config
     rgb_matrix_backup = rgb_matrix_config;
 
-    rgb_config_t* conf = &rgb_layers[get_highest_layer(layer_state)];
+    uint8_t cur_layer = get_highest_layer(layer_state);
+
+    rgb_config_t* conf = &rgb_layers[cur_layer];
     if(conf->enable) {
-        rgb_matrix_config.mode = conf->mode;
         rgb_matrix_config.hsv = conf->hsv;
+        rgb_matrix_config.mode = conf->mode;
+    }
+
+    // first iteration of different effect
+    //   - trigger "rgb_task_state = STARTING" to ensure correct effect init
+    if(last_layer != cur_layer) {
+        last_layer = cur_layer;
+
+        void rgb_matrix_reset_task_state(void);
+        rgb_matrix_reset_task_state();
     }
 }
 
 void rgb_matrix_post_task(void) {
+    // restore config
     rgb_matrix_config = rgb_matrix_backup;
 }
 #endif
