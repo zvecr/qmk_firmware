@@ -1,4 +1,5 @@
 VIA_ENABLE = yes
+LTO_ENABLE = yes
 #HAPTIC_ENABLE += SOLENOID
 AUDIO_ENABLE = yes
 #either solenoid or audio not both can be enabled
