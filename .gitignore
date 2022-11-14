@@ -55,6 +55,7 @@ quantum/version.h
 build/
 cmake-build-debug
 CMakeLists.txt
+*.pdf
 
 # Let these ones be user specific, since we have so many different configurations
 *.code-workspace
@@ -83,6 +84,7 @@ secrets.tar
 # Python things
 __pycache__
 .python-version
+*.egg-info
 
 # Prerequisites for updating ChibiOS
 /util/fmpp*

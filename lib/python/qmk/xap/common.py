@@ -1,5 +1,6 @@
 """This script handles the XAP protocol data files.
 """
+import re
 import os
 import hjson
 import jsonschema
@@ -7,25 +8,68 @@ from pathlib import Path
 from typing import OrderedDict
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from qmk.casing import to_snake
-from qmk.constants import QMK_FIRMWARE
+import qmk.constants
+from qmk.git import git_get_version
 from qmk.json_schema import json_load, validate
 from qmk.decorators import lru_cache
 from qmk.keymap import locate_keymap
 from qmk.path import keyboard
+from qmk.xap.jinja2_filters import attach_filters
 
 XAP_SPEC = 'xap.hjson'
 
 
+def list_lighting_versions(feature):
+    """Return available versions - sorted newest first
+    """
+    ret = []
+    for file in Path('data/constants/').glob(f'{feature}_[0-9].[0-9].[0-9].json'):
+        ret.append(file.stem.split('_')[-1])
+
+    ret.sort(reverse=True)
+    return ret
+
+
+def load_lighting_spec(feature, version='latest'):
+    """Build lighting data from the requested spec file
+    """
+    if version == 'latest':
+        version = list_lighting_versions(feature)[0]
+
+    spec = json_load(Path(f'data/constants/{feature}_{version}.json'))
+
+    # preprocess for gross rgblight "mode + n"
+    for obj in spec.get('effects', {}).values():
+        define = obj['key']
+        offset = 0
+        found = re.match('(.*)_(\\d+)$', define)
+        if found:
+            define = found.group(1)
+            offset = int(found.group(2)) - 1
+        obj['define'] = define
+        obj['offset'] = offset
+
+    return spec
+
+
 def _get_jinja2_env(data_templates_xap_subdir: str):
-    templates_dir = os.path.join(QMK_FIRMWARE, 'data', 'templates', 'xap', data_templates_xap_subdir)
+    templates_dir = os.path.join(qmk.constants.QMK_FIRMWARE, 'data', 'templates', 'xap', data_templates_xap_subdir)
     j2 = Environment(loader=FileSystemLoader(templates_dir), autoescape=select_autoescape())
     return j2
 
 
-def render_xap_output(data_templates_xap_subdir, file_to_render, defs):
+def render_xap_output(data_templates_xap_subdir, file_to_render, defs=None, **kwargs):
+    if defs is None:
+        defs = latest_xap_defs()
     j2 = _get_jinja2_env(data_templates_xap_subdir)
-    return j2.get_template(file_to_render).render(xap=defs, xap_str=hjson.dumps(defs), to_snake=to_snake)
+
+    attach_filters(j2)
+
+    specs = {}
+    for feature in ['rgblight', 'rgb_matrix', 'led_matrix']:
+        specs[feature] = load_lighting_spec(feature)
+
+    return j2.get_template(file_to_render).render(xap=defs, qmk_version=git_get_version(), xap_str=hjson.dumps(defs), specs=specs, constants=qmk.constants, **kwargs)
 
 
 def _find_kb_spec(kb):
@@ -86,7 +130,7 @@ def _merge_ordered_dicts(dicts):
 def get_xap_definition_files():
     """Get the sorted list of XAP definition files, from <QMK>/data/xap.
     """
-    xap_defs = QMK_FIRMWARE / "data" / "xap"
+    xap_defs = qmk.constants.QMK_FIRMWARE / "data" / "xap"
     return list(sorted(xap_defs.glob('**/xap_*.hjson')))
 
 
@@ -147,20 +191,6 @@ def merge_xap_defs(kb, km):
         exit(1)
 
     return defs
-
-
-@lru_cache(timeout=5)
-def get_xap_keycodes(xap_version):
-    """Gets keycode data for the required version of the XAP definitions.
-    """
-    defs = get_xap_defs(xap_version)
-
-    # Load DD keycodes for the dependency
-    keycode_version = defs['uses']['keycodes']
-    spec = json_load(Path(f'data/constants/keycodes_{keycode_version}.json'))
-
-    # Transform into something more usable - { raw_value : first alias || keycode }
-    return {int(k, 16): v.get('aliases', [v.get('key')])[0] for k, v in spec['keycodes'].items()}
 
 
 def route_conditions(route_stack):

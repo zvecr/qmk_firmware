@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <quantum.h>
 #include <xap.h>
 
@@ -71,7 +72,9 @@ bool xap_respond_get_config_blob_chunk(xap_token_t token, const void *data, size
     xap_route_qmk_config_blob_chunk_t ret = {0};
 
     bool get_config_blob_chunk(uint16_t offset, uint8_t * data, uint8_t data_len);
-    get_config_blob_chunk(offset, (uint8_t *)&ret, sizeof(ret));
+    if (!get_config_blob_chunk(offset, (uint8_t *)&ret, sizeof(ret))) {
+        return false;
+    }
 
     return xap_respond_data(token, &ret, sizeof(ret));
 }
@@ -338,7 +341,7 @@ bool xap_respond_set_rgb_matrix_config(xap_token_t token, const void *data, size
     rgb_matrix_mode_noeeprom(mode);
     rgb_matrix_sethsv_noeeprom(arg->hue, arg->sat, arg->val);
     rgb_matrix_set_speed_noeeprom(arg->speed);
-    rgb_matrix_set_flags(arg->flags);
+    rgb_matrix_set_flags_noeeprom(arg->flags);
 
     xap_respond_success(token);
     return true;

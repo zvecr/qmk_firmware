@@ -32,7 +32,7 @@
 #define HOME KC_HOME  // Go to beginning of line
 #define ENDI  KC_END  // go to end of line
 #define PSCR  KC_PSCR   // Print Screen
-#define SLCK  KC_SLCK   // go to end of line
+#define SLCK  KC_SCRL   // go to end of line
 #define PGDN  KC_PGDN   // go to end of line
 #define PGUP  KC_PGUP   // go to end of line
 #define PLPS KC_MPLY  // Play/Pause
@@ -83,7 +83,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [ NUMPAD ] = KEYMAP( //Numpad and alt shortcuts
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, XXXXX,\
-        _______, BL_TOGG, BL_DEC, BL_INC, _______, _______, _______, KC_1, KC_2, KC_3, _______, _______, _______, _______,\
+        _______, BL_TOGG, BL_DOWN,BL_UP,  _______, _______, _______, KC_1, KC_2, KC_3, _______, _______, _______, _______,\
         _______, RGB_TOG, RGB_MOD, RGB_HUI, RGB_HUD, _______, _______, KC_4, KC_5, KC_6, _______, _______, _______, _______,\
         _______, _______, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD, _______, KC_7, KC_8, KC_9, KC_0, _______, _______, XXXXX,\
         _______, _______, _______,           _______,             _______, _______, _______, _______),

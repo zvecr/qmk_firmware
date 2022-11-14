@@ -404,8 +404,6 @@ ifneq ($(findstring STM32F401, $(MCU)),)
   #   or <keyboard_dir>/ld/
   ifeq ($(strip $(BOOTLOADER)), tinyuf2)
     MCU_LDSCRIPT ?= STM32F401xC_tinyuf2
-    EEPROM_DRIVER ?= wear_leveling
-    WEAR_LEVELING_DRIVER ?= legacy
   else
     MCU_LDSCRIPT ?= STM32F401xC
   endif
@@ -521,8 +519,6 @@ ifneq ($(findstring STM32F411, $(MCU)),)
   #   or <keyboard_dir>/ld/
   ifeq ($(strip $(BOOTLOADER)), tinyuf2)
     MCU_LDSCRIPT ?= STM32F411xE_tinyuf2
-    EEPROM_DRIVER ?= wear_leveling
-    WEAR_LEVELING_DRIVER ?= legacy
   else
     MCU_LDSCRIPT ?= STM32F411xE
   endif
@@ -576,6 +572,9 @@ ifneq ($(findstring STM32F446, $(MCU)),)
 
   # Bootloader address for STM32 DFU
   STM32_BOOTLOADER_ADDRESS ?= 0x1FFF0000
+
+  # Default as no chibios efl config
+  EEPROM_DRIVER ?= transient
 endif
 
 ifneq ($(findstring STM32G431, $(MCU)),)
