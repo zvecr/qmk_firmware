@@ -468,7 +468,7 @@ static uint8_t raw_output_buffer[RAW_EPSIZE];
 static uint8_t raw_output_received_bytes = 0;
 
 void raw_hid_dump(uint8_t *data, uint8_t length) {
-    if (raw_output_buffer + length > RAW_EPSIZE) {
+    if (raw_output_received_bytes + length > RAW_EPSIZE) {
         return;
     }
 

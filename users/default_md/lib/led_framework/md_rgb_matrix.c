@@ -80,7 +80,7 @@ void eeconfig_init_kb(void) {
     static md_led_config_t blank_led_config = {0};
 
     eeconfig_update_kb(0);
-    eeconfig_write_md_led(blank_led_config);
+    eeconfig_write_md_led(&blank_led_config);
 
     eeconfig_init_user();
 }

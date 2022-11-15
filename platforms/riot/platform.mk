@@ -74,6 +74,18 @@ else ifneq ("$(wildcard $(KEYBOARD_PATH_1)/boards/$(BOARD)/Makefile)","")
     KEYBOARD_BOARD_DIR = $(KEYBOARD_PATH_1)/boards/
 endif
 
+ifneq ("$(wildcard $(KEYBOARD_PATH_5)/lib/boards/$(BOARD)/Makefile)","")
+    KEYBOARD_BOARD_DIR = $(KEYBOARD_PATH_5)/lib/boards/
+else ifneq ("$(wildcard $(KEYBOARD_PATH_4)/lib/boards/$(BOARD)/Makefile)","")
+    KEYBOARD_BOARD_DIR = $(KEYBOARD_PATH_4)/lib/boards/
+else ifneq ("$(wildcard $(KEYBOARD_PATH_3)/lib/boards/$(BOARD)/Makefile)","")
+    KEYBOARD_BOARD_DIR = $(KEYBOARD_PATH_3)/lib/boards/
+else ifneq ("$(wildcard $(KEYBOARD_PATH_2)/lib/boards/$(BOARD)/Makefile)","")
+    KEYBOARD_BOARD_DIR = $(KEYBOARD_PATH_2)/lib/boards/
+else ifneq ("$(wildcard $(KEYBOARD_PATH_1)/lib/boards/$(BOARD)/Makefile)","")
+    KEYBOARD_BOARD_DIR = $(KEYBOARD_PATH_1)/lib/boards/
+endif
+
 RIOT_INCS := $(shell $(MAKE) -C platforms/riot/stub BOARD=$(BOARD) KEYMAP_OUTPUT=$(abspath $(KEYMAP_OUTPUT)) KEYBOARD_OUTPUT=$(abspath $(KEYBOARD_OUTPUT))  KEYBOARD_BOARD_DIR=$(KEYBOARD_BOARD_DIR) dump_includes)
 RIOT_BODGE_CFLAGS += $(RIOT_INCS) $(CFLAGS) -include $(KEYMAP_OUTPUT)/$(BOARD)/riotbuild/riotbuild.h -include usb_config_adapter.h
 

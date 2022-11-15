@@ -94,5 +94,3 @@
 
 /* Avoid out-of-bounds errors when SmartEEPROM is not enabled */
 #define EEPROM_SIZE 1024
-
-// #define DEBUG_MATRIX_SCAN_RATE

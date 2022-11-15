@@ -1,7 +1,7 @@
 {
     "keyboard_name": "CTRL",
     "url": "https://drop.com/buy/drop-ctrl-mechanical-keyboard",
-    "manufacturer": "Drop",
+    "manufacturer": "Drop Inc.",
     "maintainer": "zvecr",
     "processor": "SAMD51",
     "bootloader": "md-boot",
@@ -17,6 +17,7 @@
         "device_version": "1.0.1"
     },
     "features": {
+        "rgb_matrix": true,
         "bootmagic": true,
         "command": false,
         "console": false,

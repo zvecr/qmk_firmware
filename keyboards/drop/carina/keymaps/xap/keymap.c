@@ -3,41 +3,6 @@
 
 #include QMK_KEYBOARD_H
 
-#if 0
-#include "analog.h"
-
-enum custom_keycodes {
-    DUMPS = SAFE_RANGE,
-};
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-    case DUMPS:
-        if (record->event.pressed) {
-            uint16_t v_con_1 = analogReadPin(B2);
-            uint16_t v_con_2 = analogReadPin(B1);
-            uint16_t v_con_3 = analogReadPin(B4);
-            uint16_t v_con_4 = analogReadPin(B5);
-
-            send_string("CC1:");
-            send_string(get_u8_str(v_con_1, ' '));
-            send_string("\n");
-            send_string("CC2:");
-            send_string(get_u8_str(v_con_2, ' '));
-            send_string("\n");
-            send_string("CC3:");
-            send_string(get_u8_str(v_con_3, ' '));
-            send_string("\n");
-            send_string("CC4:");
-            send_string(get_u8_str(v_con_4, ' '));
-            send_string("\n");
-        }
-        break;
-    }
-    return true;
-};
-#endif
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_60_ansi(
         KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, \
@@ -48,9 +13,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [1] = LAYOUT_60_ansi(
         KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_DEL,  \
-        RGB_TOG, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______, KC_UP,   _______, _______, _______, \
+        RGB_TOG, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______, KC_UP,   _______, _______, _______, \
         RGB_MOD, RGB_VAD, RGB_SPD, RGB_HUD, RGB_SAD, _______, KC_INS,  KC_HOME, KC_PGUP, KC_LEFT, KC_DOWN, KC_RGHT,          _______, \
         RGB_M_P, RGB_M_B, RGB_M_R, RGB_M_SW,_______, QK_BOOT, NK_TOGG, KC_END,  KC_PGDN, KC_VOLD, KC_VOLU,                   _______, \
-        _______, _______, _______,                   DEBUG,                              KC_MUTE, _______, KC_APP,           _______  \
+        _______, _______, _______,                   DB_TOGG,                            KC_MUTE, _______, KC_APP,           _______  \
     )
 };

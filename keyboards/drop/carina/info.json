@@ -1,7 +1,7 @@
 {
     "keyboard_name": "Carina",
     "url": "https://drop.com/buy/drop-carina-mechanical-keyboard-kit",
-    "manufacturer": "Drop",
+    "manufacturer": "Drop Inc.",
     "maintainer": "zvecr",
     "processor": "SAMD51",
     "bootloader": "md-boot",
@@ -17,6 +17,7 @@
         "device_version": "1.0.0"
     },
     "features": {
+        "rgb_matrix": true,
         "bootmagic": true,
         "command": false,
         "console": false,
