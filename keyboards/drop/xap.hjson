@@ -1,0 +1,106 @@
+{
+    routes: {
+        0x00: {
+            type: command
+            name: Version Query
+            define: VERSION_QUERY_KB
+            description:
+                '''
+                KB protocol version query.
+
+                * Returns the BCD-encoded version in the format of XX.YY.ZZZZ => `0xXXYYZZZZ`
+                    * e.g. 3.2.115 will match `0x03020115`, or bytes {0x15,0x01,0x02,0x03}.
+                '''
+            return_type: u32
+            return_purpose: bcd-version
+            return_constant: XAP_BCD_KB_VERSION
+        }
+        0x01: {
+            type: command
+            name: Capabilities Query
+            define: CAPABILITIES_QUERY_KB
+            description:
+                '''
+                KB subsystem capabilities query. Each bit should be considered as a "usable" route within this subsystem.
+                '''
+            return_type: u32
+            return_purpose: capabilities
+            return_constant: XAP_ROUTE_KB_CAPABILITIES
+        }
+        0x02: {
+            type: command
+            name: Get RGB Layer
+            define: GET_RGB_LAYER
+            description: Query the layer at the requested location.
+            request_type: u8
+            request_purpose: layer
+            return_type: struct
+            return_struct_length: 5
+            return_struct_members: [
+                {
+                    type: u8
+                    name: enable
+                },
+                {
+                    type: u8
+                    name: mode
+                },
+                {
+                    type: u8
+                    name: hue
+                },
+                {
+                    type: u8
+                    name: sat
+                },
+                {
+                    type: u8
+                    name: val
+                },
+            ]
+            return_execute: kb_get_rgb_layer
+        }
+        0x03: {
+            type: command
+            name: Set RGB Layer
+            define: SET_RGB_LAYER
+            description: Modify the layer at the requested location.
+            request_type: struct
+            request_struct_length: 6
+            request_struct_members: [
+                {
+                    type: u8
+                    name: layer
+                },
+                {
+                    type: u8
+                    name: enable
+                },
+                {
+                    type: u8
+                    name: mode
+                },
+                {
+                    type: u8
+                    name: hue
+                },
+                {
+                    type: u8
+                    name: sat
+                },
+                {
+                    type: u8
+                    name: val
+                },
+            ]
+            return_execute: kb_set_rgb_layer
+        }
+        0x04: {
+            type: command
+            name: Save Config
+            define: SAVE_CONFIG
+            description: Save the current config.
+            return_execute: kb_save_rgb_layers
+        }
+    }
+}
