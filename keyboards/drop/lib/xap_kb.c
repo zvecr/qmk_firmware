@@ -1,6 +1,7 @@
 #include "quantum.h"
+#include "eeprom.h"
 
-#ifdef XAP_ENABLE
+#if defined(XAP_ENABLE) && !defined(DISABLE_XAP_RGB_LAYERS)
 
 #define INVALID_EFFECT 0xFF
 
@@ -9,11 +10,14 @@ uint8_t xap2rgb_matrix(uint8_t val);
 
 rgb_config_t rgb_layers[DYNAMIC_KEYMAP_LAYER_COUNT] = {0};
 
+EECONFIG_DEBOUNCE_HELPER(rgb_layers, EECONFIG_KB_DATABLOCK, rgb_layers);
+
 void keyboard_post_init_kb(void) {
-    // defaults?
-    rgb_layers[1].enable = 1;
-    rgb_layers[1].mode = RGB_MATRIX_SOLID_COLOR;
-    rgb_layers[1].hsv = (HSV){HSV_BLUE};
+    if(!eeconfig_is_kb_datablock_valid()) {
+        eeconfig_init_kb_datablock();
+    }
+
+    eeconfig_init_rgb_layers();
 
     keyboard_post_init_user();
 }
@@ -62,6 +66,8 @@ bool xap_respond_kb_set_rgb_layer(xap_token_t token, const void *data, size_t le
 }
 
 bool xap_respond_kb_save_rgb_layers(xap_token_t token, const void *data, size_t length) {
+    eeconfig_flush_rgb_layers(true);
+
     xap_respond_success(token);
     return true;
 }

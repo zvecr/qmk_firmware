@@ -31,6 +31,7 @@
             type: command
             name: Get RGB Layer
             define: GET_RGB_LAYER
+            enable_if_preprocessor: !defined(DISABLE_XAP_RGB_LAYERS)
             description: Query the layer at the requested location.
             request_type: u8
             request_purpose: layer
@@ -64,6 +65,7 @@
             type: command
             name: Set RGB Layer
             define: SET_RGB_LAYER
+            enable_if_preprocessor: !defined(DISABLE_XAP_RGB_LAYERS)
             description: Modify the layer at the requested location.
             request_type: struct
             request_struct_length: 6
@@ -99,6 +101,7 @@
             type: command
             name: Save Config
             define: SAVE_CONFIG
+            enable_if_preprocessor: !defined(DISABLE_XAP_RGB_LAYERS)
             description: Save the current config.
             return_execute: kb_save_rgb_layers
         }
