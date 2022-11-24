@@ -529,8 +529,11 @@ void xap_send_base(uint8_t *data, uint8_t length) {
         return;
     }
 
-    usbdrv_write(XAP_INTERFACE, data, length);
-    usbdrv_write(XAP_INTERFACE, 0, 0);
+    static bool timed_out = false;
+
+    const uint32_t timeout = timed_out ? 100 : 5000;
+    usbdrv_write_timeout(XAP_INTERFACE, data, length, timeout);
+    usbdrv_write_timeout(XAP_INTERFACE, 0, 0, timeout);
 }
 
 void xap_send(xap_token_t token, xap_response_flags_t response_flags, const void *data, size_t length) {

@@ -69,6 +69,7 @@ typedef struct comp_hid_device_conf {
 
 void usbdrv_init(comp_hid_device_conf_t *config, size_t len);
 void usbdrv_write(uint8_t index, const void *buffer, size_t len);
+void usbdrv_write_timeout(uint8_t id, const void *buffer, size_t len, uint32_t timeout);
 
 uint8_t usbdrv_keyboard_leds(void);
 

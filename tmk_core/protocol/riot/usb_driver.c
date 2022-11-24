@@ -311,16 +311,22 @@ void usbdrv_init(comp_hid_device_conf_t *config, size_t len) {
     usbus_create(_stack, USBUS_STACKSIZE, USBUS_PRIO, USBUS_TNAME, &g_usbus);
 }
 
-void usbdrv_write(uint8_t id, const void *buffer, size_t len) {
+void usbdrv_write_timeout(uint8_t id, const void *buffer, size_t len, uint32_t timeout) {
     comp_hid_device_t *hid = &hid_interfaces[id];
 
     uint8_t *buffer_ep = hid->in_buf;
     uint16_t max_size  = hid->ep_in->maxpacketsize;
     size_t   offset    = 0;
 
-    // TODO: Implement timeout???
     while (len) {
-        mutex_lock(&hid->in_lock);
+        if (timeout == 0) {
+            mutex_lock(&hid->in_lock);
+        }
+        // TODO: Validate timeout implementation???
+        else if (ztimer_mutex_lock_timeout(ZTIMER_USEC, &hid->in_lock, timeout) != 0) {
+            return;
+        }
+
         if (len > max_size) {
             memmove(buffer_ep + offset, (uint8_t *)buffer + offset, max_size);
             offset += max_size;
@@ -334,6 +340,10 @@ void usbdrv_write(uint8_t id, const void *buffer, size_t len) {
         }
         usbus_event_post(hid->usbus, &hid->tx_ready);
     }
+}
+
+void usbdrv_write(uint8_t id, const void *buffer, size_t len) {
+    usbdrv_write_timeout(id, buffer, len, 0);
 }
 
 // TODO: handle remote wakeup
