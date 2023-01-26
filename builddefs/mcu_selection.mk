@@ -6,6 +6,8 @@ ifneq ($(findstring SAMD21, $(MCU)),)
   # Cortex version
   MCU = cortex-m0plus
 
+  MCU_SERIES = SAMD21
+
   # ARM version, CORTEX-M0/M1 are 6, CORTEX-M3/M4/M7 are 7
   ARMV = 6
 
@@ -18,9 +20,6 @@ ifneq ($(findstring SAMD21, $(MCU)),)
   USE_FPU ?= no
 
   ROM_OFFSET=0x2000
-
-  # force off for now
-  EEPROM_DRIVER = transient
 endif
 
 ifneq ($(findstring SAMD51, $(MCU)),)
@@ -28,6 +27,8 @@ ifneq ($(findstring SAMD51, $(MCU)),)
 
   # Cortex version
   MCU = cortex-m4
+
+  MCU_SERIES = SAMD51
 
   # ARM version, CORTEX-M0/M1 are 6, CORTEX-M3/M4/M7 are 7
   ARMV = 7
@@ -41,9 +42,6 @@ ifneq ($(findstring SAMD51, $(MCU)),)
   USE_FPU ?= yes
 
   ROM_OFFSET=0x4000
-
-  # force off for now
-  #EEPROM_DRIVER = transient
 endif
 
 ifneq ($(findstring nRF52840, $(MCU)),)
@@ -51,9 +49,6 @@ ifneq ($(findstring nRF52840, $(MCU)),)
 
   # Mapped to riots BOARD arguement
   BOARD ?= adafruit-itsybitsy-nrf52
-
-  # force off for now
-  EEPROM_DRIVER = transient
 endif
 
 ifneq ($(findstring MKL26Z64, $(MCU)),)
