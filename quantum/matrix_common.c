@@ -1,8 +1,8 @@
-// #include "quantum.h"
+#include "quantum.h"
 #include "matrix.h"
 #include "debounce.h"
 #include "wait.h"
-// #include "print.h"
+#include "print.h"
 #include "debug.h"
 #ifdef SPLIT_KEYBOARD
 #    include "split_common/split_util.h"
