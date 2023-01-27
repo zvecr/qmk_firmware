@@ -28,7 +28,6 @@ else
 endif
 
 PLATFORM_SRC = \
-        $(PLATFORM_COMMON_DIR)/wait.c \
         $(PLATFORM_COMMON_DIR)/usb_config_adapter.c \
 
 EXTRAINCDIRS = \
