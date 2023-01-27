@@ -609,8 +609,12 @@ void console_task(void) {
         return;
     }
 
-    usbdrv_write(CONSOLE_INTERFACE, send_buf, sizeof(send_buf));
-    usbdrv_write(CONSOLE_INTERFACE, 0, 0);
+    static bool timed_out = false;
+
+    const uint32_t timeout = timed_out ? 100 : 5000;
+
+    timed_out = usbdrv_write_timeout(CONSOLE_INTERFACE, send_buf, sizeof(send_buf), timeout)  == 0;
+    usbdrv_write_timeout(CONSOLE_INTERFACE, 0, 0, timeout);
 }
 #endif
 

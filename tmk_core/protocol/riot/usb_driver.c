@@ -311,7 +311,7 @@ void usbdrv_init(comp_hid_device_conf_t *config, size_t len) {
     usbus_create(_stack, USBUS_STACKSIZE, USBUS_PRIO, USBUS_TNAME, &g_usbus);
 }
 
-void usbdrv_write_timeout(uint8_t id, const void *buffer, size_t len, uint32_t timeout) {
+size_t usbdrv_write_timeout(uint8_t id, const void *buffer, size_t len, uint32_t timeout) {
     comp_hid_device_t *hid = &hid_interfaces[id];
 
     uint8_t *buffer_ep = hid->in_buf;
@@ -324,7 +324,7 @@ void usbdrv_write_timeout(uint8_t id, const void *buffer, size_t len, uint32_t t
         }
         // TODO: Validate timeout implementation???
         else if (ztimer_mutex_lock_timeout(ZTIMER_USEC, &hid->in_lock, timeout) != 0) {
-            return;
+            return 0;
         }
 
         if (len > max_size) {
@@ -340,6 +340,7 @@ void usbdrv_write_timeout(uint8_t id, const void *buffer, size_t len, uint32_t t
         }
         usbus_event_post(hid->usbus, &hid->tx_ready);
     }
+    return len;
 }
 
 void usbdrv_write(uint8_t id, const void *buffer, size_t len) {
