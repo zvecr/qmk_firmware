@@ -47,6 +47,7 @@ EEP =
 BIN = $(OBJCOPY) -O binary
 
 OPT_DEFS += -DPROTOCOL_RIOT
+OPT_DEFS += -DMCU_$(MCU_ORIG)
 
 # TODO: Print lib seems to complain but not on chibi/arm_atsam?
 # CFLAGS += -Wformat=0

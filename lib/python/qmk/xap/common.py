@@ -10,12 +10,14 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 import qmk.constants
 from qmk.git import git_get_version
-from qmk.json_schema import json_load, validate
+from qmk.json_schema import json_load, validate, merge_ordered_dicts
+from qmk.makefile import parse_rules_mk_file
 from qmk.decorators import lru_cache
 from qmk.keymap import locate_keymap
 from qmk.path import keyboard
 from qmk.xap.jinja2_filters import attach_filters
 
+USERSPACE_DIR = Path('users')
 XAP_SPEC = 'xap.hjson'
 
 
@@ -54,7 +56,7 @@ def load_lighting_spec(feature, version='latest'):
 
 def _get_jinja2_env(data_templates_xap_subdir: str):
     templates_dir = os.path.join(qmk.constants.QMK_FIRMWARE, 'data', 'templates', 'xap', data_templates_xap_subdir)
-    j2 = Environment(loader=FileSystemLoader(templates_dir), autoescape=select_autoescape())
+    j2 = Environment(loader=FileSystemLoader(templates_dir), autoescape=select_autoescape(), lstrip_blocks=True, trim_blocks=True)
     return j2
 
 
@@ -91,40 +93,19 @@ def _find_kb_spec(kb):
 
 
 def _find_km_spec(kb, km):
-    return locate_keymap(kb, km).parent / XAP_SPEC
+    keymap_dir = locate_keymap(kb, km).parent
+    if not keymap_dir.exists():
+        return None
 
+    # Resolve any potential USER_NAME overrides - default back to keymap name
+    keymap_rules_mk = parse_rules_mk_file(keymap_dir / 'rules.mk')
+    username = keymap_rules_mk.get('USER_NAME', km)
 
-def _merge_ordered_dicts(dicts):
-    """Merges nested OrderedDict objects resulting from reading a hjson file.
+    keymap_spec = keymap_dir / XAP_SPEC
+    userspace_spec = USERSPACE_DIR / username / XAP_SPEC
 
-    Later input dicts overrides earlier dicts for plain values.
-    Arrays will be appended. If the first entry of an array is "!reset!", the contents of the array will be cleared and replaced with RHS.
-    Dictionaries will be recursively merged. If any entry is "!reset!", the contents of the dictionary will be cleared and replaced with RHS.
-    """
-
-    result = OrderedDict()
-
-    def add_entry(target, k, v):
-        if k in target and isinstance(v, (OrderedDict, dict)):
-            if "!reset!" in v:
-                target[k] = v
-            else:
-                target[k] = _merge_ordered_dicts([target[k], v])
-            if "!reset!" in target[k]:
-                del target[k]["!reset!"]
-        elif k in target and isinstance(v, list):
-            if v[0] == '!reset!':
-                target[k] = v[1:]
-            else:
-                target[k] = target[k] + v
-        else:
-            target[k] = v
-
-    for d in dicts:
-        for (k, v) in d.items():
-            add_entry(result, k, v)
-
-    return result
+    # In the case of both userspace and keymap - keymap wins
+    return keymap_spec if keymap_spec.exists() else userspace_spec
 
 
 def get_xap_definition_files():
@@ -144,7 +125,7 @@ def update_xap_definitions(original, new):
     """
     if original is None:
         original = OrderedDict()
-    return _merge_ordered_dicts([original, new])
+    return merge_ordered_dicts([original, new])
 
 
 @lru_cache(timeout=5)
@@ -159,7 +140,7 @@ def get_xap_defs(version):
         files = files[:(index + 1)]
 
     definitions = [hjson.load(file.open(encoding='utf-8')) for file in files]
-    return _merge_ordered_dicts(definitions)
+    return merge_ordered_dicts(definitions)
 
 
 def latest_xap_defs():
@@ -181,7 +162,7 @@ def merge_xap_defs(kb, km):
     if km_xap.exists():
         definitions.append({'routes': {'0x03': hjson.load(km_xap.open(encoding='utf-8'))}})
 
-    defs = _merge_ordered_dicts(definitions)
+    defs = merge_ordered_dicts(definitions)
 
     try:
         validate(defs, 'qmk.xap.v1')

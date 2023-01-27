@@ -78,14 +78,6 @@ typedef struct {
     USB_Descriptor_Endpoint_t  Raw_OUTEndpoint;
 #endif
 
-#ifdef XAP_ENABLE
-    // Mouse HID Interface
-    USB_Descriptor_Interface_t Xap_Interface;
-    USB_HID_Descriptor_HID_t   Xap_HID;
-    USB_Descriptor_Endpoint_t  Xap_INEndpoint;
-    USB_Descriptor_Endpoint_t  Xap_OUTEndpoint;
-#endif
-
 #if defined(MOUSE_ENABLE) && !defined(MOUSE_SHARED_EP)
     // Mouse HID Interface
     USB_Descriptor_Interface_t Mouse_Interface;
@@ -140,7 +132,7 @@ typedef struct {
     USB_Descriptor_Endpoint_t  CDC_DataInEndpoint;
 #endif
 
-#ifdef JOYSTICK_ENABLE
+#if defined(JOYSTICK_ENABLE) && !defined(JOYSTICK_SHARED_EP)
     // Joystick HID Interface
     USB_Descriptor_Interface_t Joystick_Interface;
     USB_HID_Descriptor_HID_t   Joystick_HID;
@@ -152,6 +144,14 @@ typedef struct {
     USB_Descriptor_Interface_t Digitizer_Interface;
     USB_HID_Descriptor_HID_t   Digitizer_HID;
     USB_Descriptor_Endpoint_t  Digitizer_INEndpoint;
+#endif
+
+#ifdef XAP_ENABLE
+    // XAP HID Interface
+    USB_Descriptor_Interface_t Xap_Interface;
+    USB_HID_Descriptor_HID_t   Xap_HID;
+    USB_Descriptor_Endpoint_t  Xap_INEndpoint;
+    USB_Descriptor_Endpoint_t  Xap_OUTEndpoint;
 #endif
 } USB_Descriptor_Configuration_t;
 
@@ -171,10 +171,6 @@ enum usb_interfaces {
 // If Raw HID is enabled, let it be always 1.
 #ifdef RAW_ENABLE
     RAW_INTERFACE,
-#endif
-
-#ifdef XAP_ENABLE
-    XAP_INTERFACE,
 #endif
 
 #if defined(MOUSE_ENABLE) && !defined(MOUSE_SHARED_EP)
@@ -199,12 +195,16 @@ enum usb_interfaces {
     CDI_INTERFACE,
 #endif
 
-#if defined(JOYSTICK_ENABLE)
+#if defined(JOYSTICK_ENABLE) && !defined(JOYSTICK_SHARED_EP)
     JOYSTICK_INTERFACE,
 #endif
 
 #if defined(DIGITIZER_ENABLE) && !defined(DIGITIZER_SHARED_EP)
     DIGITIZER_INTERFACE,
+#endif
+
+#ifdef XAP_ENABLE
+    XAP_INTERFACE,
 #endif
     TOTAL_INTERFACES
 };
@@ -235,15 +235,6 @@ enum usb_endpoints {
 #        define RAW_OUT_EPNUM RAW_IN_EPNUM
 #    else
     RAW_OUT_EPNUM         = NEXT_EPNUM,
-#    endif
-#endif
-
-#ifdef XAP_ENABLE
-    XAP_IN_EPNUM = NEXT_EPNUM,
-#    if STM32_USB_USE_OTG1
-#        define XAP_OUT_EPNUM XAP_IN_EPNUM
-#    else
-    XAP_OUT_EPNUM         = NEXT_EPNUM,
 #    endif
 #endif
 
@@ -288,7 +279,11 @@ enum usb_endpoints {
 #endif
 
 #ifdef JOYSTICK_ENABLE
+#    if !defined(JOYSTICK_SHARED_EP)
     JOYSTICK_IN_EPNUM = NEXT_EPNUM,
+#    else
+#        define JOYSTICK_IN_EPNUM SHARED_IN_EPNUM
+#    endif
 #endif
 
 #ifdef DIGITIZER_ENABLE
@@ -296,6 +291,15 @@ enum usb_endpoints {
     DIGITIZER_IN_EPNUM = NEXT_EPNUM,
 #    else
 #        define DIGITIZER_IN_EPNUM SHARED_IN_EPNUM
+#    endif
+#endif
+
+#ifdef XAP_ENABLE
+    XAP_IN_EPNUM = NEXT_EPNUM,
+#    if STM32_USB_USE_OTG1
+#        define XAP_OUT_EPNUM XAP_IN_EPNUM
+#    else
+    XAP_OUT_EPNUM         = NEXT_EPNUM,
 #    endif
 #endif
 };
@@ -326,4 +330,4 @@ enum usb_endpoints {
 #define DIGITIZER_EPSIZE 8
 #define XAP_EPSIZE 64
 
-uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const void** const DescriptorAddress);
+uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const uint16_t wLength, const void** const DescriptorAddress);

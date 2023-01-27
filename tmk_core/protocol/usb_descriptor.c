@@ -45,8 +45,9 @@
 #    include "joystick.h"
 #endif
 
-// TODO: wb32 support defines ISO macro which breaks PRODUCT stringification
-#undef ISO
+#ifdef OS_DETECTION_ENABLE
+#    include "os_detection.h"
+#endif
 
 // clang-format off
 
@@ -170,6 +171,75 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM SharedReport[] = {
         HID_RI_END_COLLECTION(0),
     HID_RI_END_COLLECTION(0),
 #    ifndef MOUSE_SHARED_EP
+};
+#    endif
+#endif
+
+#ifdef JOYSTICK_ENABLE
+#    ifndef JOYSTICK_SHARED_EP
+const USB_Descriptor_HIDReport_Datatype_t PROGMEM JoystickReport[] = {
+#    elif !defined(SHARED_REPORT_STARTED)
+const USB_Descriptor_HIDReport_Datatype_t PROGMEM SharedReport[] = {
+#        define SHARED_REPORT_STARTED
+#    endif
+    HID_RI_USAGE_PAGE(8, 0x01),     // Generic Desktop
+    HID_RI_USAGE(8, 0x04),          // Joystick
+    HID_RI_COLLECTION(8, 0x01),     // Application
+#    ifdef JOYSTICK_SHARED_EP
+        HID_RI_REPORT_ID(8, REPORT_ID_JOYSTICK),
+#    endif
+        HID_RI_COLLECTION(8, 0x00), // Physical
+#    if JOYSTICK_AXIS_COUNT > 0
+            HID_RI_USAGE_PAGE(8, 0x01), // Generic Desktop
+            HID_RI_USAGE(8, 0x30),      // X
+#        if JOYSTICK_AXIS_COUNT > 1
+            HID_RI_USAGE(8, 0x31),      // Y
+#        endif
+#        if JOYSTICK_AXIS_COUNT > 2
+            HID_RI_USAGE(8, 0x32),      // Z
+#        endif
+#        if JOYSTICK_AXIS_COUNT > 3
+            HID_RI_USAGE(8, 0x33),      // Rx
+#        endif
+#        if JOYSTICK_AXIS_COUNT > 4
+            HID_RI_USAGE(8, 0x34),      // Ry
+#        endif
+#        if JOYSTICK_AXIS_COUNT > 5
+            HID_RI_USAGE(8, 0x35),      // Rz
+#        endif
+#        if JOYSTICK_AXIS_RESOLUTION == 8
+            HID_RI_LOGICAL_MINIMUM(8, -JOYSTICK_MAX_VALUE),
+            HID_RI_LOGICAL_MAXIMUM(8, JOYSTICK_MAX_VALUE),
+            HID_RI_REPORT_COUNT(8, JOYSTICK_AXIS_COUNT),
+            HID_RI_REPORT_SIZE(8, 0x08),
+#        else
+            HID_RI_LOGICAL_MINIMUM(16, -JOYSTICK_MAX_VALUE),
+            HID_RI_LOGICAL_MAXIMUM(16, JOYSTICK_MAX_VALUE),
+            HID_RI_REPORT_COUNT(8, JOYSTICK_AXIS_COUNT),
+            HID_RI_REPORT_SIZE(8, 0x10),
+#        endif
+            HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE),
+#    endif
+
+#    if JOYSTICK_BUTTON_COUNT > 0
+            HID_RI_USAGE_PAGE(8, 0x09), // Button
+            HID_RI_USAGE_MINIMUM(8, 0x01),
+            HID_RI_USAGE_MAXIMUM(8, JOYSTICK_BUTTON_COUNT),
+            HID_RI_LOGICAL_MINIMUM(8, 0x00),
+            HID_RI_LOGICAL_MAXIMUM(8, 0x01),
+            HID_RI_REPORT_COUNT(8, JOYSTICK_BUTTON_COUNT),
+            HID_RI_REPORT_SIZE(8, 0x01),
+            HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE),
+
+#        if (JOYSTICK_BUTTON_COUNT % 8) != 0
+            HID_RI_REPORT_COUNT(8, 8 - (JOYSTICK_BUTTON_COUNT % 8)),
+            HID_RI_REPORT_SIZE(8, 0x01),
+            HID_RI_INPUT(8, HID_IOF_CONSTANT),
+#        endif
+#    endif
+        HID_RI_END_COLLECTION(0),
+    HID_RI_END_COLLECTION(0),
+#    ifndef JOYSTICK_SHARED_EP
 };
 #    endif
 #endif
@@ -336,30 +406,6 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM RawReport[] = {
 };
 #endif
 
-#ifdef XAP_ENABLE
-const USB_Descriptor_HIDReport_Datatype_t PROGMEM XapReport[] = {
-    HID_RI_USAGE_PAGE(16, 0xFF51), // Vendor Defined ('Q')
-    HID_RI_USAGE(8, 0x58),         // Vendor Defined ('X')
-    HID_RI_COLLECTION(8, 0x01),    // Application
-        // Data to host
-        HID_RI_USAGE(8, 0x62),     // Vendor Defined
-        HID_RI_LOGICAL_MINIMUM(8, 0x00),
-        HID_RI_LOGICAL_MAXIMUM(16, 0x00FF),
-        HID_RI_REPORT_COUNT(8, XAP_EPSIZE),
-        HID_RI_REPORT_SIZE(8, 0x08),
-        HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE),
-
-        // Data from host
-        HID_RI_USAGE(8, 0x63),     // Vendor Defined
-        HID_RI_LOGICAL_MINIMUM(8, 0x00),
-        HID_RI_LOGICAL_MAXIMUM(16, 0x00FF),
-        HID_RI_REPORT_COUNT(8, XAP_EPSIZE),
-        HID_RI_REPORT_SIZE(8, 0x08),
-        HID_RI_OUTPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE | HID_IOF_NON_VOLATILE),
-    HID_RI_END_COLLECTION(0),
-};
-#endif //  XAP_ENABLE
-
 #ifdef CONSOLE_ENABLE
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM ConsoleReport[] = {
     HID_RI_USAGE_PAGE(16, 0xFF31), // Vendor Defined (PJRC Teensy compatible)
@@ -384,64 +430,29 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM ConsoleReport[] = {
 };
 #endif
 
-#ifdef JOYSTICK_ENABLE
-const USB_Descriptor_HIDReport_Datatype_t PROGMEM JoystickReport[] = {
-    HID_RI_USAGE_PAGE(8, 0x01),     // Generic Desktop
-    HID_RI_USAGE(8, 0x04),          // Joystick
-    HID_RI_COLLECTION(8, 0x01),     // Application
-        HID_RI_COLLECTION(8, 0x00), // Physical
-#    if JOYSTICK_AXES_COUNT > 0
-            HID_RI_USAGE_PAGE(8, 0x01), // Generic Desktop
-            HID_RI_USAGE(8, 0x30),      // X
-#        if JOYSTICK_AXES_COUNT > 1
-            HID_RI_USAGE(8, 0x31),      // Y
-#        endif
-#        if JOYSTICK_AXES_COUNT > 2
-            HID_RI_USAGE(8, 0x32),      // Z
-#        endif
-#        if JOYSTICK_AXES_COUNT > 3
-            HID_RI_USAGE(8, 0x33),      // Rx
-#        endif
-#        if JOYSTICK_AXES_COUNT > 4
-            HID_RI_USAGE(8, 0x34),      // Ry
-#        endif
-#        if JOYSTICK_AXES_COUNT > 5
-            HID_RI_USAGE(8, 0x35),      // Rz
-#        endif
-#        if JOYSTICK_AXES_RESOLUTION == 8
-            HID_RI_LOGICAL_MINIMUM(8, -JOYSTICK_RESOLUTION),
-            HID_RI_LOGICAL_MAXIMUM(8, JOYSTICK_RESOLUTION),
-            HID_RI_REPORT_COUNT(8, JOYSTICK_AXES_COUNT),
-            HID_RI_REPORT_SIZE(8, 0x08),
-#        else
-            HID_RI_LOGICAL_MINIMUM(16, -JOYSTICK_RESOLUTION),
-            HID_RI_LOGICAL_MAXIMUM(16, JOYSTICK_RESOLUTION),
-            HID_RI_REPORT_COUNT(8, JOYSTICK_AXES_COUNT),
-            HID_RI_REPORT_SIZE(8, 0x10),
-#        endif
-            HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE),
-#    endif
+#ifdef XAP_ENABLE
+const USB_Descriptor_HIDReport_Datatype_t PROGMEM XapReport[] = {
+    HID_RI_USAGE_PAGE(16, 0xFF51), // Vendor Defined ('Q')
+    HID_RI_USAGE(8, 0x58),         // Vendor Defined ('X')
+    HID_RI_COLLECTION(8, 0x01),    // Application
+        // Data to host
+        HID_RI_USAGE(8, 0x62),     // Vendor Defined
+        HID_RI_LOGICAL_MINIMUM(8, 0x00),
+        HID_RI_LOGICAL_MAXIMUM(16, 0x00FF),
+        HID_RI_REPORT_COUNT(8, XAP_EPSIZE),
+        HID_RI_REPORT_SIZE(8, 0x08),
+        HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE),
 
-#    if JOYSTICK_BUTTON_COUNT > 0
-            HID_RI_USAGE_PAGE(8, 0x09), // Button
-            HID_RI_USAGE_MINIMUM(8, 0x01),
-            HID_RI_USAGE_MAXIMUM(8, JOYSTICK_BUTTON_COUNT),
-            HID_RI_LOGICAL_MINIMUM(8, 0x00),
-            HID_RI_LOGICAL_MAXIMUM(8, 0x01),
-            HID_RI_REPORT_COUNT(8, JOYSTICK_BUTTON_COUNT),
-            HID_RI_REPORT_SIZE(8, 0x01),
-            HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE),
-
-#        if (JOYSTICK_BUTTON_COUNT % 8) != 0
-            HID_RI_REPORT_COUNT(8, 8 - (JOYSTICK_BUTTON_COUNT % 8)),
-            HID_RI_REPORT_SIZE(8, 0x01),
-            HID_RI_INPUT(8, HID_IOF_CONSTANT),
-#        endif
-#    endif
-        HID_RI_END_COLLECTION(0),
-    HID_RI_END_COLLECTION(0)
+        // Data from host
+        HID_RI_USAGE(8, 0x63),     // Vendor Defined
+        HID_RI_LOGICAL_MINIMUM(8, 0x00),
+        HID_RI_LOGICAL_MAXIMUM(16, 0x00FF),
+        HID_RI_REPORT_COUNT(8, XAP_EPSIZE),
+        HID_RI_REPORT_SIZE(8, 0x08),
+        HID_RI_OUTPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE | HID_IOF_NON_VOLATILE),
+    HID_RI_END_COLLECTION(0),
 };
-#endif
+#endif //  XAP_ENABLE
 
 /*
  * Device descriptor
@@ -588,56 +599,6 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .EndpointAddress        = (ENDPOINT_DIR_OUT | RAW_OUT_EPNUM),
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = RAW_EPSIZE,
-        .PollingIntervalMS      = 0x01
-    },
-#endif
-
-#ifdef XAP_ENABLE
-    /*
-     * QMK XAP
-     */
-    .Xap_Interface = {
-        .Header = {
-            .Size               = sizeof(USB_Descriptor_Interface_t),
-            .Type               = DTYPE_Interface
-        },
-        .InterfaceNumber        = XAP_INTERFACE,
-        .AlternateSetting       = 0x00,
-        .TotalEndpoints         = 2,
-        .Class                  = HID_CSCP_HIDClass,
-        .SubClass               = HID_CSCP_NonBootSubclass,
-        .Protocol               = HID_CSCP_NonBootProtocol,
-        .InterfaceStrIndex      = NO_DESCRIPTOR
-    },
-    .Xap_HID = {
-        .Header = {
-            .Size               = sizeof(USB_HID_Descriptor_HID_t),
-            .Type               = HID_DTYPE_HID
-        },
-        .HIDSpec                = VERSION_BCD(1, 1, 1),
-        .CountryCode            = 0x00,
-        .TotalReportDescriptors = 1,
-        .HIDReportType          = HID_DTYPE_Report,
-        .HIDReportLength        = sizeof(XapReport)
-    },
-    .Xap_INEndpoint = {
-        .Header = {
-            .Size               = sizeof(USB_Descriptor_Endpoint_t),
-            .Type               = DTYPE_Endpoint
-        },
-        .EndpointAddress        = (ENDPOINT_DIR_IN | XAP_IN_EPNUM),
-        .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
-        .EndpointSize           = XAP_EPSIZE,
-        .PollingIntervalMS      = 0x01
-    },
-    .Xap_OUTEndpoint = {
-        .Header = {
-            .Size               = sizeof(USB_Descriptor_Endpoint_t),
-            .Type               = DTYPE_Endpoint
-        },
-        .EndpointAddress        = (ENDPOINT_DIR_OUT | XAP_OUT_EPNUM),
-        .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
-        .EndpointSize           = XAP_EPSIZE,
         .PollingIntervalMS      = 0x01
     },
 #endif
@@ -1032,10 +993,10 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     },
 #endif
 
+#if defined(JOYSTICK_ENABLE) && !defined(JOYSTICK_SHARED_EP)
     /*
      * Joystick
      */
-#ifdef JOYSTICK_ENABLE
     .Joystick_Interface = {
         .Header = {
             .Size               = sizeof(USB_Descriptor_Interface_t),
@@ -1111,6 +1072,56 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .PollingIntervalMS      = USB_POLLING_INTERVAL_MS
     },
 #endif
+
+#ifdef XAP_ENABLE
+    /*
+     * QMK XAP
+     */
+    .Xap_Interface = {
+        .Header = {
+            .Size               = sizeof(USB_Descriptor_Interface_t),
+            .Type               = DTYPE_Interface
+        },
+        .InterfaceNumber        = XAP_INTERFACE,
+        .AlternateSetting       = 0x00,
+        .TotalEndpoints         = 2,
+        .Class                  = HID_CSCP_HIDClass,
+        .SubClass               = HID_CSCP_NonBootSubclass,
+        .Protocol               = HID_CSCP_NonBootProtocol,
+        .InterfaceStrIndex      = NO_DESCRIPTOR
+    },
+    .Xap_HID = {
+        .Header = {
+            .Size               = sizeof(USB_HID_Descriptor_HID_t),
+            .Type               = HID_DTYPE_HID
+        },
+        .HIDSpec                = VERSION_BCD(1, 1, 1),
+        .CountryCode            = 0x00,
+        .TotalReportDescriptors = 1,
+        .HIDReportType          = HID_DTYPE_Report,
+        .HIDReportLength        = sizeof(XapReport)
+    },
+    .Xap_INEndpoint = {
+        .Header = {
+            .Size               = sizeof(USB_Descriptor_Endpoint_t),
+            .Type               = DTYPE_Endpoint
+        },
+        .EndpointAddress        = (ENDPOINT_DIR_IN | XAP_IN_EPNUM),
+        .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
+        .EndpointSize           = XAP_EPSIZE,
+        .PollingIntervalMS      = 0x01
+    },
+    .Xap_OUTEndpoint = {
+        .Header = {
+            .Size               = sizeof(USB_Descriptor_Endpoint_t),
+            .Type               = DTYPE_Endpoint
+        },
+        .EndpointAddress        = (ENDPOINT_DIR_OUT | XAP_OUT_EPNUM),
+        .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
+        .EndpointSize           = XAP_EPSIZE,
+        .PollingIntervalMS      = 0x01
+    },
+#endif
 };
 
 /*
@@ -1159,7 +1170,7 @@ const USB_Descriptor_String_t PROGMEM SerialNumberString = {
  * is called so that the descriptor details can be passed back and the appropriate descriptor sent back to the
  * USB host.
  */
-uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const void** const DescriptorAddress) {
+uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const uint16_t wLength, const void** const DescriptorAddress) {
     const uint8_t DescriptorType  = (wValue >> 8);
     const uint8_t DescriptorIndex = (wValue & 0xFF);
     const void*   Address         = NULL;
@@ -1201,6 +1212,9 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
                     break;
 #endif
             }
+#ifdef OS_DETECTION_ENABLE
+            process_wlength(wLength);
+#endif
 
             break;
         case HID_DTYPE_HID:
@@ -1236,14 +1250,6 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
                     break;
 #endif
 
-#ifdef XAP_ENABLE
-                case XAP_INTERFACE:
-                    Address = &ConfigurationDescriptor.Xap_HID;
-                    Size    = sizeof(USB_HID_Descriptor_HID_t);
-
-                    break;
-#endif
-
 #ifdef CONSOLE_ENABLE
                 case CONSOLE_INTERFACE:
                     Address = &ConfigurationDescriptor.Console_HID;
@@ -1251,15 +1257,25 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
 
                     break;
 #endif
-#ifdef JOYSTICK_ENABLE
+
+#if defined(JOYSTICK_ENABLE) && !defined(JOYSTICK_SHARED_EP)
                 case JOYSTICK_INTERFACE:
                     Address = &ConfigurationDescriptor.Joystick_HID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
 #endif
+
 #if defined(DIGITIZER_ENABLE) && !defined(DIGITIZER_SHARED_EP)
                 case DIGITIZER_INTERFACE:
                     Address = &ConfigurationDescriptor.Digitizer_HID;
+                    Size    = sizeof(USB_HID_Descriptor_HID_t);
+
+                    break;
+#endif
+
+#ifdef XAP_ENABLE
+                case XAP_INTERFACE:
+                    Address = &ConfigurationDescriptor.Xap_HID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
 
                     break;
@@ -1301,14 +1317,6 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
                     break;
 #endif
 
-#ifdef XAP_ENABLE
-                case XAP_INTERFACE:
-                    Address = &XapReport;
-                    Size    = sizeof(XapReport);
-
-                    break;
-#endif
-
 #ifdef CONSOLE_ENABLE
                 case CONSOLE_INTERFACE:
                     Address = &ConsoleReport;
@@ -1316,7 +1324,7 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
 
                     break;
 #endif
-#ifdef JOYSTICK_ENABLE
+#if defined(JOYSTICK_ENABLE) && !defined(JOYSTICK_SHARED_EP)
                 case JOYSTICK_INTERFACE:
                     Address = &JoystickReport;
                     Size    = sizeof(JoystickReport);
@@ -1326,6 +1334,14 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
                 case DIGITIZER_INTERFACE:
                     Address = &DigitizerReport;
                     Size    = sizeof(DigitizerReport);
+                    break;
+#endif
+
+#ifdef XAP_ENABLE
+                case XAP_INTERFACE:
+                    Address = &XapReport;
+                    Size    = sizeof(XapReport);
+
                     break;
 #endif
             }

@@ -401,7 +401,7 @@ void EVENT_USB_Device_Reset(void) {
  *
  * FIXME: Needs doc
  */
-void EVENT_USB_Device_Suspend() {
+void EVENT_USB_Device_Suspend(void) {
     print("[S]");
     usb_device_state_set_suspend(USB_Device_ConfigurationNumber != 0, USB_Device_ConfigurationNumber);
 
@@ -414,7 +414,7 @@ void EVENT_USB_Device_Suspend() {
  *
  * FIXME: Needs doc
  */
-void EVENT_USB_Device_WakeUp() {
+void EVENT_USB_Device_WakeUp(void) {
     print("[W]");
 #if defined(NO_USB_STARTUP_CHECK)
     suspend_wakeup_init();
@@ -486,12 +486,6 @@ void EVENT_USB_Device_ConfigurationChanged(void) {
     ConfigSuccess &= Endpoint_ConfigureEndpoint((RAW_OUT_EPNUM | ENDPOINT_DIR_OUT), EP_TYPE_INTERRUPT, RAW_EPSIZE, 1);
 #endif
 
-#ifdef XAP_ENABLE
-    /* Setup XAP endpoints */
-    ConfigSuccess &= Endpoint_ConfigureEndpoint((XAP_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, XAP_EPSIZE, 1);
-    ConfigSuccess &= Endpoint_ConfigureEndpoint((XAP_OUT_EPNUM | ENDPOINT_DIR_OUT), EP_TYPE_INTERRUPT, XAP_EPSIZE, 1);
-#endif // XAP_ENABLE
-
 #ifdef CONSOLE_ENABLE
     /* Setup console endpoint */
     ConfigSuccess &= Endpoint_ConfigureEndpoint((CONSOLE_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, CONSOLE_EPSIZE, 1);
@@ -513,7 +507,7 @@ void EVENT_USB_Device_ConfigurationChanged(void) {
     ConfigSuccess &= Endpoint_ConfigureEndpoint((CDC_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_BULK, CDC_EPSIZE, 1);
 #endif
 
-#ifdef JOYSTICK_ENABLE
+#if defined(JOYSTICK_ENABLE) && !defined(JOYSTICK_SHARED_EP)
     /* Setup joystick endpoint */
     ConfigSuccess &= Endpoint_ConfigureEndpoint((JOYSTICK_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, JOYSTICK_EPSIZE, 1);
 #endif
@@ -522,6 +516,12 @@ void EVENT_USB_Device_ConfigurationChanged(void) {
     /* Setup digitizer endpoint */
     ConfigSuccess &= Endpoint_ConfigureEndpoint((DIGITIZER_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, DIGITIZER_EPSIZE, 1);
 #endif
+
+#ifdef XAP_ENABLE
+    /* Setup XAP endpoints */
+    ConfigSuccess &= Endpoint_ConfigureEndpoint((XAP_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, XAP_EPSIZE, 1);
+    ConfigSuccess &= Endpoint_ConfigureEndpoint((XAP_OUT_EPNUM | ENDPOINT_DIR_OUT), EP_TYPE_INTERRUPT, XAP_EPSIZE, 1);
+#endif // XAP_ENABLE
 
     usb_device_state_set_configuration(USB_DeviceState == DEVICE_STATE_Configured, USB_Device_ConfigurationNumber);
 }
@@ -1014,5 +1014,5 @@ void protocol_post_task(void) {
 }
 
 uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint16_t wIndex, const void **const DescriptorAddress) {
-    return get_usb_descriptor(wValue, wIndex, DescriptorAddress);
+    return get_usb_descriptor(wValue, wIndex, USB_ControlRequest.wLength, DescriptorAddress);
 }
