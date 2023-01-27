@@ -35,7 +35,7 @@ void SR_EXP_init(void) {
 
 void SR_EXP_flush(void) {
     //
-    shift_out_u16(sr_exp_data.reg);
+    shift_out((const uint8_t *)&sr_exp_data, sizeof(sr_exp_data));
 }
 
 void SR_EXP_USB_enable(void) {
