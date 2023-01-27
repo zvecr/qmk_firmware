@@ -20,10 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdbool.h>
 #include "print.h"
 
-// #    if __has_include_next("debug.h")
-// #        include_next "debug.h" /* Include the platforms print.h */
-// #    endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
