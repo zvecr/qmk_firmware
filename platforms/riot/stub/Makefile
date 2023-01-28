@@ -1,5 +1,5 @@
 # name of your application
-APPLICATION = qmk_firmware
+APPLICATION = riot_stub
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= native
@@ -7,15 +7,11 @@ BOARD ?= native
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/../../../lib/riot/
 
-ifneq ($(KEYBOARD_BOARD_DIR),)
-EXTERNAL_BOARD_DIRS = $(abspath $(CURDIR)/../../../$(KEYBOARD_BOARD_DIR))
-else
-EXTERNAL_BOARD_DIRS = $(abspath $(CURDIR)/../boards/)
-endif
+# This is usually provided
+BINDIRBASE ?= $(CURDIR)/../../../.build/riotbleh
 
-ifneq ($(KEYMAP_OUTPUT),)
-BINDIRBASE=$(KEYMAP_OUTPUT)
-endif
+# We handle linking ourselves - this also avoids having to specify a main?
+# RIOTNOLINK = 1
 
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
@@ -25,17 +21,20 @@ endif
 # Change this to 0 show compiler invocation lines by default:
 QUIET = 1
 
-QUIETER = 0
+# Change this to 0 show module compilation lines by default:
+QUIETER = 1
 
 # CFLAGS_OPT = -O2
 # LTO = 1
 
+# Default to compiling only modules which have been bound to QMK
 FEATURES_OPTIONAL += periph_i2c
 FEATURES_OPTIONAL += periph_flashpage # For eeprom emulation
 FEATURES_OPTIONAL += periph_adc
 FEATURES_OPTIONAL += periph_spi
 FEATURES_OPTIONAL += periph_wdt
 FEATURES_OPTIONAL += periph_cpuid
+FEATURES_OPTIONAL += usb_board_reset
 DISABLE_MODULE += auto_init_usbus
 USEMODULE += usbus
 USEMODULE += usbus_hid
@@ -51,28 +50,15 @@ CFLAGS += -include $(CURDIR)/../usb_config_adapter.h
 
 include $(RIOTBASE)/Makefile.include
 
-# ifeq (native,$(BOARD))
-#   # For the native board, CLOCK_CORECLOCK is undefined. But we need
-#   # a valid number to get the example compiled
-#   CFLAGS += -DCLOCK_CORECLOCK=1000000000
-# endif
-
-# ARCHIVES2:=$(shell cat $(BINDIRBASE)/obj.txt)
-# ARCHIVES = $(addprefix /home/zvecr/qmk_firmware/,$(ARCHIVES2))
-
-ifneq ($(ASDF),)
-ARCHIVES+=$(addprefix $(CURDIR)/../../../,$(shell cat $(ASDF)))
+ifneq ($(OBJ_TXT),)
+ARCHIVES += $(addprefix $(CURDIR)/../../../,$(shell cat $(OBJ_TXT)))
 endif
-
-# ifneq ($(QWER),)
-# CFLAGS+=$(patsubst %,-include $(CURDIR)/../../../%,$(QWER))
-# endif
 
 dump_includes: $(RIOTBUILD_CONFIG_HEADER_C)
 	@echo $(INCLUDES)
 
-# dump_libs: $(BASELIBS) $(ARCHIVES)
-# 	@echo $(find $(BASELIBS:%.module=$(BINDIR)/%/) -name "*.o" 2> /dev/null | sort)
+dump_mcu_flags: $(RIOTBUILD_CONFIG_HEADER_C)
+	@echo $(CFLAGS_CPU)
 
-dump_libs:
-	@echo ""
+uber_lib: $(BASELIBS) $(ARCHIVES)
+	$(Q)$(LINK) -r -nodefaultlibs -o $(BINDIRBASE)/$(APPLICATION).o $(shell find $(BASELIBS:%.module=$(BINDIR)/%/) -name "*.o" 2> /dev/null | grep -v syscalls.o | sort)

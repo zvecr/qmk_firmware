@@ -18,7 +18,7 @@
 #include "periph_cpu.h"
 #include "xtimer.h"
 
-#ifndef MCU_SAMD51
+#ifndef QMK_MCU_SAMD51
 #    error MCU NOT SUPPORTED
 #endif
 

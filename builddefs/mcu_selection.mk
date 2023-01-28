@@ -1,54 +1,49 @@
 MCU_ORIG := $(MCU)
 
 ifneq ($(findstring SAMD21, $(MCU)),)
-  PROTOCOL_RIOT = yes
-
   # Cortex version
   MCU = cortex-m0plus
 
+  MCU_FAMILY = SAM
   MCU_SERIES = SAMD21
-
-  # ARM version, CORTEX-M0/M1 are 6, CORTEX-M3/M4/M7 are 7
-  ARMV = 6
 
   # Mapped to riots BOARD arguement
   BOARD ?= feather-m0
 
-  # TODO: better way to detect PA enum value existance
-  OPT_DEFS += -DHAS_PORT_PA -DHAS_PORT_PB
-
-  USE_FPU ?= no
+  # UF2 settings
+  UF2_FAMILY ?= SAMD21
 
   ROM_OFFSET=0x2000
 endif
 
 ifneq ($(findstring SAMD51, $(MCU)),)
-  PROTOCOL_RIOT = yes
-
   # Cortex version
   MCU = cortex-m4
 
+  MCU_FAMILY = SAM
   MCU_SERIES = SAMD51
-
-  # ARM version, CORTEX-M0/M1 are 6, CORTEX-M3/M4/M7 are 7
-  ARMV = 7
 
   # Mapped to riots BOARD arguement
   BOARD ?= feather-m4
 
-  # TODO: better way to detect PA enum value existance
-  OPT_DEFS += -DHAS_PORT_PA -DHAS_PORT_PB
-
-  USE_FPU ?= yes
+  # UF2 settings
+  UF2_FAMILY ?= SAMD51
 
   ROM_OFFSET=0x4000
 endif
 
 ifneq ($(findstring nRF52840, $(MCU)),)
-  PROTOCOL_RIOT = yes
+  # Cortex version
+  MCU = cortex-m4
+
+  MCU_FAMILY = NRF
+  MCU_SERIES = NRF52
 
   # Mapped to riots BOARD arguement
   BOARD ?= adafruit-itsybitsy-nrf52
+
+  # UF2 settings
+  UF2_FAMILY ?= NRF52840
 endif
 
 ifneq ($(findstring MKL26Z64, $(MCU)),)

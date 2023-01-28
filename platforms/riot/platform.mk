@@ -5,33 +5,16 @@
 
 RIOTBASE = $(TOP_DIR)/lib/riot
 
+# When required - bail out early without producing a wall of random errors
+ifeq ("$(wildcard $(RIOTBASE)/Makefile.include)","")
+    $(error RIOT submodule missing)
+endif
+
 RM=/usr/bin/rm -f
 ARFLAGS = rcTs
 export RM
 export ARFLAGS
 LINKFLAGPREFIX ?= -Wl,
-
-LDFLAGS += -Wl,--unresolved-symbols=ignore-in-object-files
-
-MCUFLAGS = -mno-thumb-interwork -mlittle-endian -mthumb -mcpu=$(MCU)
-
-ARMV ?= 7
-ifeq ($(strip $(ARMV)),6)
-	MCUFLAGS += -march=armv6s-m
-endif
-
-USE_FPU ?= no
-ifneq ($(USE_FPU),no)
-	MCUFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
-else
-	MCUFLAGS += -mfloat-abi=soft
-endif
-
-PLATFORM_SRC = \
-        $(PLATFORM_COMMON_DIR)/usb_config_adapter.c \
-
-EXTRAINCDIRS = \
-        $(PLATFORM_COMMON_DIR)/stub/ \
 
 ##############################################################################
 # Compiler settings
@@ -46,21 +29,11 @@ HEX = $(OBJCOPY) -O $(FORMAT)
 EEP =
 BIN = $(OBJCOPY) -O binary
 
-OPT_DEFS += -DPROTOCOL_RIOT
-OPT_DEFS += -DMCU_$(MCU_ORIG)
-
-# TODO: Print lib seems to complain but not on chibi/arm_atsam?
-# CFLAGS += -Wformat=0
-# CFLAGS += -Wno-format-extra-args
-
 ##############################################################################
-# RIOT-OS Bodges
+# Board support selection.
 #
 
-# When required - bail out early without producing a wall of random errors
-ifeq ("$(wildcard $(RIOTBASE)/Makefile.include)","")
-    $(error RIOT submodule missing)
-endif
+KEYBOARD_BOARD_DIR = $(PLATFORM_COMMON_DIR)/boards/
 
 ifneq ("$(wildcard $(KEYBOARD_PATH_5)/boards/$(BOARD)/Makefile)","")
     KEYBOARD_BOARD_DIR = $(KEYBOARD_PATH_5)/boards/
@@ -86,14 +59,45 @@ else ifneq ("$(wildcard $(KEYBOARD_PATH_1)/lib/boards/$(BOARD)/Makefile)","")
     KEYBOARD_BOARD_DIR = $(KEYBOARD_PATH_1)/lib/boards/
 endif
 
-RIOT_INCS := $(shell $(MAKE) -C platforms/riot/stub BOARD=$(BOARD) KEYMAP_OUTPUT=$(abspath $(KEYMAP_OUTPUT)) KEYBOARD_OUTPUT=$(abspath $(KEYBOARD_OUTPUT))  KEYBOARD_BOARD_DIR=$(KEYBOARD_BOARD_DIR) dump_includes)
-RIOT_BODGE_CFLAGS += $(RIOT_INCS) $(CFLAGS) -include $(KEYMAP_OUTPUT)/$(BOARD)/riotbuild/riotbuild.h -include usb_config_adapter.h
+EXTERNAL_BOARD_DIRS = $(abspath $(KEYBOARD_BOARD_DIR))
 
-sizeafter: $(BUILD_DIR)/$(TARGET).bin
+#
+# Project, sources and paths
+##############################################################################
 
-$(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
-	$(MAKE) -C platforms/riot/stub BOARD=$(BOARD) KEYMAP_OUTPUT=$(abspath $(KEYMAP_OUTPUT)) KEYBOARD_OUTPUT=$(abspath $(KEYBOARD_OUTPUT)) KEYBOARD_BOARD_DIR=$(KEYBOARD_BOARD_DIR) QWER="$(CONFIG_H)" ASDF=$(abspath $(KEYMAP_OUTPUT)/obj.txt) | sed 's/"make" -C/$(MSG_COMPILING)/'
-	$(COPY) $(KEYMAP_OUTPUT)/$(BOARD)/qmk_firmware.bin $(BUILD_DIR)/$(TARGET).bin
+OPT_DEFS += -DPROTOCOL_RIOT
+
+OPT_DEFS += -include $(KEYMAP_OUTPUT)/$(BOARD)/riotbuild/riotbuild.h -include usb_config_adapter.h
+
+EXTRAINCDIRS = $(PLATFORM_PATH)/$(PLATFORM_KEY)/vendors/$(MCU_FAMILY)
+
+PLATFORM_SRC = \
+        $(PLATFORM_COMMON_DIR)/usb_config_adapter.c \
+
+##############################################################################
+# RIOT-OS Bodges
+#
+
+# TODO: dirty reuse of chibios variable to workaround RIOT includes needing to be searched last
+INIT_HOOK_CFLAGS := $(shell $(MAKE) -C $(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) dump_includes)
+
+MCUFLAGS := $(shell $(MAKE) -C $(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) dump_mcu_flags)
+
+##############################################################################
+# Make targets
+#
+
+# TODO: Remove using RIOT for linking
+$(BUILD_DIR)/$(TARGET).elf: all-libs $(KEYMAP_OUTPUT)/riot_stub.o
+	$(SILENT) || printf "$(MSG_LINKING) $(PLATFORM_COMMON_DIR)/stub" | $(AWK_CMD)
+	$(eval CMD=$(MAKE) -C$(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) OBJ_TXT=$(abspath $(KEYMAP_OUTPUT)/obj.txt) elffile)
+	$(BUILD_CMD)
+	$(COPY) $(KEYMAP_OUTPUT)/$(BOARD)/riot_stub.elf $(BUILD_DIR)/$(TARGET).elf
+
+$(KEYMAP_OUTPUT)/riot_stub.o:
+	$(SILENT) || printf "$(MSG_COMPILING) $(PLATFORM_COMMON_DIR)/stub" | $(AWK_CMD)
+	$(eval CMD=$(MAKE) -C$(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) uber_lib)
+	$(BUILD_CMD)
 
 bin: $(BUILD_DIR)/$(TARGET).bin sizeafter
 	$(COPY) $(BUILD_DIR)/$(TARGET).bin $(TARGET).bin;

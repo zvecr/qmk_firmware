@@ -1,29 +1,8 @@
-/* Copyright 2021 QMK
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// Copyright 2023 QMK
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 #pragma once
 
-#define LINE_PIN0 GPIO_PIN(0, 0)
-#define LINE_PIN1 GPIO_PIN(0, 1)
-#define LINE_PIN2 GPIO_PIN(0, 2)
-#define LINE_PIN3 GPIO_PIN(0, 3)
-#define LINE_PIN4 GPIO_PIN(0, 4)
-#define LINE_PIN5 GPIO_PIN(0, 5)
-#define LINE_PIN6 GPIO_PIN(0, 6)
-
-#ifdef HAS_PORT_PA
 #define A0 GPIO_PIN(PA, 0)
 #define A1 GPIO_PIN(PA, 1)
 #define A2 GPIO_PIN(PA, 2)
@@ -56,9 +35,7 @@
 #define A29 GPIO_PIN(PA, 29)
 #define A30 GPIO_PIN(PA, 30)
 #define A31 GPIO_PIN(PA, 31)
-#endif
 
-#ifdef HAS_PORT_PB
 #define B0 GPIO_PIN(PB, 0)
 #define B1 GPIO_PIN(PB, 1)
 #define B2 GPIO_PIN(PB, 2)
@@ -91,4 +68,3 @@
 #define B29 GPIO_PIN(PB, 29)
 #define B30 GPIO_PIN(PB, 30)
 #define B31 GPIO_PIN(PB, 31)
-#endif

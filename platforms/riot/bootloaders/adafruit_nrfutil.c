@@ -14,16 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "usb_board_reset.h"
-#include "periph/pm.h"
+#include "bootloader.h"
 
-// reuse logic from reset.c where possible - might not be implemented
-__attribute__((weak)) void usb_board_reset_in_bootloader(void) {}
-
-__attribute__((weak)) void bootloader_jump(void) {
-    usb_board_reset_in_bootloader();
-}
-
-__attribute__((weak)) void mcu_reset(void) {
-    pm_reboot();
-}
+__attribute__((weak)) void bootloader_jump(void) {}
+__attribute__((weak)) void mcu_reset(void) {}

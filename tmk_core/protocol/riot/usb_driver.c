@@ -349,7 +349,7 @@ void usbdrv_write(uint8_t id, const void *buffer, size_t len) {
 
 // TODO: handle remote wakeup
 //       This functionality is currently MIA within RIOT
-#ifdef MCU_SAMD51
+#ifdef QMK_MCU_SAMD51
 #    include "sam_usb.h"
 void usbdrv_wake(void) {
     // mimic udc_remotewakeup/usb_device_send_remote_wake_up from lib/arm_atsam

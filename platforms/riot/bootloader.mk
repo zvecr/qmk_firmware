@@ -57,6 +57,8 @@ endif
 ifeq ($(strip $(BOOTLOADER)), adafruit-nrfutil)
     OPT_DEFS += -DBOOTLOADER_ADA_NRF
     BOOTLOADER_TYPE = adafruit_nrfutil
+
+    FIRMWARE_FORMAT = uf2
 endif
 
 ifeq ($(strip $(BOOTLOADER_TYPE)),)
