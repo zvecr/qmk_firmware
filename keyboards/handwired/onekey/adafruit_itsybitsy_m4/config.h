@@ -18,9 +18,9 @@
 
 #include "config_common.h"
 
-#define DIRECT_PINS {{ A16 }} 
-// #define MATRIX_COL_PINS { B0 }
-// #define MATRIX_ROW_PINS { A7 }
+// #define DIRECT_PINS {{ A17 }} 
+#define MATRIX_COL_PINS { A22 }
+#define MATRIX_ROW_PINS { A23 }
 #define UNUSED_PINS
 
 // #define BACKLIGHT_PIN           A0
