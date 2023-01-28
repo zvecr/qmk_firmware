@@ -1,0 +1,9 @@
+{
+    "keyboard_name": "Onekey ItsyBitsy M0",
+    "processor": "SAMD21",
+    "bootloader": "sam-ba",
+    "matrix_pins": {
+        "cols": ["A19"],
+        "rows": ["A17"]
+    }
+}

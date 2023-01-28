@@ -1,0 +1,9 @@
+{
+    "keyboard_name": "Onekey ItsyBitsy nRF52840",
+    "processor": "nRF52840",
+    "bootloader": "adafruit-nrfutil",
+    "matrix_pins": {
+        "cols": ["LINE_PIN2"],
+        "rows": ["LINE_PIN3"]
+    }
+}

@@ -1,2 +1,0 @@
-MCU = SAMD51
-BOOTLOADER = sam-ba
