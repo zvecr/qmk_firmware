@@ -19,15 +19,10 @@
 #
 # Sets the bootloader defined in the keyboard's/keymap's rules.mk
 #
-# Current options for AVR:
-#     halfkay      PJRC Teensy
-#     caterina     Pro Micro (Sparkfun/generic)
-#     atmel-dfu    Atmel factory DFU
-#     lufa-dfu     LUFA DFU
-#     qmk-dfu      QMK DFU (LUFA + blinkenlight)
-#     qmk-hid      QMK HID (LUFA + blinkenlight)
-#     bootloadhid  HIDBootFlash compatible (ATmega32A)
-#     usbasploader USBaspLoader (ATmega328P)
+# Current options for ARM:
+#     md-boot          Drop SAMD51 boards
+#     sam-ba           Atmel® SAM Boot Assistant
+#     adafruit-nrf52 CDC/DFU/UF2 bootloader for Nordic nRF52
 #
 # If you need to provide your own implementation, you can set inside `rules.mk`
 # `BOOTLOADER = custom` -- you'll need to provide your own implementations. See
@@ -54,9 +49,9 @@ ifeq ($(strip $(BOOTLOADER)), sam-ba)
 
     FIRMWARE_FORMAT = uf2
 endif
-ifeq ($(strip $(BOOTLOADER)), adafruit-nrfutil)
-    OPT_DEFS += -DBOOTLOADER_ADA_NRF
-    BOOTLOADER_TYPE = adafruit_nrfutil
+ifeq ($(strip $(BOOTLOADER)), adafruit-nrf52)
+    OPT_DEFS += -DBOOTLOADER_ADAFRUIT_NRF52
+    BOOTLOADER_TYPE = adafruit_nrf52)
 
     FIRMWARE_FORMAT = uf2
 endif

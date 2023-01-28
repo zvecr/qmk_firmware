@@ -28,7 +28,7 @@ else ifeq ($(strip $(BOOTLOADER)), md-boot)
 	$(UNSYNC_OUTPUT_CMD) && $(call EXEC_MDLOADER)
 else ifeq ($(strip $(BOOTLOADER)), sam-ba)
 	$(UNSYNC_OUTPUT_CMD) && $(call EXEC_UF2_UTIL_DEPLOY)
-else ifeq ($(strip $(BOOTLOADER)), adafruit-nrfutil)
+else ifeq ($(strip $(BOOTLOADER)), adafruit-nrf52)
 	$(UNSYNC_OUTPUT_CMD) && $(call EXEC_UF2_UTIL_DEPLOY)
 else
 	$(PRINT_OK); $(SILENT) || printf "$(MSG_FLASH_ARCH)"

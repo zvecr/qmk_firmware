@@ -159,7 +159,7 @@
             "type": "string",
             "enum": [
                 "sam-ba",
-                "adafruit-nrfutil",
+                "adafruit-nrf52",
                 "atmel-dfu",
                 "bootloadhid",
                 "caterina",
