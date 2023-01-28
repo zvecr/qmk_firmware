@@ -1,3 +1,11 @@
 {
-    "keyboard_name": "Onekey Adafruit ItsyBitsy M0"
+    "keyboard_name": "Onekey Adafruit ItsyBitsy M0",
+    "features": {
+        "bootmagic": true,
+        "command": false,
+        "console": false,
+        "extrakey": true,
+        "mousekey": true,
+        "nkro": true
+    }
 }
