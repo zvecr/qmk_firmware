@@ -260,13 +260,13 @@ BEGIN = gccversion sizebefore
 # Link: create ELF output file from object files.
 .SECONDARY : $(BUILD_DIR)/$(TARGET).elf
 .PRECIOUS : $(OBJ)
-# all-libs dependency here is so platform.mk can depend on the resolved value of $(OBJ)
-%.elf: all-libs
+# Note the obj.txt depeendency is there to force linking if a source file is deleted
+%.elf: $(OBJ) $(MASTER_OUTPUT)/cflags.txt $(MASTER_OUTPUT)/ldflags.txt $(MASTER_OUTPUT)/obj.txt | $(BEGIN)
 	@$(SILENT) || printf "$(MSG_LINKING) $@" | $(AWK_CMD)
 	$(eval CMD=MAKE=$(MAKE) $(CC) $(ALL_CFLAGS) $(filter-out %.txt,$^) --output $@ $(LDFLAGS))
 	@$(BUILD_CMD)
 
-# Note the obj.txt depeendency is there to force linking if a source file is deleted
+# all-libs dependency here is so platform.mk can depend on the resolved value of $(OBJ)
 all-libs: $(OBJ) $(MASTER_OUTPUT)/cflags.txt $(MASTER_OUTPUT)/ldflags.txt $(MASTER_OUTPUT)/obj.txt | $(BEGIN)
 
 define GEN_OBJRULE
