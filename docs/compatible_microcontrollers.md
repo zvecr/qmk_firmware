@@ -25,7 +25,7 @@ Certain MCUs which do not have native USB will use [V-USB](https://www.obdev.at/
 
 ## ARM
 
-You can also use any ARM chip with USB that [ChibiOS](https://www.chibios.org) supports. Most have plenty of flash. Known to work are:
+You can also use any ARM chip with USB that [ChibiOS](https://www.chibios.org)/[RIOT](https://www.riot-os.org/) supports. Most have plenty of flash. Known to work are:
 
 ### STMicroelectronics (STM32)
 
@@ -73,9 +73,14 @@ You can also use any ARM chip with USB that [ChibiOS](https://www.chibios.org) s
 
 For a detailed overview about the RP2040 support by QMK see the [dedicated RP2040 page](platformdev_rp2040.md).
 
-## Atmel ATSAM
+### Atmel ATSAM
 
-There is limited support for one of Atmel's ATSAM microcontrollers, that being the [ATSAMD51J18A](https://www.microchip.com/wwwproducts/en/ATSAMD51J18A) used by the [Massdrop keyboards](https://github.com/qmk/qmk_firmware/tree/master/keyboards/massdrop). However, it is not recommended to design a board with this microcontroller as the support is quite specialized to Massdrop hardware.
+ * [SAMD21](https://www.microchip.com/en-us/products/microcontrollers-and-microprocessors/32-bit-mcus/sam-32-bit-mcus/sam-d)
+ * [SAMD51](https://www.microchip.com/en-us/products/microcontrollers-and-microprocessors/32-bit-mcus/sam-32-bit-mcus/sam-d)
+
+### Nordic Semiconductor
+
+ * [nrf52840](https://www.nordicsemi.com/products/nrf52840)
 
 ## RISC-V
 
