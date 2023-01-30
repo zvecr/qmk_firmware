@@ -50,8 +50,8 @@ CFLAGS += -include $(CURDIR)/../usb_config_adapter.h
 
 include $(RIOTBASE)/Makefile.include
 
-ifneq ($(OBJ_TXT),)
-ARCHIVES += $(addprefix $(CURDIR)/../../../,$(shell cat $(OBJ_TXT)))
+ifneq ($(EXTRA_LIB),)
+ARCHIVES += $(EXTRA_LIB)
 endif
 
 dump_includes: $(RIOTBUILD_CONFIG_HEADER_C)

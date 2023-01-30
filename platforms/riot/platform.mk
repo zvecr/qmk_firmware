@@ -25,6 +25,7 @@ OBJDUMP = arm-none-eabi-objdump
 SIZE = arm-none-eabi-size
 AR = arm-none-eabi-ar
 NM = arm-none-eabi-nm
+LD = arm-none-eabi-ld
 HEX = $(OBJCOPY) -O $(FORMAT)
 EEP =
 BIN = $(OBJCOPY) -O binary
@@ -88,9 +89,9 @@ MCUFLAGS := $(shell $(MAKE) -C $(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIR
 #
 
 # TODO: Remove using RIOT for linking
-$(BUILD_DIR)/$(TARGET).elf: all-libs $(KEYMAP_OUTPUT)/riot_stub.o
+$(BUILD_DIR)/$(TARGET).elf: $(KEYMAP_OUTPUT)/qmk.o $(KEYMAP_OUTPUT)/riot_stub.o
 	$(SILENT) || printf "$(MSG_LINKING) $(PLATFORM_COMMON_DIR)/stub" | $(AWK_CMD)
-	$(eval CMD=$(MAKE) -C$(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) OBJ_TXT=$(abspath $(KEYMAP_OUTPUT)/obj.txt) elffile)
+	$(eval CMD=$(MAKE) -C$(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) EXTRA_LIB=$(abspath $(KEYMAP_OUTPUT)/qmk.o) elffile)
 	$(BUILD_CMD)
 	$(COPY) $(KEYMAP_OUTPUT)/$(BOARD)/riot_stub.elf $(BUILD_DIR)/$(TARGET).elf
 

@@ -266,8 +266,9 @@ BEGIN = gccversion sizebefore
 	$(eval CMD=MAKE=$(MAKE) $(CC) $(ALL_CFLAGS) $(filter-out %.txt,$^) --output $@ $(LDFLAGS))
 	@$(BUILD_CMD)
 
-# all-libs dependency here is so platform.mk can depend on the resolved value of $(OBJ)
-all-libs: $(OBJ) $(MASTER_OUTPUT)/cflags.txt $(MASTER_OUTPUT)/ldflags.txt $(MASTER_OUTPUT)/obj.txt | $(BEGIN)
+# dependency here is so platform.mk can depend on the resolved value of $(OBJ)
+$(MASTER_OUTPUT)/qmk.o: $(OBJ) $(MASTER_OUTPUT)/cflags.txt $(MASTER_OUTPUT)/ldflags.txt $(MASTER_OUTPUT)/obj.txt | $(BEGIN)
+	$(LD) -r $(OBJ) -o $(MASTER_OUTPUT)/qmk.o
 
 define GEN_OBJRULE
 $1_INCFLAGS := $$(patsubst %,-I%,$$($1_INC))

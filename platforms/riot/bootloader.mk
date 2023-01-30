@@ -51,7 +51,7 @@ ifeq ($(strip $(BOOTLOADER)), sam-ba)
 endif
 ifeq ($(strip $(BOOTLOADER)), adafruit-nrf52)
     OPT_DEFS += -DBOOTLOADER_ADAFRUIT_NRF52
-    BOOTLOADER_TYPE = adafruit_nrf52)
+    BOOTLOADER_TYPE = adafruit_nrf52
 
     FIRMWARE_FORMAT = uf2
 endif
