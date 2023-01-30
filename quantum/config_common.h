@@ -16,7 +16,7 @@
 
 #pragma once
 
-#ifndef __ASSEMBLER__
+#if !defined(__ASSEMBLER__) && !defined(CONVERT_TO_NICE_NANO)
 #    include "pin_defs.h"
 #endif
 
