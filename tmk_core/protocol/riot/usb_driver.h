@@ -20,10 +20,6 @@ enum usb_interfaces {
     RAW_INTERFACE,
 #endif
 
-#ifdef XAP_ENABLE
-    XAP_INTERFACE,
-#endif
-
 #if defined(MOUSE_ENABLE) && !defined(MOUSE_SHARED_EP)
     MOUSE_INTERFACE,
 #else
@@ -42,6 +38,10 @@ enum usb_interfaces {
     DIGITIZER_INTERFACE,
 #else
 #    define DIGITIZER_INTERFACE SHARED_INTERFACE
+#endif
+
+#ifdef XAP_ENABLE
+    XAP_INTERFACE,
 #endif
 
     TOTAL_INTERFACES

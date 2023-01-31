@@ -331,29 +331,6 @@ static const uint8_t raw_hid_report[] = {
 };
 #endif
 
-#ifdef XAP_ENABLE
-static const uint8_t xap_hid_report[] = {
-    0x06, 0x51, 0xFF, // Usage Page (Vendor Defined)
-    0x09, 0x58,       // Usage (Vendor Defined)
-    0xA1, 0x01,       // Collection (Application)
-    // Data to host
-    0x09, 0x62,       //   Usage (Vendor Defined)
-    0x15, 0x00,       //   Logical Minimum (0)
-    0x26, 0xFF, 0x00, //   Logical Maximum (255)
-    0x95, XAP_EPSIZE, //   Report Count
-    0x75, 0x08,       //   Report Size (8)
-    0x81, 0x02,       //   Input (Data, Variable, Absolute)
-    // Data from host
-    0x09, 0x63,       //   Usage (Vendor Defined)
-    0x15, 0x00,       //   Logical Minimum (0)
-    0x26, 0xFF, 0x00, //   Logical Maximum (255)
-    0x95, XAP_EPSIZE, //   Report Count
-    0x75, 0x08,       //   Report Size (8)
-    0x91, 0x02,       //   Output (Data, Variable, Absolute)
-    0xC0              // End Collection
-};
-#endif
-
 #ifdef CONSOLE_ENABLE
 static const uint8_t console_hid_report[] = {
     0x06, 0x31, 0xFF, // Usage Page (Vendor Defined - PJRC Teensy compatible)
@@ -374,6 +351,29 @@ static const uint8_t console_hid_report[] = {
     0x75, 0x08,           //   Report Size (8)
     0x91, 0x02,           //   Output (Data)
     0xC0                  // End Collection
+};
+#endif
+
+#ifdef XAP_ENABLE
+static const uint8_t xap_hid_report[] = {
+    0x06, 0x51, 0xFF, // Usage Page (Vendor Defined)
+    0x09, 0x58,       // Usage (Vendor Defined)
+    0xA1, 0x01,       // Collection (Application)
+    // Data to host
+    0x09, 0x62,       //   Usage (Vendor Defined)
+    0x15, 0x00,       //   Logical Minimum (0)
+    0x26, 0xFF, 0x00, //   Logical Maximum (255)
+    0x95, XAP_EPSIZE, //   Report Count
+    0x75, 0x08,       //   Report Size (8)
+    0x81, 0x02,       //   Input (Data, Variable, Absolute)
+    // Data from host
+    0x09, 0x63,       //   Usage (Vendor Defined)
+    0x15, 0x00,       //   Logical Minimum (0)
+    0x26, 0xFF, 0x00, //   Logical Maximum (255)
+    0x95, XAP_EPSIZE, //   Report Count
+    0x75, 0x08,       //   Report Size (8)
+    0x91, 0x02,       //   Output (Data, Variable, Absolute)
+    0xC0              // End Collection
 };
 #endif
 
@@ -660,17 +660,6 @@ void protocol_pre_init(void) {
             .interval         = 1
         },
 #endif
-#ifdef XAP_ENABLE
-        {
-            .id               = XAP_INTERFACE,
-            .subclass         = USB_HID_SUBCLASS_NONE,
-            .protocol         = USB_HID_PROTOCOL_NONE,
-            .report_desc      = xap_hid_report,
-            .report_desc_size = sizeof(xap_hid_report),
-            .ep_size          = XAP_EPSIZE,
-            .interval         = 1
-        },
-#endif
 #if defined(MOUSE_ENABLE) && !defined(MOUSE_SHARED_EP)
         {
             .id               = MOUSE_INTERFACE,
@@ -713,6 +702,17 @@ void protocol_pre_init(void) {
             .report_desc_size = sizeof(digitizer_hid_report),
             .ep_size          = DIGITIZER_EPSIZE,
             .interval         = USB_POLLING_INTERVAL_MS
+        },
+#endif
+#ifdef XAP_ENABLE
+        {
+            .id               = XAP_INTERFACE,
+            .subclass         = USB_HID_SUBCLASS_NONE,
+            .protocol         = USB_HID_PROTOCOL_NONE,
+            .report_desc      = xap_hid_report,
+            .report_desc_size = sizeof(xap_hid_report),
+            .ep_size          = XAP_EPSIZE,
+            .interval         = 1
         },
 #endif
     };
