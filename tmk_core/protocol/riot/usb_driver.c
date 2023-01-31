@@ -153,9 +153,28 @@ static void _init(usbus_t *usbus, usbus_handler_t *handler) {
     usbus_add_interface(usbus, &hid->iface);
 }
 
-report_keyboard_t keyboard_report_sent                          = {{0}};
-uint8_t           keyboard_idle __attribute__((aligned(2)))     = 0;
-uint8_t           keyboard_protocol __attribute__((aligned(2))) = 1;
+report_keyboard_t keyboard_report_sent = {{0}};
+report_mouse_t    mouse_report_sent    = {0};
+
+union {
+    uint8_t           report_id;
+    report_keyboard_t keyboard;
+#ifdef EXTRAKEY_ENABLE
+    report_extra_t extra;
+#endif
+#ifdef MOUSE_ENABLE
+    report_mouse_t mouse;
+#endif
+#ifdef DIGITIZER_ENABLE
+    report_digitizer_t digitizer;
+#endif
+#ifdef JOYSTICK_ENABLE
+    report_joystick_t joystick;
+#endif
+} universal_report_blank = {0};
+
+uint8_t keyboard_idle __attribute__((aligned(2)))     = 0;
+uint8_t keyboard_protocol __attribute__((aligned(2))) = 1;
 
 static uint8_t keyboard_led_state = 0;
 uint8_t        usbdrv_keyboard_leds(void) {
@@ -195,9 +214,41 @@ static int _control_handler(usbus_t *usbus, usbus_handler_t *handler, usbus_cont
             }
             break;
         }
-        case USB_HID_REQUEST_GET_REPORT:
-            usbus_control_slicer_put_bytes(usbus, (uint8_t *)&keyboard_report_sent, sizeof(keyboard_report_sent));
+        case USB_HID_REQUEST_GET_REPORT: {
+            uint8_t report_id = setup->value & 0xFF;
+            switch (setup->index) {
+#ifndef KEYBOARD_SHARED_EP
+                case KEYBOARD_INTERFACE:
+                    usbus_control_slicer_put_bytes(usbus, (uint8_t *)&keyboard_report_sent, KEYBOARD_REPORT_SIZE);
+                    break;
+#endif
+#if defined(MOUSE_ENABLE) && !defined(MOUSE_SHARED_EP)
+                case MOUSE_INTERFACE:
+                    usbus_control_slicer_put_bytes(usbus, (uint8_t *)&mouse_report_sent, sizeof(mouse_report_sent));
+                    break;
+#endif
+#ifdef SHARED_EP_ENABLE
+                case SHARED_INTERFACE:
+#    ifdef KEYBOARD_SHARED_EP
+                    if (report_id == REPORT_ID_KEYBOARD) {
+                        usbus_control_slicer_put_bytes(usbus, (uint8_t *)&keyboard_report_sent, KEYBOARD_REPORT_SIZE);
+                        break;
+                    }
+#    endif
+#    ifdef MOUSE_SHARED_EP
+                    if (report_id == REPORT_ID_MOUSE) {
+                        usbus_control_slicer_put_bytes(usbus, (uint8_t *)&mouse_report_sent, sizeof(mouse_report_sent));
+                        break;
+                    }
+#    endif
+#endif /* SHARED_EP_ENABLE */
+                default:
+                    universal_report_blank.report_id = report_id;
+                    usbus_control_slicer_put_bytes(usbus, (uint8_t *)&universal_report_blank, setup->length);
+                    break;
+            }
             break;
+        }
         case USB_HID_REQUEST_GET_IDLE:
             if (setup->index == KEYBOARD_INTERFACE) {
                 usbus_control_slicer_put_bytes(usbus, &keyboard_idle, sizeof(keyboard_idle));

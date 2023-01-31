@@ -382,6 +382,7 @@ static const uint8_t xap_hid_report[] = {
  *------------------------------------------------------------------*/
 extern uint8_t           keyboard_protocol;
 extern report_keyboard_t keyboard_report_sent;
+extern report_mouse_t    mouse_report_sent;
 
 static uint8_t keyboard_leds(void);
 static void    send_keyboard(report_keyboard_t *report);
@@ -390,70 +391,84 @@ static void    send_extra(report_extra_t *report);
 
 static host_driver_t driver = {keyboard_leds, send_keyboard, send_mouse, send_extra};
 
+/* ---------------------------------------------------------
+ *                  Keyboard functions
+ * ---------------------------------------------------------
+ */
+
+/* LED status */
 static uint8_t keyboard_leds(void) {
     return usbdrv_keyboard_leds();
 }
 
-static void send_keyboard(report_keyboard_t *report) {
-    /* Select the Keyboard Report Endpoint */
-    uint8_t ep   = KEYBOARD_INTERFACE;
-    uint8_t size = KEYBOARD_REPORT_SIZE;
-#ifdef NKRO_ENABLE
-    if (keyboard_protocol && keymap_config.nkro) {
-        ep   = SHARED_INTERFACE;
-        size = sizeof(struct nkro_report);
-    }
-#endif
-
+void send_report(uint8_t endpoint, void *report, size_t size) {
     if (g_usbus.state != USBUS_STATE_CONFIGURED) {
         return;
     }
+    usbdrv_write(endpoint, report, size);
+}
 
+/* prepare and start sending a report IN
+ * not callable from ISR or locked state */
+void send_keyboard(report_keyboard_t *report) {
+    uint8_t ep   = KEYBOARD_INTERFACE;
+    size_t  size = KEYBOARD_REPORT_SIZE;
+
+    /* If we're in Boot Protocol, don't send any report ID or other funky fields */
     if (!keyboard_protocol) {
-        usbdrv_write(ep, &report->mods, 8);
+        send_report(ep, &report->mods, 8);
     } else {
-        usbdrv_write(ep, report, size);
+#ifdef NKRO_ENABLE
+        if (keymap_config.nkro) {
+            ep   = SHARED_INTERFACE;
+            size = sizeof(struct nkro_report);
+        }
+#endif
+
+        send_report(ep, report, size);
     }
 
     keyboard_report_sent = *report;
 }
 
-static void send_mouse(report_mouse_t *report) {
+/* ---------------------------------------------------------
+ *                     Mouse functions
+ * ---------------------------------------------------------
+ */
+
+void send_mouse(report_mouse_t *report) {
 #ifdef MOUSE_ENABLE
-    if (g_usbus.state != USBUS_STATE_CONFIGURED) {
-        return;
-    }
-    usbdrv_write(MOUSE_INTERFACE, report, sizeof(report_mouse_t));
+    send_report(MOUSE_INTERFACE, report, sizeof(report_mouse_t));
+    mouse_report_sent = *report;
 #endif
 }
 
-#if defined(EXTRAKEY_ENABLE) || defined(PROGRAMMABLE_BUTTON_ENABLE)
-static void send_report(void *report, size_t size) {
-    if (g_usbus.state != USBUS_STATE_CONFIGURED) {
-        return;
-    }
-    usbdrv_write(SHARED_INTERFACE, report, sizeof(report_extra_t));
-}
-#endif
+/* ---------------------------------------------------------
+ *                   Extrakey functions
+ * ---------------------------------------------------------
+ */
 
-static void send_extra(report_extra_t *report) {
+void send_extra(report_extra_t *report) {
 #ifdef EXTRAKEY_ENABLE
-    send_report(report, sizeof(report_extra_t));
+    send_report(SHARED_INTERFACE, report, sizeof(report_extra_t));
 #endif
 }
 
 void send_programmable_button(report_programmable_button_t *report) {
 #ifdef PROGRAMMABLE_BUTTON_ENABLE
-    send_report(report, sizeof(report_programmable_button_t));
+    send_report(SHARED_INTERFACE, report, sizeof(report_programmable_button_t));
+#endif
+}
+
+void send_joystick(report_joystick_t *report) {
+#ifdef JOYSTICK_ENABLE
+    send_report(JOYSTICK_INTERFACE, report, sizeof(report_joystick_t));
 #endif
 }
 
 void send_digitizer(report_digitizer_t *report) {
 #ifdef DIGITIZER_ENABLE
-    if (g_usbus.state != USBUS_STATE_CONFIGURED) {
-        return;
-    }
-    usbdrv_write(DIGITIZER_INTERFACE, &report, sizeof(report_digitizer_t));
+    send_report(DIGITIZER_INTERFACE, report, sizeof(report_digitizer_t));
 #endif
 }
 
@@ -613,7 +628,7 @@ void console_task(void) {
 
     const uint32_t timeout = timed_out ? 100 : 5000;
 
-    timed_out = usbdrv_write_timeout(CONSOLE_INTERFACE, send_buf, sizeof(send_buf), timeout)  == 0;
+    timed_out = usbdrv_write_timeout(CONSOLE_INTERFACE, send_buf, sizeof(send_buf), timeout) == 0;
     usbdrv_write_timeout(CONSOLE_INTERFACE, 0, 0, timeout);
 }
 #endif
