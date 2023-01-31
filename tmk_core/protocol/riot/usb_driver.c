@@ -328,13 +328,12 @@ size_t usbdrv_write_timeout(uint8_t id, const void *buffer, size_t len, uint32_t
         }
 
         if (len > max_size) {
-            memmove(buffer_ep + offset, (uint8_t *)buffer + offset, max_size);
+            memmove(buffer_ep, (uint8_t *)buffer + offset, max_size);
             offset += max_size;
             hid->occupied = max_size;
             len -= max_size;
         } else {
-            memmove(buffer_ep + offset, (uint8_t *)buffer + offset, len);
-            offset += len;
+            memmove(buffer_ep, (uint8_t *)buffer + offset, len);
             hid->occupied = len;
             len           = 0;
         }
