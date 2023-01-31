@@ -19,11 +19,20 @@ static inline void manageAdcInitialization(uint8_t index) {
 }
 
 __attribute__((weak)) uint8_t pinToLine(pin_t pin) {
-    for (uint8_t i = 0; i < ADC_NUMOF; i++) {
-        if (gpio_is_equal(adc_channels[i].pin, pin)) {
-            return i;
+#ifdef QMK_MCU_FAMILY_SAM
+    for (uint8_t line = 0; line < ADC_NUMOF; line++) {
+#    ifdef ADC0
+        const uint8_t adc = adc_channels[line].dev == ADC1 ? 1 : 0;
+#    else
+        const uint8_t adc = 0;
+#    endif
+        uint8_t muxpos  = (adc_channels[line].inputctrl & ADC_INPUTCTRL_MUXPOS_Msk) >> ADC_INPUTCTRL_MUXPOS_Pos;
+        gpio_t  adc_pin = sam0_adc_pins[adc][muxpos];
+        if (gpio_is_equal(adc_pin, pin)) {
+            return line;
         }
     }
+#endif
     return UINT8_MAX;
 }
 
