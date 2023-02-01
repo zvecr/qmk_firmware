@@ -75,3 +75,7 @@ size_t usbdrv_write_timeout(uint8_t id, const void *buffer, size_t len, uint32_t
 uint8_t usbdrv_keyboard_leds(void);
 
 void usbdrv_wake(void);
+
+static inline bool usbdrv_is_connected(void) {
+    return g_usbus.state != USBUS_STATE_CONFIGURED;
+}
