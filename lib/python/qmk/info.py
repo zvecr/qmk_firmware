@@ -696,11 +696,7 @@ def _check_matrix(info_data):
         actual_row_count = info_data['matrix_size'].get('rows', 0)
         col_count = row_count = 0
 
-        if 'custom' in info_data['matrix_pins'] or 'custom_lite' in info_data['matrix_pins']:
-            cli.log.debug("Skipping consistency checks for custom matrix")
-            col_count = actual_col_count
-            row_count = actual_row_count
-        elif 'direct' in info_data['matrix_pins']:
+        if 'direct' in info_data['matrix_pins']:
             col_count = len(info_data['matrix_pins']['direct'][0])
             row_count = len(info_data['matrix_pins']['direct'])
         elif 'cols' in info_data['matrix_pins'] and 'rows' in info_data['matrix_pins']:
@@ -765,6 +761,8 @@ def arm_processor_rules(info_data, rules):
         info_data['platform'] = rules['MCU_SERIES']
     elif 'SAMD' in info_data['processor']:
         info_data['platform'] = 'SAM'
+    elif 'nRF5' in info_data['processor']:
+        info_data['platform'] = 'NRF'
     elif 'ARM_ATSAM' in rules:
         info_data['platform'] = 'ARM_ATSAM'
         info_data['platform_key'] = 'arm_atsam'

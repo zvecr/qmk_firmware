@@ -147,39 +147,21 @@ static const pwm_conf_t pwm_config[] = {
  */
 static const spi_conf_t spi_config[] = {
     {
-        .dev      = &(SERCOM1->SPI),
-        .miso_pin = GPIO_PIN(PB, 23),
-        .mosi_pin = GPIO_PIN(PA, 0),
-        .clk_pin  = GPIO_PIN(PA, 1),
-        .miso_mux = GPIO_MUX_C,
+        .dev      = &(SERCOM4->SPI),
+        .miso_pin = GPIO_PIN(PB, 11),
+        .mosi_pin = GPIO_PIN(PB, 8),
+        .clk_pin  = GPIO_PIN(PB, 9),
+        .miso_mux = GPIO_MUX_D,
         .mosi_mux = GPIO_MUX_D,
         .clk_mux  = GPIO_MUX_D,
         .miso_pad = SPI_PAD_MISO_3,
         .mosi_pad = SPI_PAD_MOSI_0_SCK_1,
         .gclk_src = SAM0_GCLK_PERIPH,
 #ifdef MODULE_PERIPH_DMA
-        .tx_trigger = SERCOM1_DMAC_ID_TX,
-        .rx_trigger = SERCOM1_DMAC_ID_RX,
+        .tx_trigger = SERCOM4_DMAC_ID_TX,
+        .rx_trigger = SERCOM4_DMAC_ID_RX,
 #endif
-    },
-#ifdef MODULE_PERIPH_SPI_ON_QSPI
-    {    /* QSPI in SPI mode */
-        .dev      = QSPI,
-        .miso_pin = SAM0_QSPI_PIN_DATA_1,
-        .mosi_pin = SAM0_QSPI_PIN_DATA_0,
-        .clk_pin  = SAM0_QSPI_PIN_CLK,
-        .miso_mux = SAM0_QSPI_MUX,
-        .mosi_mux = SAM0_QSPI_MUX,
-        .clk_mux  = SAM0_QSPI_MUX,
-        .miso_pad = SPI_PAD_MISO_0,         /* unused */
-        .mosi_pad = SPI_PAD_MOSI_0_SCK_1,   /* unused */
-        .gclk_src = SAM0_GCLK_MAIN,         /* unused */
-#ifdef MODULE_PERIPH_DMA
-        .tx_trigger = QSPI_DMAC_ID_TX,
-        .rx_trigger = QSPI_DMAC_ID_RX,
-#endif
-    },
-#endif
+    }
 };
 
 #define SPI_NUMOF           ARRAY_SIZE(spi_config)

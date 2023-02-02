@@ -5,4 +5,4 @@ RGB_MATRIX_DRIVER = IS31FL3733
 
 CUSTOM_MATRIX = lite
 QUANTUM_LIB_SRC += spi_master.c
-SRC += matrix.c 
+SRC += matrix.c

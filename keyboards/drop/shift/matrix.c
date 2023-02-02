@@ -38,7 +38,7 @@ static void _shift_init(void) {
     spi_init();
 }
 
-static pin_t row_pins[MATRIX_ROWS] = {A0, A1, A2, A3, A4, A5, A6, A7};
+static pin_t row_pins[MATRIX_ROWS] = MATRIX_ROW_PINS;
 
 static void select_col(uint8_t col) {
     //
@@ -73,7 +73,7 @@ static void matrix_read_rows_on_col(matrix_row_t current_matrix[], uint8_t curre
         }
     }
 
-    // No need to Unselect row as the next `select_row` will blank everything
+    // No need to Unselect row as the next `select_col` will blank everything
 }
 
 void matrix_init_custom(void) {

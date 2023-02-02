@@ -7,8 +7,8 @@
     "bootloader": "md-boot",
     "board": "drop_m4",
     "matrix_pins": {
-        "custom": true,
-        "custom_lite": true
+        "cols": [ null, null, null, null, null, null, null, null, null, null, null, null, null ],
+        "rows": [ "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7"]
     },
     "usb": {
         "vid": "0x04D8",

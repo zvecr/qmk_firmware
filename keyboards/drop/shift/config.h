@@ -3,10 +3,6 @@
 
 #pragma once
 
-/* key matrix size */
-#define MATRIX_ROWS 8
-#define MATRIX_COLS 13
-
 /* I2C - Gross bodge for lack of multi bus support */
 #include "lib/i2c_multi_bus.h"
 
