@@ -82,10 +82,12 @@ PLATFORM_SRC = \
 # RIOT-OS Bodges
 #
 
-# TODO: dirty reuse of chibios variable to workaround RIOT includes needing to be searched last
-INIT_HOOK_CFLAGS := $(shell $(MAKE) -C $(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) dump_includes)
+_RIOT_DUMP_ := $(shell $(MAKE) -C $(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) dump_vars)
 
-MCUFLAGS := $(shell $(MAKE) -C $(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) dump_mcu_flags)
+# TODO: dirty reuse of chibios variable to workaround RIOT includes needing to be searched last
+INIT_HOOK_CFLAGS := $(shell cat $(KEYMAP_OUTPUT)/riot_inc.txt)
+
+MCUFLAGS := $(shell cat $(KEYMAP_OUTPUT)/riot_cflags.txt)
 
 ##############################################################################
 # Make targets

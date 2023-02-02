@@ -56,11 +56,9 @@ ifneq ($(EXTRA_LIB),)
 ARCHIVES += $(EXTRA_LIB)
 endif
 
-dump_includes: $(RIOTBUILD_CONFIG_HEADER_C)
-	@echo $(INCLUDES)
-
-dump_mcu_flags: $(RIOTBUILD_CONFIG_HEADER_C)
-	@echo $(CFLAGS_CPU)
+dump_vars: $(RIOTBUILD_CONFIG_HEADER_C)
+	@echo $(INCLUDES) > $(BINDIRBASE)/riot_inc.txt
+	@echo $(CFLAGS_CPU) > $(BINDIRBASE)/riot_cflags.txt
 
 uber_lib: $(BASELIBS) $(ARCHIVES)
 	$(Q)$(LINK) -r -nodefaultlibs -o $(BINDIRBASE)/$(APPLICATION).o $(shell find $(BASELIBS:%.module=$(BINDIR)/%/) -name "*.o" 2> /dev/null | grep -v syscalls.o | sort)
