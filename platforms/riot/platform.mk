@@ -3,6 +3,9 @@
 # Project, sources and paths
 #
 
+# avoid 'Entering|Leaving directory' messages
+MAKEFLAGS += --no-print-directory
+
 RIOTBASE = $(TOP_DIR)/lib/riot
 
 # When required - bail out early without producing a wall of random errors
