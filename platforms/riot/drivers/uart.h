@@ -16,6 +16,6 @@ bool    _uart_available(void);
 #define uart_init(b) _uart_init(b)
 #define uart_write(d) _uart_write(d)
 #define uart_read _uart_read
-#define uart_transmit(d,l) _uart_transmit(d,l)
-#define uart_receive(d,l) _uart_receive(d,l)
+#define uart_transmit(d, l) _uart_transmit(d, l)
+#define uart_receive(d, l) _uart_receive(d, l)
 #define uart_available _uart_available

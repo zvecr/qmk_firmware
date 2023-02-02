@@ -6,7 +6,7 @@
 #undef spi_init
 
 #ifndef SPI_BUS_ID
-#    define SPI_BUS_ID    (SPI_DEV(0))
+#    define SPI_BUS_ID (SPI_DEV(0))
 #endif
 
 static pin_t currentSlavePin = NO_PIN;
@@ -50,7 +50,7 @@ bool _spi_start(pin_t slavePin, bool lsbFirst, uint8_t mode, uint16_t divisor) {
     // TODO: divisor -> clock?
     spi_clk_t spi_clock = SPI_CLK_5MHZ;
 
-    currentSlavePin  = slavePin;
+    currentSlavePin = slavePin;
     setPinOutput(currentSlavePin);
     writePinLow(currentSlavePin);
 

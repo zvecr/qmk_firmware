@@ -6,10 +6,6 @@
 #include "periph_cpu.h"
 #include "xtimer.h"
 
-#ifndef QMK_MCU_SAMD51
-#    error MCU NOT SUPPORTED
-#endif
-
 #ifndef EEPROM_SIZE
 #    include "eeconfig.h"
 #    define EEPROM_SIZE (((EECONFIG_SIZE + 3) / 4) * 4)  // based off eeconfig's current usage, aligned to 4-byte sizes, to deal with LTO
