@@ -36,13 +36,13 @@ FEATURES_OPTIONAL += periph_uart
 FEATURES_OPTIONAL += periph_uart_modecfg
 FEATURES_OPTIONAL += periph_wdt
 FEATURES_OPTIONAL += periph_cpuid
-FEATURES_OPTIONAL += usb_board_reset
 DISABLE_MODULE += auto_init_usbus
 USEMODULE += usbus
 USEMODULE += usbus_hid
 USEMODULE += xtimer
 USEMODULE += ztimer_xtimer_compat
 USEMODULE += ztimer64_xtimer_compat
+USEMODULE += usb_board_reset
 
 DISABLE_MODULE += stdio
 USEMODULE += stdio_null
