@@ -3,8 +3,12 @@
 
 #include "periph/wdt.h"
 #include "periph/pm.h"
+#include "wait.h"
 
 __attribute__((weak)) void bootloader_jump(void) {
+    // stall for eeprom write?
+    wait_ms(100);
+
     wdt_setup_reboot(0, 5);
     wdt_start();
 
@@ -13,5 +17,8 @@ __attribute__((weak)) void bootloader_jump(void) {
 }
 
 __attribute__((weak)) void mcu_reset(void) {
+    // stall for eeprom write?
+    wait_ms(100);
+
     pm_reboot();
 }

@@ -54,9 +54,6 @@ __attribute__((weak)) void bootmagic_lite(void) {
     if (matrix_get_row(row) & (1 << col)) {
         bootmagic_lite_reset_eeprom();
 
-        // stall for eeprom write?
-        wait_ms(100);
-
         // Jump to bootloader.
         bootloader_jump();
     }
