@@ -82,6 +82,9 @@ PLATFORM_SRC = \
 # RIOT-OS Bodges
 #
 
+# Force off - causes undefined symbols and is not completely supported by RIOT anyway
+LTO_ENABLE = no
+
 _RIOT_DUMP_ := $(shell $(MAKE) -C $(PLATFORM_COMMON_DIR)/stub BOARD=$(BOARD) BINDIRBASE=$(abspath $(KEYMAP_OUTPUT)) EXTERNAL_BOARD_DIRS=$(EXTERNAL_BOARD_DIRS) dump_vars)
 
 # TODO: dirty reuse of chibios variable to workaround RIOT includes needing to be searched last
