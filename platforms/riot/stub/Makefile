@@ -61,4 +61,4 @@ dump_vars: $(RIOTBUILD_CONFIG_HEADER_C)
 	@echo $(CFLAGS_CPU) > $(BINDIRBASE)/riot_cflags.txt
 
 uber_lib: $(BASELIBS) $(ARCHIVES)
-	$(Q)$(LINK) -r -nodefaultlibs -o $(BINDIRBASE)/$(APPLICATION).o $(shell find $(BASELIBS:%.module=$(BINDIR)/%/) -name "*.o" 2> /dev/null | grep -v syscalls.o | sort)
+	$(Q)$(LINK) $(CFLAGS_CPU) -r $(shell find $(BASELIBS:%.module=$(BINDIR)/%/) -name "*.o" 2> /dev/null | grep -v syscalls.o | sort) -o $(BINDIRBASE)/$(APPLICATION).o
