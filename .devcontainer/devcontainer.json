@@ -6,11 +6,15 @@
 	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
-	"extensions": [
-		"EditorConfig.EditorConfig",
-		"ms-vscode.cpptools",
-		"xaver.clang-format"
-	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"EditorConfig.EditorConfig",
+				"ms-vscode.cpptools",
+				"xaver.clang-format"
+			]
+		}
+	},
 	"runArgs": [
 		"--privileged"
 	],
