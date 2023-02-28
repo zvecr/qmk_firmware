@@ -17,10 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 3
-#define MATRIX_COLS 3
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -31,12 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *                  ROW2COL = ROW = Anode (+), COL = Cathode (-, marked on diode)
  *
 */
-
-#define ENCODER_RESOLUTION 2
-
-#define ENCODERS_PAD_A { D6 }
-#define ENCODERS_PAD_B { D4 }
-
 #define MATRIX_ROW_PINS { D7, F0, F6 }
 #define MATRIX_COL_PINS { F5, F7, F4 }
 

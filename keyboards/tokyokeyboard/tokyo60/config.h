@@ -1,15 +1,5 @@
 #pragma once
 
-
-/* key matrix size */
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 14
-
-#define BACKLIGHT_PIN B7
-#ifdef BACKLIGHT_PIN
-#define BACKLIGHT_LEVELS 6
-#endif
-
 /* COL2ROW or ROW2COL */
 #define DIODE_DIRECTION ROW2COL
 
@@ -43,7 +33,3 @@
 #define RGBLIGHT_SAT_STEP 12
 #define RGBLIGHT_VAL_STEP 12
 #endif
-
-/* For Production */
-#define QMK_ESC_OUTPUT F0 // usually COL
-#define QMK_ESC_INPUT D0 // usually ROW

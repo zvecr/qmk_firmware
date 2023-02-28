@@ -18,10 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 15
-
 /* ROWS: Top to bottom, COLS: Left to right
 */
 #define MATRIX_ROW_PINS { A8, A2, B13, B2, B10 }
@@ -34,12 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LOCKING_SUPPORT_ENABLE
 /* Locking resynchronize hack */
 #define LOCKING_RESYNC_ENABLE
-
-/* Backlight configuration
- * Backlight LEDs on B8
- */
-#define BACKLIGHT_PIN B8
-#define BACKLIGHT_BREATHING
 
 /* RGB underglow configuration */
 #define WS2812_SPI SPID1

@@ -17,11 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-/* key matrix size */
-/* Rows are doubled up */
-#define MATRIX_ROWS  8
-#define MATRIX_COLS  8
-
 // wiring
 #define MATRIX_ROW_PINS \
     { F6, F7, B1, B3 }
@@ -31,15 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     { D4, C6, D7, E6 }
 #define MATRIX_COL_PINS_RIGHT \
     { B4, B5, B6, B2, B3, B1, F7, F6 }
-
-#define ENCODERS_PAD_A \
-    { F4 }
-#define ENCODERS_PAD_B \
-    { F5 }
-#define ENCODERS_PAD_A_RIGHT \
-    { F5 }
-#define ENCODERS_PAD_B_RIGHT \
-    { F4 }
 
 /* COL2ROW, ROW2COL*/
 #define DIODE_DIRECTION COL2ROW

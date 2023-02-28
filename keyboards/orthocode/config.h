@@ -17,10 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 15
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -40,9 +36,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define USB_MAX_POWER_CONSUMPTION 100
 
-#define ENCODERS_PAD_A { D1 }
-#define ENCODERS_PAD_B { D0 }
-#define ENCODER_RESOLUTION 1
 #define TAP_CODE_DELAY 10
 
 #define RGB_DI_PIN D5

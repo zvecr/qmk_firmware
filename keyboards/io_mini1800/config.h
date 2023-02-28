@@ -4,10 +4,6 @@
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 10
-#define MATRIX_COLS 10
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -23,6 +19,3 @@
 
 /* COL2ROW, ROW2COL */
 #define DIODE_DIRECTION COL2ROW
-
-#define ENCODERS_PAD_A { B0 }
-#define ENCODERS_PAD_B { B1 }

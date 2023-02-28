@@ -18,10 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 8
-#define MATRIX_COLS 8
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -43,11 +39,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Locking resynchronize hack */
 #define LOCKING_RESYNC_ENABLE
 
-#define ENCODERS_PAD_A { D2, D5 }
-#define ENCODERS_PAD_B { D1, D3 }
-
-#define ENCODER_RESOLUTIONS { 4, 2 }
-
 /*
  * Feature disable options
  *  These options are also useful to firmware size reduction.
@@ -63,7 +54,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define NO_ACTION_LAYER
 //#define NO_ACTION_TAPPING
 //#define NO_ACTION_ONESHOT
-
-/* Bootmagic Lite key configuration */
-#define BOOTMAGIC_LITE_ROW 1
-#define BOOTMAGIC_LITE_COLUMN 0

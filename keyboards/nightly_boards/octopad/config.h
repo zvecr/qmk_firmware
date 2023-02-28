@@ -18,10 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 3
-#define MATRIX_COLS 5
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -55,12 +51,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 /* Encoders */
-
-#define ENCODERS 2
-
-#define ENCODERS_PAD_A { C7, F4 }
-#define ENCODERS_PAD_B { C6, F5 }
-
 #define ENCODERS_CW_KEY  { { 3, 2 },{ 1, 2 } }
 #define ENCODERS_CCW_KEY { { 2, 2 },{ 0, 2 } }
 

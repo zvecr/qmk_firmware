@@ -1,10 +1,6 @@
 #pragma once
 
 
-/* Key matrix size */
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 12
-
 /* Key matrix pins */
 #define MATRIX_ROW_PINS { B8, B9, B1, B2, B4 }
 
@@ -43,11 +39,6 @@
     Q__NOTE(_E7) \
 )
 #endif
-
-/* Encoders */
-#define ENCODERS_PAD_A { B3, A0 }
-#define ENCODERS_PAD_B { A6, A1 }
-/* #define ENCODER_RESOLUTION 4 */
 
 /* OLED */
 #define OLED_FONT_H "glcdfont_d48.c"

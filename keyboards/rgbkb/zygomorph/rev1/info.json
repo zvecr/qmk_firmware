@@ -8,6 +8,14 @@
       "pid": "0x3060",
       "device_version": "0.0.1"
     },
+    "encoder": {
+      "rotary": [
+        {"pin_a": "D2", "pin_b": "D7"}
+      ]
+    },
+    "split": {
+      "soft_serial_pin": "D3"
+    },
     "processor": "atmega32u4",
     "bootloader": "qmk-dfu",
     "community_layouts": ["ortho_4x12", "ortho_5x12"],

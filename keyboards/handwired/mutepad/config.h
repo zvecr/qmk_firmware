@@ -4,10 +4,6 @@
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 1
-#define MATRIX_COLS 4
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -22,14 +18,6 @@
     { F6 }
 #define MATRIX_COL_PINS \
     { B1, B3, B2, B6 }
-
-/* encoder support */
-#define ENCODERS_PAD_A \
-    { F4 }
-#define ENCODERS_PAD_B \
-    { F5 }
-
-#define ENCODER_RESOLUTION 2
 
 #define TAP_CODE_DELAY 10
 

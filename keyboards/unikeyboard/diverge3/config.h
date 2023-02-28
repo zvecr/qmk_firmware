@@ -18,10 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 10
-#define MATRIX_COLS 8
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -37,13 +33,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* COL2ROW, ROW2COL*/
 #define DIODE_DIRECTION ROW2COL
-
-#define BACKLIGHT_PIN C6
-#define BACKLIGHT_BREATHING
-#define BACKLIGHT_LEVELS 5
-
-/* serial.c configuration for split keyboard */
-#define SOFT_SERIAL_PIN D0
 
 #ifndef SELECT_SOFT_SERIAL_SPEED
 #define SELECT_SOFT_SERIAL_SPEED 3

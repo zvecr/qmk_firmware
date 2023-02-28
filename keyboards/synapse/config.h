@@ -17,10 +17,6 @@
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 4
-#define MATRIX_COLS 12
-
 #define MATRIX_ROW_PINS \
     { E6, B0, F4, F1 }
 #define MATRIX_COL_PINS \
@@ -30,18 +26,4 @@
 /* COL2ROW, ROW2COL*/
 #define DIODE_DIRECTION COL2ROW
 
-/* ROTARY ENCODERS */
-#define ENCODERS_PAD_A \
-    { D7, C7 }
-#define ENCODERS_PAD_B \
-    { D6, C6 }
-
-#define ENCODER_RESOLUTION 4
-
 #define LOCKING_SUPPORT_ENABLE
-
-//#define RGB_DI_PIN D5
-//#define RGBLED_NUM 4
-
-//#define RGB_MATRIX_LED_COUNT RGBLED_NUM
-//#define RGBLIGHT_DEFAULT_HUE 130

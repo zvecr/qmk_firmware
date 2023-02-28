@@ -17,9 +17,6 @@
 #pragma once
 
 
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 7
-
 /*
  * Keyboard Matrix Assignments
  * COLS: AVR pins used for columns, left to right
@@ -50,9 +47,6 @@
  */
 #    define RGBLED_NUM 14
 #endif
-
-#define ENCODERS_PAD_A { D5 }
-#define ENCODERS_PAD_B { D3 }
 
 /*
  * Feature disable options

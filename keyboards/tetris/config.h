@@ -1,10 +1,6 @@
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 12
-
 /* key matrix pins */
 #define MATRIX_ROW_PINS { B3, B2, B1, B0, E6 }
 #define MATRIX_COL_PINS { D7, B4, B6, C6, C7, F6, F7, D4, D2, D3, D5, D6 }
@@ -23,9 +19,6 @@
   #define STARTUP_SONG SONG(ONE_UP_SOUND)
   #define NO_MUSIC_MODE
 #endif
-
-#define ENCODERS_PAD_A { D1,F1 }
-#define ENCODERS_PAD_B { D0,F0 }
 
 #define RGB_DI_PIN F5
 #define RGBLIGHT_EFFECT_BREATHING

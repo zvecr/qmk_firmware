@@ -18,10 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 2
-#define MATRIX_COLS 6
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -41,9 +37,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LOCKING_RESYNC_ENABLE
 
 #define FORCE_NKRO
-
-/* Encoder Definitions */
-
-#define ENCODERS_PAD_A { D3 }
-#define ENCODERS_PAD_B { D2 }
-#define ENCODER_RESOLUTION 4

@@ -19,8 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #define DIODE_DIRECTION COL2ROW
-#define MATRIX_ROWS 6
-#define MATRIX_COLS 16
 #define MATRIX_ROW_PINS {F1, B7, B3, D2, D3, B2}
 #define MATRIX_COL_PINS {F4, F5, F6, F7, C7, C6, B6, B5, B4, D7, D6, D4, D5, B1, B0, F0}
 
@@ -41,7 +39,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGBLIGHT_SAT_STEP 17
 #define RGBLIGHT_VAL_STEP 17
 
-#define BACKLIGHT_LEVELS 8
 #define BACKLIGHT_PWM_MAP {8, 16, 40, 55, 70, 128, 200, 255}
 
 /* Mechanical locking support. Use KC_LCAP, KC_LNUM or KC_LSCR instead in keymap */

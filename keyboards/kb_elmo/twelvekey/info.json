@@ -8,6 +8,11 @@
         "pid": "0x9879",
         "device_version": "0.0.1"
     },
+    "backlight": {
+        "pin": "B1",
+        "levels": 8,
+        "on_state": 0
+    },
     "processor": "atmega328p",
     "bootloader": "usbasploader",
     "layouts": {

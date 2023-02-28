@@ -17,10 +17,6 @@
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 6
-#define MATRIX_COLS 4
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -36,11 +32,6 @@
 
 /* COL2ROW, ROW2COL*/
 #define DIODE_DIRECTION ROW2COL
-
-/* Backlight */
-#define BACKLIGHT_PIN B5
-#define BACKLIGHT_BREATHING
-#define BACKLIGHT_LEVELS 5
 
 /* RGB Glow */
 #define RGB_DI_PIN F4     // The pin the LED strip is connected to

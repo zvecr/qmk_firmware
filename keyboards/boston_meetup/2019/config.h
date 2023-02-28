@@ -1,11 +1,5 @@
 #pragma once
 
-#undef MATRIX_ROWS
-#undef MATRIX_COLS
-/* key matrix size */
-#define MATRIX_ROWS 4
-#define MATRIX_COLS 4
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -22,9 +16,6 @@
 
 #define MATRIX_ROW_PINS { A3, B8, B9, B1 }
 #define MATRIX_COL_PINS { A7, A8, B2, B10 }
-
-#define ENCODERS_PAD_A { B13 }
-#define ENCODERS_PAD_B { B14 }
 
 //Audio
 #undef AUDIO_VOICES

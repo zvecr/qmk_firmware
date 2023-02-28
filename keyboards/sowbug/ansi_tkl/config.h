@@ -19,10 +19,6 @@
 #pragma once
 
 
-// key matrix size
-#define MATRIX_ROWS 6
-#define MATRIX_COLS 17
-
 // key matrix pins
 #define MATRIX_ROW_PINS \
     { C14, C15, A0, A1, A2, A3 }
@@ -87,9 +83,3 @@
 #define ENABLE_RGB_MATRIX_MULTISPLASH
 #define ENABLE_RGB_MATRIX_SOLID_SPLASH
 #define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
-
-// Want backlighting and RGB Matrix patterns? See the note in the readme,
-// apply the patches, and then uncomment the line below as well as the ones
-// in rules.mk.
-//
-// #define BACKLIGHT_PIN rgb_matrix

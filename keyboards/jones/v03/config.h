@@ -41,11 +41,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // No need to define DIODE_DIRECTION for Jones' custom Round-Robin matrix.
 //#define DIODE_DIRECTION COL2ROW
 
-/* Rotary Encoder */
-#define ENCODERS_PAD_A { F6, B3 }
-#define ENCODERS_PAD_B { F7, B2 }
-#define ENCODER_RESOLUTION 4  //the default & suggested is 4
-
 /* Audio */
 #ifdef AUDIO_ENABLE
   #define AUDIO_PIN C6
@@ -74,12 +69,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   // #define RGBLIGHT_EFFECT_STATIC_GRADIENT
   // #define RGBLIGHT_EFFECT_RGB_TEST
   // #define RGBLIGHT_EFFECT_ALTERNATING
-  // /*== customize breathing effect ==*/
-  // /*==== (DEFAULT) use fixed table instead of exp() and sin() ====*/
-  // #define RGBLIGHT_BREATHE_TABLE_SIZE 256      // 256(default) or 128 or 64
-  // /*==== use exp() and sin() ====*/
-  // #define RGBLIGHT_EFFECT_BREATHE_CENTER 1.85  // 1 to 2.7
-  // #define RGBLIGHT_EFFECT_BREATHE_MAX    255   // 0 to 255
 #endif
 
 /*

@@ -18,10 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 6
-#define MATRIX_COLS 4
-
 // ROWS: Top to bottom, COLS: Left to right
 
 #define MATRIX_ROW_PINS { D4, C6, D7, E6, B4, B5 }
@@ -35,10 +31,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* Locking resynchronize hack */
 #define LOCKING_RESYNC_ENABLE
-
-/* Define encoder pins */
-#define ENCODERS_PAD_A { F5, F7 } // 1a, 2a
-#define ENCODERS_PAD_B { F4, F6 } // 1b, 2b
 
 /*
  * Feature disable options

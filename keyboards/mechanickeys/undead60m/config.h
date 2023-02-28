@@ -17,10 +17,6 @@
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 16
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -53,8 +49,3 @@
   #define RGBLIGHT_EFFECT_ALTERNATING
   #define RGBLIGHT_EFFECT_TWINKLE
 #endif
-
-/* Rotary encoder */
-#define ENCODERS_PAD_A { F6 }
-#define ENCODERS_PAD_B { F5 }
-#define ENCODER_RESOLUTION 4

@@ -17,11 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-
-/* key matrix size */
-#define MATRIX_ROWS 8
-#define MATRIX_COLS 8
-
 // ROWS: Top to bottom, COLS: Left to right
 
 #define MATRIX_ROW_PINS { B0, B1, B2, B3, F4, F5, F6, F7 }
@@ -29,10 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* COL2ROW or ROW2COL */
 #define DIODE_DIRECTION ROW2COL
-
-/* Encoder */
-#define ENCODERS_PAD_A { C6 }
-#define ENCODERS_PAD_B { B6 }
 
 /* RGB Indicators */
 #define RGB_DI_PIN E6

@@ -17,10 +17,6 @@
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 16
-
 /*
  * Keyboard Matrix Assignments
  *
@@ -35,14 +31,7 @@
 #define MATRIX_ROW_PINS { B0, B1, B2, B3, B7 }
 #define MATRIX_COL_PINS { D0, D1, D2, D3, D5, D4, D6, D7, B4, F7, F6, F5, F4, F1, F0, E6 }
 
-/* Setting the matrix value of top left key for bootmagic lite */
-#define BOOTMAGIC_LITE_ROW      0
-#define BOOTMAGIC_LITE_COLUMN   15
-
 #define DIODE_DIRECTION ROW2COL
-
-#define BACKLIGHT_PIN B6
-#define BACKLIGHT_LEVELS 15
 
 #define RGB_DI_PIN E2
 #ifdef RGB_DI_PIN

@@ -3,27 +3,11 @@
 
 #pragma once
 
-
-/* key matrix size */
-#define MATRIX_ROWS 2
-#define MATRIX_COLS 4
-
-/*
- * Keyboard Matrix Assignments
- */
-
-#define DIRECT_PINS { \
-    { E6, B6, D6, NO_PIN }, \
-    { NO_PIN, NO_PIN, NO_PIN, NO_PIN } \
-}
 #define AUDIO_PIN C6
 #ifdef AUDIO_ENABLE
 #    define STARTUP_SONG SONG(STARTUP_SOUND)
 #endif
 
-#define ENCODERS_PAD_A { C7, D7 }
-#define ENCODERS_PAD_B { B5, D4 }
-#define ENCODERS 2
 #define ENCODERS_CW_KEY  { { 1, 1 }, { 3, 1 } }
 #define ENCODERS_CCW_KEY { { 0, 1 }, { 2, 1 } }
 

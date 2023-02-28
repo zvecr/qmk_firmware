@@ -18,10 +18,6 @@
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 4
-#define MATRIX_COLS 5
-
 /* key matrix pins */
 #define MATRIX_ROW_PINS { D5, D4, D3, D2 }
 #define MATRIX_COL_PINS { F5, F4, F1, F0, B7 }
@@ -34,10 +30,6 @@
 
 /* Use the custom font */
 #define OLED_FONT_H "./lib/glcdfont.c"
-
-/* Encoder pins */
-#define ENCODERS_PAD_A { F7, C7, D7 }
-#define ENCODERS_PAD_B { E6, C6, D6 }
 
 #ifdef RGB_MATRIX_ENABLE
     /* RGB Matrix config */

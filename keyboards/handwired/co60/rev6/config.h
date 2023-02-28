@@ -17,10 +17,6 @@
 #pragma once
 
 
-/* key matrix size */
-#define MATRIX_ROWS 5
-#define MATRIX_COLS 15
-
 /* ROWS: Top to bottom, COLS: Left to right
 */
 #define MATRIX_ROW_PINS { B0, B1, B2, A15, A10 }
@@ -33,9 +29,3 @@
 #define LOCKING_SUPPORT_ENABLE
 /* Locking resynchronize hack */
 #define LOCKING_RESYNC_ENABLE
-
-/* Backlight configuration
- * Backlight LEDs on B8
- */
-#define BACKLIGHT_PIN B8
-#define BACKLIGHT_BREATHING
