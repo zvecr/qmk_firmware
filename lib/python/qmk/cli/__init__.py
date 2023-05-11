@@ -40,6 +40,7 @@ subcommands = [
     'qmk.cli.compile',
     'qmk.cli.docs',
     'qmk.cli.doctor',
+    'qmk.cli.find',
     'qmk.cli.flash',
     'qmk.cli.format.c',
     'qmk.cli.format.json',
@@ -57,6 +58,7 @@ subcommands = [
     'qmk.cli.generate.keyboard_h',
     'qmk.cli.generate.keycodes',
     'qmk.cli.generate.keycodes_tests',
+    'qmk.cli.generate.lighting_map',
     'qmk.cli.generate.rgb_breathe_table',
     'qmk.cli.generate.rules_mk',
     'qmk.cli.generate.version_h',
@@ -82,7 +84,6 @@ subcommands = [
     'qmk.cli.xap',
     'qmk.cli.xap.generate_docs',
     'qmk.cli.xap.generate_json',
-    'qmk.cli.xap.generate_lighting',
     'qmk.cli.xap.generate_python',
     'qmk.cli.xap.generate_qmk',
 ]
