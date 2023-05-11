@@ -1,5 +1,6 @@
-// Copyright 2022 Massdrop, Inc.
+// Copyright 2023 zvecr <git@zvecr.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
+
 #pragma once
 
 #define XAP_BCD_KB_VERSION  UINT32_C(0x00000001)

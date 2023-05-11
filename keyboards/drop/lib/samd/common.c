@@ -1,3 +1,6 @@
+// Copyright 2022 zvecr <git@zvecr.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 #include "drivers/usb2422.h"
 #include "lib/i2c_multi_bus.h"
 

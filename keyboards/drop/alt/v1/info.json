@@ -103,6 +103,7 @@
         }
     },
     "rgb_matrix": {
+        "driver": "IS31FL3733",
         "layout": [
             { "flags": 4, "matrix": [0, 0], "x": 8, "y": 56 },
             { "flags": 4, "matrix": [0, 1], "x": 22, "y": 56 },
