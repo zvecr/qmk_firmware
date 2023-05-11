@@ -8,8 +8,8 @@
 
 #define INVALID_EFFECT 0xFF
 
-uint8_t rgb_matrix2xap(uint8_t val);
-uint8_t xap2rgb_matrix(uint8_t val);
+uint8_t rgb_matrix_effect_to_id(uint8_t val);
+uint8_t rgb_matrix_id_to_effect(uint8_t val);
 
 rgb_config_t rgb_layers[DYNAMIC_KEYMAP_LAYER_COUNT] = {0};
 
@@ -38,7 +38,7 @@ bool xap_respond_kb_get_rgb_layer(xap_token_t token, const void *data, size_t le
     rgb_config_t* conf = &rgb_layers[layer];
 
     ret.enable = conf->enable;
-    ret.mode   = rgb_matrix2xap(conf->mode);
+    ret.mode   = rgb_matrix_effect_to_id(conf->mode);
     ret.hue    = conf->hsv.h;
     ret.sat    = conf->hsv.s;
     ret.val    = conf->hsv.v;
@@ -53,7 +53,7 @@ bool xap_respond_kb_set_rgb_layer(xap_token_t token, const void *data, size_t le
 
     xap_route_kb_set_rgb_layer_arg_t *arg = (xap_route_kb_set_rgb_layer_arg_t *)data;
 
-    uint8_t mode = xap2rgb_matrix(arg->mode);
+    uint8_t mode = rgb_matrix_id_to_effect(arg->mode);
     if (mode == INVALID_EFFECT) {
         return false;
     }

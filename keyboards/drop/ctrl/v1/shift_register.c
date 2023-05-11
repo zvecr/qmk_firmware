@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "shift_register.h"
-#include "lib/shifter.h"
+#include "lib/samd/shift_out.h"
 #include "analog.h"
 #include "wait.h"
 

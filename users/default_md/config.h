@@ -21,8 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define DYNAMIC_KEYMAP_EEPROM_ADDR (EECONFIG_SIZE+100)
 
-#undef RGB_MATRIX_STARTUP_MODE
-#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CUSTOM_MD_RGB_MATRIX
+#undef RGB_MATRIX_DEFAULT_MODE
+#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_CUSTOM_MD_RGB_MATRIX
 
 /* Disable everything else to force the MD framework */
 #undef ENABLE_RGB_MATRIX_ALPHAS_MODS

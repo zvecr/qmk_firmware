@@ -1,0 +1,45 @@
+// Copyright 2023 Massdrop, Inc.
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+#ifdef RGB_MATRIX_ENABLE
+#    include "host.h"
+#    include "rgb_matrix.h"
+
+#ifdef RGB_MATRIX_CAPS_LOCK_INDEX
+bool rgb_matrix_indicators_kb(void) {
+    if (!rgb_matrix_indicators_user()) { return false; }
+
+    if (host_keyboard_led_state().caps_lock) {
+        rgb_matrix_set_color(RGB_MATRIX_CAPS_LOCK_INDEX, RGB_WHITE);
+    }
+    return true;
+}
+#endif
+
+bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+    if (!process_record_user(keycode, record)) { return false; }
+
+    if (!record->event.pressed) {
+        switch (keycode) {
+            case RGB_TOG:
+                switch (rgb_matrix_get_flags()) {
+                    case LED_FLAG_ALL:
+                        rgb_matrix_set_flags(LED_FLAG_KEYLIGHT | LED_FLAG_MODIFIER | LED_FLAG_INDICATOR);
+                        break;
+                    case (LED_FLAG_KEYLIGHT | LED_FLAG_MODIFIER | LED_FLAG_INDICATOR):
+                        rgb_matrix_set_flags(LED_FLAG_UNDERGLOW);
+                        break;
+                    case LED_FLAG_UNDERGLOW:
+                        rgb_matrix_set_flags(LED_FLAG_NONE);
+                        break;
+                    default:
+                        rgb_matrix_set_flags(LED_FLAG_ALL);
+                        break;
+                }
+                return false;
+        }
+    }
+    return true;
+};
+
+#endif

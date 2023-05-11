@@ -4,7 +4,7 @@
 #pragma once
 
 /* I2C - Gross bodge for lack of multi bus support */
-#include "lib/i2c_multi_bus.h"
+#include "lib/samd/i2c_multi_bus.h"
 
 #define MATRIX_IO_DELAY 15
 #define IGNORE_ATOMIC_BLOCK
@@ -39,7 +39,8 @@
 #    define RGB_MATRIX_KEYPRESSES
 #    define RGB_MATRIX_FRAMEBUFFER_EFFECTS
 #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 200
-#define RGB_MATRIX_STARTUP_VAL 150
+#define RGB_MATRIX_DEFAULT_VAL 150
+#define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_CYCLE_LEFT_RIGHT
 #define ENABLE_RGB_MATRIX_ALPHAS_MODS
 #define ENABLE_RGB_MATRIX_GRADIENT_UP_DOWN
 #define ENABLE_RGB_MATRIX_GRADIENT_LEFT_RIGHT
@@ -80,8 +81,9 @@
 #define ENABLE_RGB_MATRIX_MULTISPLASH
 #define ENABLE_RGB_MATRIX_SOLID_SPLASH
 #define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
-#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_LEFT_RIGHT
 #endif
+
+#define RGB_MATRIX_CAPS_LOCK_INDEX 28
 
 /* Avoid out-of-bounds errors when SmartEEPROM is not enabled */
 #define EEPROM_SIZE 1024

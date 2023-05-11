@@ -120,13 +120,4 @@ const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
      { 1, K_10, J_10, L_10 },
 };
 
-bool rgb_matrix_indicators_kb(void) {
-    if (!rgb_matrix_indicators_user()) {
-        return false;
-    }
-    if (host_keyboard_led_state().caps_lock) {
-        rgb_matrix_set_color(30, 0xFF, 0xFF, 0xFF);
-    }
-    return true;
-}
 #endif
