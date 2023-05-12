@@ -1,3 +1,3 @@
 EEPROM_DRIVER = i2c
 
-SRC += lib/drop.c
+SRC += lib/common.c
