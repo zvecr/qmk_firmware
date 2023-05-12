@@ -25,14 +25,7 @@ void keyboard_post_init_kb(void) {
     keyboard_post_init_user();
 }
 
-bool xap_respond_kb_get_rgb_layer(xap_token_t token, const void *data, size_t length) {
-    if (length != sizeof(uint8_t)) {
-        return false;
-    }
-
-    uint8_t layer;
-    memcpy(&layer, data, sizeof(uint8_t));
-
+bool xap_execute_kb_get_rgb_layer(xap_token_t token, uint8_t layer) {
     xap_route_kb_get_rgb_layer_t ret = {0};
 
     rgb_config_t* conf = &rgb_layers[layer];
@@ -46,13 +39,7 @@ bool xap_respond_kb_get_rgb_layer(xap_token_t token, const void *data, size_t le
     return xap_respond_data(token, &ret, sizeof(ret));
 }
 
-bool xap_respond_kb_set_rgb_layer(xap_token_t token, const void *data, size_t length) {
-    if (length != sizeof(xap_route_kb_set_rgb_layer_arg_t)) {
-        return false;
-    }
-
-    xap_route_kb_set_rgb_layer_arg_t *arg = (xap_route_kb_set_rgb_layer_arg_t *)data;
-
+bool xap_execute_kb_set_rgb_layer(xap_token_t token, xap_route_kb_set_rgb_layer_arg_t* arg) {
     uint8_t mode = rgb_matrix_id_to_effect(arg->mode);
     if (mode == INVALID_EFFECT) {
         return false;
@@ -64,15 +51,13 @@ bool xap_respond_kb_set_rgb_layer(xap_token_t token, const void *data, size_t le
     conf->mode = mode;
     conf->hsv = (HSV){arg->hue, arg->sat, arg->val};
 
-    xap_respond_success(token);
-    return true;
+    return xap_respond_success(token);
 }
 
-bool xap_respond_kb_save_rgb_layers(xap_token_t token, const void *data, size_t length) {
+bool xap_execute_kb_save_rgb_layers(xap_token_t token, const void *data, size_t length) {
     eeconfig_flush_rgb_layers(true);
 
-    xap_respond_success(token);
-    return true;
+    return xap_respond_success(token);
 }
 
 static uint8_t last_layer = 0;
