@@ -219,7 +219,11 @@ gccversion :
 	@$(BUILD_CMD)
 
 %.uf2: %.elf
+  ifdef UF2_DEVICE_TYPE_ID
+	$(eval CMD=$(HEX) $< $(BUILD_DIR)/$(TARGET).tmp && $(UF2CONV) $(BUILD_DIR)/$(TARGET).tmp --output $@ --convert --family $(UF2_FAMILY) --device-type $(UF2_DEVICE_TYPE_ID) >/dev/null 2>&1)
+  else
 	$(eval CMD=$(HEX) $< $(BUILD_DIR)/$(TARGET).tmp && $(UF2CONV) $(BUILD_DIR)/$(TARGET).tmp --output $@ --convert --family $(UF2_FAMILY) >/dev/null 2>&1)
+  endif
 	#@$(SILENT) || printf "$(MSG_EXECUTING) '$(CMD)':\n"
 	@$(SILENT) || printf "$(MSG_UF2) $@" | $(AWK_CMD)
 	@$(BUILD_CMD)
