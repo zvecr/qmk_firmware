@@ -1,4 +1,4 @@
-// Copyright 2022 zvecr <git@zvecr.com>
+// Copyright 2023 Massdrop, Inc.
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "drivers/usb2422.h"

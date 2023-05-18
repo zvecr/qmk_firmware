@@ -1,7 +1,14 @@
-// Copyright 2022 zvecr <git@zvecr.com>
+// Copyright 2023 Massdrop, Inc.
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include QMK_KEYBOARD_H
+
+enum custom_keycodes {
+    TEST_1 = SAFE_RANGE,
+    TEST_2,
+    TEST_3,
+    TEST_4,
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_1800_ansi(
@@ -15,9 +22,78 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [1] = LAYOUT_1800_ansi(
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_INS,           KC_MPLY, KC_MSTP, KC_VOLU, KC_MUTE,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          KC_MPRV, KC_MNXT, KC_VOLD, KC_SCRL,
-        RGB_TOG, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______,
-        RGB_MOD, RGB_VAD, RGB_SPD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______,
-        RGB_M_P, RGB_M_B, RGB_M_R, RGB_M_SW,_______, QK_BOOT, NK_TOGG, DB_TOGG, _______, _______, _______, _______,          _______,          _______, _______, _______, _______,
-        _______, _______, _______,                   DB_TOGG,                            KC_APP,  _______,          _______, _______, _______,          _______, _______
+        _______, RGB_TOG, RGB_VAI, RGB_SPI, RGB_HUI, RGB_SAI, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______,
+        _______, RGB_MOD, RGB_VAD, RGB_SPD, RGB_HUD, RGB_SAD, _______, _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______,
+        _______, RGB_M_P, RGB_M_B, RGB_M_R, RGB_M_SW,_______, NK_TOGG, _______, _______, _______, _______, _______,          _______,          _______, _______, _______, _______,
+        MO(2),   _______, _______,                   EE_CLR,                             KC_APP,  _______,          _______, _______, _______,          _______, _______
+    ),
+    [2] = LAYOUT_1800_ansi(
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______,
+        _______, TEST_1,  TEST_2,  TEST_3,  TEST_4,  _______, _______, _______, _______, _______, _______, _______, _______, QK_BOOT,          _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, AG_TOGG, _______, _______, _______, CL_TOGG,          _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,          _______, _______, _______, _______,
+        _______, _______, _______,                   _______,                            _______, _______,          _______, _______, _______,          _______, _______
     )
 };
+
+static bool test_mode = false;
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) {
+        switch (keycode) {
+            case TEST_1:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+                rgb_matrix_sethsv_noeeprom(HSV_RED);
+                test_mode = true;
+                break;
+            case TEST_2:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+                rgb_matrix_sethsv_noeeprom(HSV_GREEN);
+                test_mode = true;
+                break;
+            case TEST_3:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+                rgb_matrix_sethsv_noeeprom(HSV_BLUE);
+                test_mode = true;
+                break;
+            case TEST_4:
+                rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+                rgb_matrix_sethsv_noeeprom(HSV_WHITE);
+                test_mode = true;
+                break;
+        }
+    }
+    return true;
+};
+
+bool rgb_matrix_indicators_user(void) {
+    uint8_t num_state = host_keyboard_led_state().num_lock ? 0xFF : 0;
+    uint8_t caps_state = host_keyboard_led_state().caps_lock ? 0xFF : 0;
+    uint8_t scroll_state = host_keyboard_led_state().scroll_lock ? 0xFF : 0;
+
+    rgb_matrix_set_color(163, num_state, num_state, num_state);
+    rgb_matrix_set_color(164, caps_state, caps_state, caps_state);
+    rgb_matrix_set_color(165, scroll_state, scroll_state, scroll_state);
+
+    if (get_highest_layer(layer_state) == 2) {
+        if (!test_mode) {
+            rgb_matrix_set_color_all(RGB_OFF);
+        }
+
+        if (keymap_config.swap_lalt_lgui) {
+            rgb_matrix_set_color(45, RGB_GREEN);
+        } else {
+            rgb_matrix_set_color(45, RGB_RED);
+        }
+        if (keymap_config.swap_control_capslock) {
+            rgb_matrix_set_color(49, RGB_GREEN);
+        } else {
+            rgb_matrix_set_color(49, RGB_RED);
+        }
+    } else if ((rgb_matrix_get_flags() & (LED_FLAG_KEYLIGHT | LED_FLAG_MODIFIER | LED_FLAG_INDICATOR)) == 0) {
+        rgb_matrix_set_color(45, RGB_OFF);
+        rgb_matrix_set_color(49, RGB_OFF);
+    }
+    return false;
+}

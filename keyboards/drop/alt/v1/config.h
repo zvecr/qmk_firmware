@@ -1,4 +1,4 @@
-// Copyright 2022 zvecr <git@zvecr.com>
+// Copyright 2023 Massdrop, Inc.
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #pragma once
@@ -86,7 +86,7 @@
 #define ENABLE_RGB_MATRIX_SOLID_MULTISPLASH
 #endif
 
-#define RGB_MATRIX_CAPS_LOCK_INDEX 50
+#define RGB_MATRIX_CAPS_LOCK_INDEX 30
 
 /* Avoid out-of-bounds errors when SmartEEPROM is not enabled */
 #define EEPROM_SIZE 1024

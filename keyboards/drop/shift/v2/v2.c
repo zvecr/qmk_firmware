@@ -54,13 +54,6 @@ static void keyboard_USB_enable(void) {
 
     wait_ms(500); // Allow power dissipation time on CC lines
 
-    // sample multiple times?
-    // for (int i = 0; i < 10; i++) {
-    //     v_con_1 += analogReadPin(C1_SENSE);
-    //     v_con_2 += analogReadPin(C2_SENSE);
-    //     wait_ms(100);
-    // }
-
     v_con_1 = analogReadPin(C1_A5_SENSE);
     v_con_2 = analogReadPin(C1_B5_SENSE);
     v_con_3 = analogReadPin(C2_A5_SENSE);
@@ -72,7 +65,6 @@ static void keyboard_USB_enable(void) {
     digital_write(E_VBUS_1, 1); // USBC-1 enable full power I/O
     digital_write(E_VBUS_2, 1); // USBC-2 enable full power I/O
 
-    // if(0) {
     if ((v_con_1 + v_con_2) > (v_con_3 + v_con_4)) {
         digital_write(S_UP, 0);  // HOST to USBC-1
         digital_write(S_DN1, 1); // EXTRA to USBC-2
@@ -102,9 +94,8 @@ void keyboard_pre_init_kb(void) {
 }
 
 #ifdef RGB_MATRIX_ENABLE
-#    include "host.h"
 #    include "rgb_matrix.h"
-// abc def ghi jkl
+
 const is31_led PROGMEM g_is31_leds[RGB_MATRIX_LED_COUNT] = {
      { 0, K_1,  J_1,  L_1  },// LED1
      { 0, K_2,  J_2,  L_2  },
