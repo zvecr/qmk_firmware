@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "wait.h"
 #include "keycode_config.h"
 #include "debug.h"
+#include "quantum.h"
 
 #ifdef BACKLIGHT_ENABLE
 #    include "backlight.h"
@@ -64,10 +65,6 @@ __attribute__((weak)) bool get_retro_tapping(uint16_t keycode, keyrecord_t *reco
     return false;
 }
 #endif
-
-__attribute__((weak)) bool pre_process_record_quantum(keyrecord_t *record) {
-    return true;
-}
 
 /** \brief Called to execute an action.
  *
@@ -288,7 +285,7 @@ void process_record(keyrecord_t *record) {
 }
 
 void process_record_handler(keyrecord_t *record) {
-#ifdef COMBO_ENABLE
+#if defined(COMBO_ENABLE) || defined(REPEAT_KEY_ENABLE)
     action_t action;
     if (record->keycode) {
         action = action_for_keycode(record->keycode);
@@ -1112,7 +1109,7 @@ bool is_tap_record(keyrecord_t *record) {
         return false;
     }
 
-#ifdef COMBO_ENABLE
+#if defined(COMBO_ENABLE) || defined(REPEAT_KEY_ENABLE)
     action_t action;
     if (record->keycode) {
         action = action_for_keycode(record->keycode);
