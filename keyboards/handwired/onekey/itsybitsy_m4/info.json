@@ -5,5 +5,8 @@
     "matrix_pins": {
         "cols": ["A22"],
         "rows": ["A23"]
+    },
+    "ws2812": {
+        "pin": "A19"
     }
 }
