@@ -34,61 +34,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
-static bool test_mode = false;
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) {
         switch (keycode) {
             case TEST_1:
                 rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
                 rgb_matrix_sethsv_noeeprom(HSV_RED);
-                test_mode = true;
                 break;
             case TEST_2:
                 rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
                 rgb_matrix_sethsv_noeeprom(HSV_GREEN);
-                test_mode = true;
                 break;
             case TEST_3:
                 rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
                 rgb_matrix_sethsv_noeeprom(HSV_BLUE);
-                test_mode = true;
                 break;
             case TEST_4:
                 rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
                 rgb_matrix_sethsv_noeeprom(HSV_WHITE);
-                test_mode = true;
                 break;
         }
     }
     return true;
 };
-
-bool rgb_matrix_indicators_user(void) {
-    if (host_keyboard_led_state().caps_lock) {
-        rgb_matrix_set_color(30, RGB_WHITE);
-    } else if ((rgb_matrix_get_flags() & (LED_FLAG_KEYLIGHT | LED_FLAG_MODIFIER | LED_FLAG_INDICATOR)) == 0) {
-        rgb_matrix_set_color(30, RGB_OFF);
-    }
-
-    if (get_highest_layer(layer_state) == 2) {
-        if (!test_mode) {
-            rgb_matrix_set_color_all(RGB_OFF);
-        }
-
-        if (keymap_config.swap_lalt_lgui) {
-            rgb_matrix_set_color(24, RGB_GREEN);
-        } else {
-            rgb_matrix_set_color(24, RGB_RED);
-        }
-        if (keymap_config.swap_control_capslock) {
-            rgb_matrix_set_color(28, RGB_GREEN);
-        } else {
-            rgb_matrix_set_color(28, RGB_RED);
-        }
-    } else if ((rgb_matrix_get_flags() & (LED_FLAG_KEYLIGHT | LED_FLAG_MODIFIER | LED_FLAG_INDICATOR)) == 0) {
-        rgb_matrix_set_color(24, RGB_OFF);
-        rgb_matrix_set_color(28, RGB_OFF);
-    }
-    return false;
-}

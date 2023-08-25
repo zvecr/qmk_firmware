@@ -269,13 +269,16 @@ bool rgb_matrix_indicators_kb(void) {
     if (!rgb_matrix_indicators_user()) {
         return false;
     }
-    uint8_t num_state = host_keyboard_led_state().num_lock ? 0xFF : 0;
-    uint8_t caps_state = host_keyboard_led_state().caps_lock ? 0xFF : 0;
-    uint8_t scroll_state = host_keyboard_led_state().scroll_lock ? 0xFF : 0;
 
-    rgb_matrix_set_color(163, num_state, num_state, num_state);
-    rgb_matrix_set_color(164, caps_state, caps_state, caps_state);
-    rgb_matrix_set_color(165, scroll_state, scroll_state, scroll_state);
+    if (rgb_matrix_get_flags() != LED_FLAG_NONE) {
+        uint8_t num_state = host_keyboard_led_state().num_lock ? 0xFF : 0;
+        uint8_t caps_state = host_keyboard_led_state().caps_lock ? 0xFF : 0;
+        uint8_t scroll_state = host_keyboard_led_state().scroll_lock ? 0xFF : 0;
+
+        rgb_matrix_set_color(163, num_state, num_state, num_state);
+        rgb_matrix_set_color(164, caps_state, caps_state, caps_state);
+        rgb_matrix_set_color(165, scroll_state, scroll_state, scroll_state);
+    }
     return true;
 }
 
