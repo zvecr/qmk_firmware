@@ -49,7 +49,7 @@ bool xap_execute_kb_set_rgb_layer(xap_token_t token, xap_route_kb_set_rgb_layer_
 
     conf->enable = arg->enable;
     conf->mode = mode;
-    conf->hsv = (HSV){arg->hue, arg->sat, arg->val};
+    conf->hsv = (HSV){arg->hue, arg->sat, (arg->val > RGB_MATRIX_MAXIMUM_BRIGHTNESS) ? RGB_MATRIX_MAXIMUM_BRIGHTNESS : arg->val};
 
     return xap_respond_success(token);
 }
