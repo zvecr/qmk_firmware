@@ -7,7 +7,9 @@
 
 #ifdef RGB_MATRIX_CAPS_LOCK_INDEX
 bool rgb_matrix_indicators_kb(void) {
-    if (!rgb_matrix_indicators_user()) { return false; }
+    if (!rgb_matrix_indicators_user()) {
+        return false;
+    }
 
     if (host_keyboard_led_state().caps_lock && (rgb_matrix_get_flags() != LED_FLAG_NONE)) {
         rgb_matrix_set_color(RGB_MATRIX_CAPS_LOCK_INDEX, RGB_WHITE);
@@ -18,8 +20,11 @@ bool rgb_matrix_indicators_kb(void) {
 }
 #endif
 
+#    ifdef RGB_MATRIX_CYCLE_ZONES_ENABLE
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
-    if (!process_record_user(keycode, record)) { return false; }
+    if (!process_record_user(keycode, record)) {
+        return false;
+    }
 
     if (!record->event.pressed) {
         switch (keycode) {
@@ -43,5 +48,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     }
     return true;
 };
+#    endif
 
 #endif
