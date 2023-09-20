@@ -4,6 +4,11 @@
 #include "quantum.h"
 #include "eeprom.h"
 
+#if !defined(RGB_MATRIX_MAXIMUM_BRIGHTNESS) || RGB_MATRIX_MAXIMUM_BRIGHTNESS > UINT8_MAX
+#    undef RGB_MATRIX_MAXIMUM_BRIGHTNESS
+#    define RGB_MATRIX_MAXIMUM_BRIGHTNESS UINT8_MAX
+#endif
+
 #if defined(XAP_ENABLE) && !defined(DISABLE_XAP_RGB_LAYERS)
 
 #define INVALID_EFFECT 0xFF
