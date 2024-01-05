@@ -123,6 +123,8 @@ MAIN_KEYMAP_PATH_5 := $(KEYBOARD_PATH_5)/keymaps/$(KEYMAP)
 INFO_RULES_MK = $(shell $(QMK_BIN) generate-rules-mk --quiet --escape --keyboard $(KEYBOARD) --output $(INTERMEDIATE_OUTPUT)/src/info_rules.mk)
 include $(INFO_RULES_MK)
 
+-include $(BUILDDEFS_PATH)/invalid_kb_features.mk
+
 # Check for keymap.json first, so we can regenerate keymap.c
 include $(BUILDDEFS_PATH)/build_json.mk
 
