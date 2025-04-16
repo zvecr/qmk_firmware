@@ -65,6 +65,9 @@
     "split": {
         "serial": {
             "driver": "bitbang"
+        },
+        "transport": {
+            "protocol": "serial"
         }
     },
     "ws2812": {
