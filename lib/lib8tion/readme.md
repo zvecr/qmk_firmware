@@ -27,6 +27,7 @@ Moddified from [Version 3.7.8](https://github.com/FastLED/FastLED/tree/3.7.8/src
 ### `lib8tion.cpp`
 
 * Rename unit to `lib8tion.c`
+* Remove extern c
 * Remove `FastLED.h` include
 * Add `namespace.h` include
 

@@ -34,7 +34,10 @@ uint16_t rand16seed = RAND16_SEED;
 //  bytes of code.
 
 #if defined(__AVR__)
+#if 0
 extern "C" {
+#endif
+
 //__attribute__ ((noinline))
 void * memset8 ( void * ptr, uint8_t val, uint16_t num )
 {
@@ -126,8 +129,9 @@ void * memmove8 ( void * dst, const void* src, uint16_t num )
     }
 }
 
-
+#if 0
 } /* end extern "C" */
+#endif
 
 #endif /* AVR */
 

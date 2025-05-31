@@ -435,11 +435,15 @@ LIB8STATIC sfract15 floatToSfract15( float f)
 /// @{
 
 #if defined(__AVR__) || defined(FASTLED_DOXYGEN)
+#if 0
 extern "C" {
+#endif
 void * memmove8( void * dst, const void * src, uint16_t num );  ///< Faster alternative to memmove() on AVR
 void * memcpy8 ( void * dst, const void * src, uint16_t num )  __attribute__ ((noinline));  ///< Faster alternative to memcpy() on AVR
 void * memset8 ( void * ptr, uint8_t value, uint16_t num ) __attribute__ ((noinline)) ;  ///< Faster alternative to memset() on AVR
+#if 0
 }
+#endif
 #else
 // on non-AVR platforms, these names just call standard libc.
 #define memmove8 memmove
