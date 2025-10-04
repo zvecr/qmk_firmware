@@ -234,6 +234,7 @@
     "USB_MAX_POWER_CONSUMPTION": {"info_key": "usb.max_power", "value_type": "int"},
     "USB_POLLING_INTERVAL_MS": {"info_key": "usb.polling_interval", "value_type": "int"},
     "USB_SUSPEND_WAKEUP_DELAY": {"info_key": "usb.suspend_wakeup_delay", "value_type": "int"},
+    "USB_VBUS_PIN": {"info_key": "usb.vbus_pin"},
 
     // WS2812
     "WS2812_DI_PIN": {"info_key": "ws2812.pin"},

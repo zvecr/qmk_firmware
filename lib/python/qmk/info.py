@@ -693,15 +693,9 @@ def _process_defaults(info_data):
     for default_type in defaults_map.keys():
         thing_map = defaults_map[default_type]
         if default_type in info_data:
-            merged_count = 0
-            thing_items = thing_map.get(info_data[default_type], {}).items()
-            for key, value in thing_items:
-                if key not in info_data:
-                    info_data[key] = value
-                    merged_count += 1
+            thing_items = thing_map.get(info_data[default_type], {})
 
-            if merged_count == 0 and len(thing_items) > 0:
-                _log_warning(info_data, 'All defaults for \'%s\' were skipped, potential redundant config or misconfiguration detected' % (default_type))
+            deep_update(info_data, thing_items)
 
     return info_data
 

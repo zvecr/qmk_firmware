@@ -38,12 +38,18 @@
         "elite_pi": {
             "board": "QMK_PM2040",
             "bootloader": "rp2040",
-            "processor": "RP2040"
+            "processor": "RP2040",
+            "usb": {
+                "vbus_pin": "GP19"
+            }
         },
         "helios": {
             "board": "QMK_PM2040",
             "bootloader": "rp2040",
-            "processor": "RP2040"
+            "processor": "RP2040",
+            "usb": {
+                "vbus_pin": "GP19"
+            }
         },
         "imera": {
             "processor": "RP2040",
@@ -58,12 +64,22 @@
         "liatris": {
             "board": "QMK_PM2040",
             "bootloader": "rp2040",
-            "processor": "RP2040"
+            "processor": "RP2040",
+            "usb": {
+                "vbus_pin": "GP19"
+            }
         },
         "michi": {
             "board": "QMK_PM2040",
             "bootloader": "rp2040",
             "processor": "RP2040"
+        },
+        "pi_pico": {
+            "bootloader": "rp2040",
+            "processor": "RP2040",
+            "usb": {
+                "vbus_pin": "GP24"
+            }
         },
         "promicro": {
             "bootloader": "caterina",
@@ -73,7 +89,10 @@
         "promicro_rp2040": {
             "board": "QMK_PM2040",
             "bootloader": "rp2040",
-            "processor": "RP2040"
+            "processor": "RP2040",
+            "usb": {
+                "vbus_pin": "GP19"
+            }
         },
         "proton_c": {
             "board": "QMK_PROTON_C",

@@ -1023,6 +1023,7 @@
                     }
                 },
                 "suspend_wakeup_delay": {"$ref": "./definitions.jsonschema#/unsigned_int"},
+                "vbus_pin": {"$ref": "./definitions.jsonschema#/mcu_pin"},
                 "wait_for_enumeration": {"type": "boolean"}
             }
         },
