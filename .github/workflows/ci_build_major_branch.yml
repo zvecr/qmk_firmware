@@ -27,7 +27,7 @@ concurrency:
 jobs:
   determine_concurrency:
     name: "Determine concurrency"
-    if: github.repository == 'qmk/qmk_firmware'
+    # if: github.repository == 'qmk/qmk_firmware'
     runs-on: ubuntu-latest
     container: ghcr.io/qmk/qmk_cli
 
@@ -73,6 +73,7 @@ jobs:
     name: "Consolidation"
     needs: build_targets
     runs-on: ubuntu-latest
+    if: github.repository == 'qmk/qmk_firmware'
 
     steps:
       - name: Disable safe.directory check

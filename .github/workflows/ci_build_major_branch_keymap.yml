@@ -39,16 +39,17 @@ jobs:
 
       - name: Generate build targets
         id: generate_targets
+        shell: 'bash {0}'
         run: |
           { # Intentionally use `shuf` here so that we share manufacturers across all build groups -- some have a lot of ARM-based boards which inherently take longer
             counter=0
             echo -n '{'
-            qmk find -km ${{ inputs.keymap }} 2>/dev/null | sort | uniq | shuf | xargs -L${{ inputs.slice_length }} | while IFS=$'\n' read target ; do
+            qmk find -km ${{ inputs.keymap }} 2>/dev/null | sort | uniq | shuf --random-source=<(openssl enc -aes-256-ctr -pass pass:qmk -nosalt </dev/zero 2>/dev/null) | xargs -L${{ inputs.slice_length }} | while IFS=$'\n' read target ; do
                 if [ $counter -gt 0 ]; then
                     echo -n ','
                 fi
                 counter=$((counter+1))
-                printf "\"group %02d\":{" $counter
+                printf "\"group-%02d\":{" $counter
                 echo -n '"targets":"'
                 echo $target | tr ' ' '\n' | sort | uniq | xargs echo -n
                 echo -n '"}'
@@ -101,8 +102,25 @@ jobs:
         run: |
           jq -r '.["${{ matrix.target }}"].targets' targets.json | tr ' ' '\n' | sort
 
+      - name: Install ccache
+        run: apt update && apt install -y ccache
+
+      - name: Install gh cli
+        run: |
+          wget https://github.com/cli/cli/releases/download/v2.88.1/gh_2.88.1_linux_amd64.deb
+          dpkg -i gh_2.88.1_linux_amd64.deb
+
+      - name: Restore Cache
+        id: cache
+        uses: actions/cache/restore@v5
+        with:
+          path: ~/.cache
+          key: compile-${{ inputs.keymap }}-${{ matrix.target }}
+
       - name: Build targets
         continue-on-error: true
+        env:
+          CCACHE_CONFIGPATH: ~/.cache
         run: |
           export NCPUS=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || getconf _NPROCESSORS_ONLN 2>/dev/null) -1 ))
           targets=$(jq -r '.["${{ matrix.target }}"].targets' targets.json | tr ' ' '\n' | sort)
@@ -110,7 +128,27 @@ jobs:
             echo "Zero build targets detected"
             exit 0
           fi
-          qmk mass-compile -t -j $NCPUS -e DUMP_CI_METADATA=yes $targets || touch .failed
+          qmk mass-compile -t -j $NCPUS -e DUMP_CI_METADATA=yes -e USE_CCACHE=yes $targets || touch .failed
+
+      - name: Dump ccache stats
+        env:
+          CCACHE_CONFIGPATH: ~/.cache
+        run: |
+          ccache -s
+
+      # Delete the old cache on hit to emulate a cache update. See
+      # https://github.com/actions/cache/issues/342.
+      - name: Delete old cache
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: steps.cache.outputs.cache-hit
+        run: gh cache delete --ref ${{ github.ref }} ${{ steps.cache.outputs.cache-primary-key }}
+
+      - name: Save Cache
+        uses: actions/cache/save@v5
+        with:
+          path: ~/.cache
+          key: compile-${{ inputs.keymap }}-${{ matrix.target }}
 
       - name: Upload binaries
         uses: actions/upload-artifact@v7
@@ -171,12 +209,3 @@ jobs:
           name: |
             firmware-${{ inputs.keymap }}-*
             targets-${{ inputs.keymap }}
-
-      - name: 'CI Discord Notification'
-        if: always() && !cancelled()
-        working-directory: util/ci/
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.CI_DISCORD_WEBHOOK }}
-        run: |
-          python3 -m pip install -r requirements.txt
-          python3 ./discord-results.py --branch ${{ inputs.branch || github.ref_name }} --sha $(git rev-parse HEAD) --keymap ${{ inputs.keymap }} --url ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
