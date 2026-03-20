@@ -122,13 +122,13 @@ jobs:
         env:
           CCACHE_CONFIGPATH: ~/.cache
         run: |
-          export NCPUS=$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || getconf _NPROCESSORS_ONLN 2>/dev/null) -1 ))
+          mkdir -p ~/.cache && touch ~/.cache/.keep
           targets=$(jq -r '.["${{ matrix.target }}"].targets' targets.json | tr ' ' '\n' | sort)
           if [ -z "${targets}" ]; then
             echo "Zero build targets detected"
             exit 0
           fi
-          qmk mass-compile -t -j $NCPUS -e DUMP_CI_METADATA=yes -e USE_CCACHE=yes $targets || touch .failed
+          qmk mass-compile -t -j $(nproc) -e DUMP_CI_METADATA=yes -e USE_CCACHE=yes $targets || touch .failed
 
       - name: Dump ccache stats
         env:
