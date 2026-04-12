@@ -36,3 +36,20 @@ jobs:
 
     - name: Run tests
       run: qmk test-c -j $(nproc)
+
+  test-clang:
+    runs-on: macos-26
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+
+    - name: Install CLI
+      run: pipx install qmk
+
+    - name: Install dependencies
+      run: pipx runpip qmk install -r requirements-dev.txt
+
+    - name: Run tests
+      run: qmk test-c -j $(sysctl -n hw.logicalcpu)
