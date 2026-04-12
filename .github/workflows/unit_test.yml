@@ -52,4 +52,4 @@ jobs:
       run: pipx runpip qmk install -r requirements-dev.txt
 
     - name: Run tests
-      run: qmk test-c -j $(sysctl -n hw.logicalcpu)
+      run: qmk test-c -j1
