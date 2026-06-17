@@ -817,7 +817,7 @@
                 "enabled": {"type": "boolean"},
                 "protocol": {
                     "type": "string",
-                    "enum": ["all", "geminipr", "txbolt"]
+                    "enum": ["all", "geminipr", "txbolt", "plover_hid"]
                 }
             }
         },
