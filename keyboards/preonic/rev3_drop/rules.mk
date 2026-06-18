@@ -1,2 +1,2 @@
-CUSTOM_MATRIX = yes
+CUSTOM_MATRIX = lite
 SRC += matrix.c
