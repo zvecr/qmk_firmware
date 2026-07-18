@@ -12,7 +12,7 @@ from milc import cli
 @cli.subcommand('QMK Python Unit Tests', hidden=False if cli.config.user.developer else True)
 def pytest(cli):
     """Run several linting/testing commands."""
-    nose2 = cli.run(['nose2', '-v', '-t', 'lib/python', *cli.args.test], capture_output=False, stdin=DEVNULL)
+    nose2 = cli.run(['nose2', '-v', *cli.args.test], capture_output=False, stdin=DEVNULL)
     ruff = cli.run(['ruff', 'check', '--no-cache'], capture_output=False, stdin=DEVNULL)
 
     return ruff.returncode | nose2.returncode
