@@ -214,6 +214,8 @@ def _render_eeconfig_declarations(modules):
     lines.append('bool eeconfig_is_modules_datablock_valid(void);')
     lines.append('void eeconfig_init_modules_datablock(void);')
     lines.append('void eeconfig_prepare_modules_datablocks(void);')
+    lines.append('extern const uint16_t eeconfig_modules_datablock_sizes[] PROGMEM;')
+    lines.append('extern const uint16_t EECONFIG_MODULES_DATABLOCK_SIZES_COUNT;')
     lines.append('')
 
     return lines
@@ -308,6 +310,17 @@ def _render_eeconfig_implementation(modules):
             f'#endif // (EECONFIG_MODULE_{module_slug.upper()}_DATA_SIZE) > 0',
         ])
     lines.append('}')
+    lines.append('')
+
+    lines.append('const uint16_t eeconfig_modules_datablock_sizes[] PROGMEM = {')
+    for module_slug in _module_slugs(modules):
+        lines.extend([
+            f'#if (EECONFIG_MODULE_{module_slug.upper()}_DATA_SIZE) > 0',
+            f'    {f"(EECONFIG_MODULE_{module_slug.upper()}_DATA_SIZE),"}',
+            f'#endif // (EECONFIG_MODULE_{module_slug.upper()}_DATA_SIZE) > 0',
+        ])
+    lines.append('};')
+    lines.append('const uint16_t EECONFIG_MODULES_DATABLOCK_SIZES_COUNT = (sizeof(eeconfig_modules_datablock_sizes)/sizeof(eeconfig_modules_datablock_sizes[0]));')
     lines.append('')
 
     return lines
@@ -410,6 +423,7 @@ def generate_community_modules_h(cli):
         '#include <string.h>',
         '#include <keycodes.h>',
         '',
+        '#include "progmem.h"',
         '#include "compiler_support.h"',
         '',
         '#define COMMUNITY_MODULES_API_VERSION_BUILDER(ver_major,ver_minor,ver_patch) (((((uint32_t)(ver_major))&0xFF) << 24) | ((((uint32_t)(ver_minor))&0xFF) << 16) | (((uint32_t)(ver_patch))&0xFF))',

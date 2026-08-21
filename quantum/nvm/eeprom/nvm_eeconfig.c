@@ -45,14 +45,103 @@
 #    include "connection.h"
 #endif
 
+#ifdef COMMUNITY_MODULES_ENABLE
+#    include "community_modules.h"
+#endif
+
 void nvm_eeconfig_erase(void) {
 #ifdef EEPROM_DRIVER
     eeprom_driver_format(false);
 #endif // EEPROM_DRIVER
 }
 
+// #define IGNORE_EECONFIG_COMPOSITION_HASH
+#ifdef IGNORE_EECONFIG_COMPOSITION_HASH
+#    define nvm_eeconfig_compute_magic() EECONFIG_MAGIC_NUMBER
+#else
+uint16_t crc16_ccitt_kermit_update(uint16_t crc, const uint8_t *buf, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        crc ^= buf[i];
+        for (uint8_t j = 0; j < 8; j++) {
+            if (crc & 0x0001) {
+                crc = (crc >> 1) ^ 0x8408;
+            } else {
+                crc >>= 1;
+            }
+        }
+    }
+    return crc;
+}
+
+uint16_t nvm_eeconfig_compute_magic(void) {
+    static uint16_t hash = EECONFIG_MAGIC_NUMBER_OFF;
+    if (hash != EECONFIG_MAGIC_NUMBER_OFF) {
+        return hash;
+    }
+    hash = 0;
+
+    uint16_t val = EECONFIG_MAGIC_NUMBER;
+    hash         = crc16_ccitt_kermit_update(hash, (const uint8_t *)&val, sizeof(val));
+
+    // Note: Must be kept in sync with eeprom_core_t in nvm_eeprom_eeconfig_internal.h
+    val = 0;
+#    ifdef BACKLIGHT_ENABLE
+    val |= 1 << 1;
+#    endif
+#    ifdef AUDIO_ENABLE
+    val |= 1 << 2;
+#    endif
+#    ifdef RGBLIGHT_ENABLE
+    val |= 1 << 3;
+#    endif
+#    ifdef UNICODE_COMMON_ENABLE
+    val |= 1 << 4;
+#    endif
+#    ifdef STENO_ENABLE
+    val |= 1 << 5;
+#    endif
+#    ifdef RGB_MATRIX_ENABLE
+    val |= 1 << 6;
+#    endif
+#    ifdef LED_MATRIX_ENABLE
+    val |= 1 << 7;
+#    endif
+#    ifdef HAPTIC_ENABLE
+    val |= 1 << 8;
+#    endif
+#    ifdef CONNECTION_ENABLE
+    val |= 1 << 9;
+#    endif
+    hash = crc16_ccitt_kermit_update(hash, (const uint8_t *)&val, sizeof(val));
+
+    // Datablocks
+#    if (EECONFIG_KB_DATA_SIZE) == 0
+    val  = EECONFIG_KB_DATA_SIZE;
+    hash = crc16_ccitt_kermit_update(hash, (const uint8_t *)&val, sizeof(val));
+#    endif
+
+#    if (EECONFIG_USER_DATA_SIZE) == 0
+    val  = EECONFIG_USER_DATA_SIZE;
+    hash = crc16_ccitt_kermit_update(hash, (const uint8_t *)&val, sizeof(val));
+#    endif
+
+#    ifdef COMMUNITY_MODULES_ENABLE
+    for (uint16_t i = 0; i < EECONFIG_MODULES_DATABLOCK_SIZES_COUNT; i++) {
+        val  = pgm_read_word(&eeconfig_modules_datablock_sizes[i]);
+        hash = crc16_ccitt_kermit_update(hash, (const uint8_t *)&val, sizeof(val));
+    }
+#    endif
+
+    // If the hash is still the starting value, then set it to the magic number to avoid confusion with an uninitialized EEPROM
+    if (hash == EECONFIG_MAGIC_NUMBER_OFF) {
+        hash = EECONFIG_MAGIC_NUMBER;
+    }
+    return hash;
+}
+#endif // IGNORE_EECONFIG_COMPOSITION_HASH
+
 bool nvm_eeconfig_is_enabled(void) {
-    return eeprom_read_word(EECONFIG_MAGIC) == EECONFIG_MAGIC_NUMBER;
+    return eeprom_read_word(EECONFIG_MAGIC) == nvm_eeconfig_compute_magic();
 }
 
 bool nvm_eeconfig_is_disabled(void) {
@@ -60,7 +149,7 @@ bool nvm_eeconfig_is_disabled(void) {
 }
 
 void nvm_eeconfig_enable(void) {
-    eeprom_update_word(EECONFIG_MAGIC, EECONFIG_MAGIC_NUMBER);
+    eeprom_update_word(EECONFIG_MAGIC, nvm_eeconfig_compute_magic());
 }
 
 void nvm_eeconfig_disable(void) {
