@@ -73,12 +73,8 @@ uint16_t crc16_ccitt_kermit_update(uint16_t crc, const uint8_t *buf, size_t len)
     return crc;
 }
 
-uint16_t nvm_eeconfig_compute_magic(void) {
-    static uint16_t hash = EECONFIG_MAGIC_NUMBER_OFF;
-    if (hash != EECONFIG_MAGIC_NUMBER_OFF) {
-        return hash;
-    }
-    hash = 0;
+uint16_t nvm_eeconfig_compute_magic_impl(void) {
+    uint16_t hash = 0;
 
     uint16_t val = EECONFIG_MAGIC_NUMBER;
     hash         = crc16_ccitt_kermit_update(hash, (const uint8_t *)&val, sizeof(val));
@@ -135,6 +131,14 @@ uint16_t nvm_eeconfig_compute_magic(void) {
     // If the hash is still the starting value, then set it to the magic number to avoid confusion with an uninitialized EEPROM
     if (hash == EECONFIG_MAGIC_NUMBER_OFF) {
         hash = EECONFIG_MAGIC_NUMBER;
+    }
+    return hash;
+}
+
+uint16_t nvm_eeconfig_compute_magic(void) {
+    static uint16_t hash = EECONFIG_MAGIC_NUMBER_OFF;
+    if (hash == EECONFIG_MAGIC_NUMBER_OFF) {
+        hash = nvm_eeconfig_compute_magic_impl();
     }
     return hash;
 }
